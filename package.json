@@ -1,0 +1,12 @@
+{
+    "name": "kixx-linting",
+    "version": "0.1.0",
+    "description": "Linting POC",
+    "license": "UNLICENSED",
+    "author": "Kris Walker (www.kriswalker.me)",
+    "type": "module",
+    "main": "index.js",
+    "scripts": {
+        "test": "node --test test/integration.test.js"
+    }
+}

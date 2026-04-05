@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc -l /Users/kris/Projects/eslint/acorn/acorn/src/*.js)",
+      "Bash(wc -l /Users/kris/Projects/kixx/linting/reference-libraries/eslint-scope/lib/*.js)",
+      "Bash(chmod +x /tmp/analyze_rules.sh)",
+      "Bash(/tmp/analyze_rules.sh)",
+      "Bash(chmod +x /tmp/categorize_rules.sh)",
+      "Bash(/tmp/categorize_rules.sh)",
+      "Bash(chmod +x /tmp/final_categorize.sh)",
+      "Bash(/tmp/final_categorize.sh)",
+      "Bash(chmod +x /tmp/check_scope_calls.sh)",
+      "Bash(/tmp/check_scope_calls.sh)",
+      "Bash(chmod +x /tmp/final_check.sh)",
+      "Bash(/tmp/final_check.sh)",
+      "Bash(node:*)",
+      "Bash(grep -E \"^\\(comma-dangle|func-call-spacing|indent|max-statements-per-line|new-parens|rest-spread-spacing|semi|space-infix-ops|space-unary-ops|no-floating-decimal\\)\\\\.js$\")",
+      "Bash(grep -h \"sourceCode\\\\.\" /Users/kris/Projects/kixx/linting/lib/rules/*.js)",
+      "Bash(grep -E \"^\\(eqeqeq|no-compare-neg-zero|no-eq-null|no-loss-of-precision|no-octal|no-nonoctal-decimal-escape|no-sequences|no-return-assign|no-throw-literal|no-caller|no-multi-assign|no-nested-ternary|no-plusplus|no-mixed-operators|use-isnan|valid-typeof|prefer-numeric-literals|no-useless-concat|no-useless-escape\\)\\\\.js$\")",
+      "Bash(grep -E \"^\\(default-case-last|no-case-declarations|no-duplicate-case|no-dupe-else-if|no-cond-assign|no-debugger|no-empty|no-lonely-if|no-unsafe-finally|no-unsafe-negation|no-unsafe-optional-chaining|no-dupe-class-members|no-dupe-keys|no-dupe-args|no-useless-constructor|no-useless-computed-key|no-unused-private-class-members|no-duplicate-imports|no-unused-labels\\)\\\\.js$\")",
+      "Bash(sort -t'\\(' -k2)",
+      "Bash(python3:*)"
+    ]
+  }
+}
