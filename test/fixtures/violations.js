@@ -74,6 +74,8 @@ function withArguments() {
 }
 withArguments(1);
 
+console.log('lint me'); // no-console
+
 function withCaller() {
     return arguments.caller; // no-caller
 }
