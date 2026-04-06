@@ -19,7 +19,12 @@
       "Bash(grep -E \"^\\(eqeqeq|no-compare-neg-zero|no-eq-null|no-loss-of-precision|no-octal|no-nonoctal-decimal-escape|no-sequences|no-return-assign|no-throw-literal|no-caller|no-multi-assign|no-nested-ternary|no-plusplus|no-mixed-operators|use-isnan|valid-typeof|prefer-numeric-literals|no-useless-concat|no-useless-escape\\)\\\\.js$\")",
       "Bash(grep -E \"^\\(default-case-last|no-case-declarations|no-duplicate-case|no-dupe-else-if|no-cond-assign|no-debugger|no-empty|no-lonely-if|no-unsafe-finally|no-unsafe-negation|no-unsafe-optional-chaining|no-dupe-class-members|no-dupe-keys|no-dupe-args|no-useless-constructor|no-useless-computed-key|no-unused-private-class-members|no-duplicate-imports|no-unused-labels\\)\\\\.js$\")",
       "Bash(sort -t'\\(' -k2)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(grep -l \"output:\" /Users/kris/Projects/kixx/linting/tmp/fixtures/*.js)",
+      "Bash(grep -h \"output:\" /Users/kris/Projects/kixx/linting/tmp/fixtures/*.js)",
+      "Bash(grep -n \"errors: \\\\[{\" /Users/kris/Projects/kixx/linting/tmp/fixtures/*.js)",
+      "Bash(grep -rn \"^\\\\s*output,\" /Users/kris/Projects/kixx/linting/tmp/fixtures/*.js)",
+      "Bash(grep -h \"errors\" /Users/kris/Projects/kixx/linting/tmp/fixtures/*.js)"
     ]
   }
 }
