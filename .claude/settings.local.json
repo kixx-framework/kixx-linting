@@ -24,7 +24,8 @@
       "Bash(grep -h \"output:\" /Users/kris/Projects/kixx/linting/tmp/fixtures/*.js)",
       "Bash(grep -n \"errors: \\\\[{\" /Users/kris/Projects/kixx/linting/tmp/fixtures/*.js)",
       "Bash(grep -rn \"^\\\\s*output,\" /Users/kris/Projects/kixx/linting/tmp/fixtures/*.js)",
-      "Bash(grep -h \"errors\" /Users/kris/Projects/kixx/linting/tmp/fixtures/*.js)"
+      "Bash(grep -h \"errors\" /Users/kris/Projects/kixx/linting/tmp/fixtures/*.js)",
+      "Bash(ls:*)"
     ]
   }
 }
