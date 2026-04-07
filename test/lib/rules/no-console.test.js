@@ -20,6 +20,14 @@
  * THE SOFTWARE.
  */
 
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
+
+import { lintText } from "../../../mod.js";
+
 const valid = [
     { text: "Console.info(foo)" },
 
@@ -41,6 +49,7 @@ const valid = [
     // https://github.com/eslint/eslint/issues/7010
     { text: "var console = require('myconsole'); console.log(foo)" },
 ];
+
 const invalid = [
     // no options
     {
@@ -71,20 +80,16 @@ const invalid = [
         text: "a();\nconsole.log(foo);\nb();",
     },
     {
-        text: "class A { static { console.info(foo) } }",
-        languageOptions: { ecmaVersion: "latest" },
+        text: "class A { static { console.info(foo) } }", // languageOptions: { ecmaVersion: "latest" }
     },
     {
-        text: "a()\nconsole.log(foo);\n[1, 2, 3].forEach(a => doSomething(a))",
-        languageOptions: { ecmaVersion: "latest" },
+        text: "a()\nconsole.log(foo);\n[1, 2, 3].forEach(a => doSomething(a))", // languageOptions: { ecmaVersion: "latest" }
     },
     {
-        text: "a++\nconsole.log();\n/b/",
-        languageOptions: { ecmaVersion: "latest" },
+        text: "a++\nconsole.log();\n/b/", // languageOptions: { ecmaVersion: "latest" }
     },
     {
-        text: "a();\nconsole.log(foo);\n[1, 2, 3].forEach(a => doSomething(a));",
-        languageOptions: { ecmaVersion: "latest" },
+        text: "a();\nconsole.log(foo);\n[1, 2, 3].forEach(a => doSomething(a));", // languageOptions: { ecmaVersion: "latest" }
     },
 
     //  one option
@@ -122,8 +127,7 @@ const invalid = [
     },
     {
         text: "class A { static { console.error(foo) } }",
-        options: [{ allow: ["log"] }],
-        languageOptions: { ecmaVersion: "latest" },
+        options: [{ allow: ["log"] }], // languageOptions: { ecmaVersion: "latest" }
     },
 
     // multiple options
@@ -161,8 +165,7 @@ const invalid = [
     },
     {
         text: "class A { static { console.info(foo) } }",
-        options: [{ allow: ["log", "error", "warn"] }],
-        languageOptions: { ecmaVersion: "latest" },
+        options: [{ allow: ["log", "error", "warn"] }], // languageOptions: { ecmaVersion: "latest" }
     },
     {
         text: "console[foo](bar)",
@@ -173,11 +176,58 @@ const invalid = [
 
     // In case that implicit global variable of 'console' exists
     {
-        text: "console.log(foo)",
-        languageOptions: {
-            globals: {
-                console: "readonly",
-            },
-        },
+        text: "console.log(foo)", // languageOptions: { globals: { console: "readonly" } }
     },
 ];
+
+describe("no-console", ({ describe }) => {
+
+    const globalRules = { "no-console": ["error"] };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, options }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-console"] = rules["no-console"].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, options }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-console"] = rules["no-console"].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                assertEqual(1, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+
+                const [ message ] = res.messages;
+
+                assertEqual("no-console", message.ruleId, `message.ruleId:[${i}]:${text.slice(0, 52)} ...`);
+                assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+});

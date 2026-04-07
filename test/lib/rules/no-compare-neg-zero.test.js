@@ -20,6 +20,14 @@
  * THE SOFTWARE.
  */
 
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
+
+import { lintText } from "../../../mod.js";
+
 const valid = [
     { text: "x === 0" },
     { text: "0 === x" },
@@ -88,3 +96,55 @@ const invalid = [
         text: "-0 <= x",
     },
 ];
+
+describe("no-compare-neg-zero", ({ describe }) => {
+
+    const globalRules = { "no-compare-neg-zero": ["error"] };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, options }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-compare-neg-zero"] = rules["no-compare-neg-zero"].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, options }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-compare-neg-zero"] = rules["no-compare-neg-zero"].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                assertEqual(1, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+
+                const [ message ] = res.messages;
+
+                assertEqual("no-compare-neg-zero", message.ruleId, `message.ruleId:[${i}]:${text.slice(0, 52)} ...`);
+                assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+});

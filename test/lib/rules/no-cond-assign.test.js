@@ -20,6 +20,14 @@
  * THE SOFTWARE.
  */
 
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
+
+import { lintText } from "../../../mod.js";
+
 const valid = [
     { text: "var x = 0; if (x == 0) { var b = 1; }" },
     { text: "var x = 0; if (x == 0) { var b = 1; }", options: ["always"] },
@@ -48,13 +56,11 @@ const valid = [
     },
     {
         text: "if ((node => node = parentNode)(someNode)) { }",
-        options: ["except-parens"],
-        languageOptions: { ecmaVersion: 6 },
+        options: ["except-parens"], // languageOptions: { ecmaVersion: 6 }
     },
     {
         text: "if ((node => node = parentNode)(someNode)) { }",
-        options: ["always"],
-        languageOptions: { ecmaVersion: 6 },
+        options: ["always"], // languageOptions: { ecmaVersion: 6 }
     },
     {
         text: "if (function(node) { return node = parentNode; }) { }",
@@ -76,6 +82,7 @@ const valid = [
         options: ["always"],
     },
 ];
+
 const invalid = [
     {
         text: "var x; if (x = 0) { var b = 1; }",
@@ -151,3 +158,55 @@ const invalid = [
         text: "(((3496.29)).bkufyydt = 2e308) ? foo : bar;",
     },
 ];
+
+describe("no-cond-assign", ({ describe }) => {
+
+    const globalRules = { "no-cond-assign": ["error"] };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, options }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-cond-assign"] = rules["no-cond-assign"].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, options }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-cond-assign"] = rules["no-cond-assign"].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                assertEqual(1, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+
+                const [ message ] = res.messages;
+
+                assertEqual("no-cond-assign", message.ruleId, `message.ruleId:[${i}]:${text.slice(0, 52)} ...`);
+                assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+});
