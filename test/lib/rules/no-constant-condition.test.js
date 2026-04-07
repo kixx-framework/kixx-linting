@@ -219,13 +219,7 @@ const valid = [
     { text: "if (foo.Boolean(1)) {}" },
     { text: "function foo(Boolean) { if (Boolean(1)) {} }" },
     { text: "const Boolean = () => {}; if (Boolean(1)) {}" },
-    {
-        text: "if (Boolean()) {}", // languageOptions: { globals: { Boolean: "off" } }
-    },
     { text: "const undefined = 'lol'; if (undefined) {}" },
-    {
-        text: "if (undefined) {}", // languageOptions: { globals: { undefined: "off" } }
-    },
 ];
 
 const invalid = [

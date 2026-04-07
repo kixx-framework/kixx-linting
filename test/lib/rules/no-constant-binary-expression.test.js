@@ -588,7 +588,7 @@ const invalid = [
         text: "typeof a === null",
     },
     {
-        text: "delete a === null",
+        text: "delete a.b === null",
     },
     {
         text: "void a === null",
@@ -668,7 +668,7 @@ const invalid = [
         text: "typeof a === undefined",
     },
     {
-        text: "delete a === undefined",
+        text: "delete a.b === undefined",
     },
     {
         text: "void a === undefined",
