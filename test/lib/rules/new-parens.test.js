@@ -20,6 +20,14 @@
  * THE SOFTWARE.
  */
 
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
+
+import { lintText } from "../../../mod.js";
+
 const valid = [
     // Default (Always)
     { text: "var a = new Date();" },
@@ -47,6 +55,7 @@ const valid = [
     { text: "var a = new Person('Name', 12)", options: ["never"] },
     { text: "var a = new ((Person))('Name');", options: ["never"] },
 ];
+
 const invalid = [
     // Default (Always)
     {
@@ -131,3 +140,55 @@ const invalid = [
         options: ["never"],
     },
 ];
+
+describe("new-parens", ({ describe }) => {
+
+    const globalRules = { "new-parens": ["error"] };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, options }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["new-parens"] = rules["new-parens"].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, options }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["new-parens"] = rules["new-parens"].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                assertEqual(1, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+
+                const [ message ] = res.messages;
+
+                assertEqual("new-parens", message.ruleId, `message.ruleId:[${i}]:${text.slice(0, 52)} ...`);
+                assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+});
