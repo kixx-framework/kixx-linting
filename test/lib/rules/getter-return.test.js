@@ -20,245 +20,305 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		/*
-		 * test obj: get
-		 * option: {allowImplicit: false}
-		 */
-		"var foo = { get bar(){return true;} };",
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from '../../deps.js';
 
-		// option: {allowImplicit: true}
-		{ code: "var foo = { get bar() {return;} };", options: [{ allowImplicit: true }] },
-		{ code: "var foo = { get bar(){return true;} };", options: [{ allowImplicit: true }] },
-		{
-			code: "var foo = { get bar(){if(bar) {return;} return true;} };",
-			options: [{ allowImplicit: true }],
-		},
+import { lintText } from '../../../mod.js';
 
-		/*
-		 * test class: get
-		 * option: {allowImplicit: false}
-		 */
-		"class foo { get bar(){return true;} }",
-		"class foo { get bar(){if(baz){return true;} else {return false;} } }",
-		"class foo { get(){return true;} }",
 
-		// option: {allowImplicit: true}
-		{ code: "class foo { get bar(){return true;} }", options: [{ allowImplicit: true }] },
-		{ code: "class foo { get bar(){return;} }", options: [{ allowImplicit: true }] },
+const valid = [
+    /*
+     * test obj: get
+     * option: {allowImplicit: false}
+     */
+    { text: "var foo = { get bar(){return true;} };" },
 
-		/*
-		 * test object.defineProperty(s)
-		 * option: {allowImplicit: false}
-		 */
-		'Object.defineProperty(foo, "bar", { get: function () {return true;}});',
-		'Object.defineProperty(foo, "bar", { get: function () { ~function (){ return true; }();return true;}});',
-		"Object.defineProperties(foo, { bar: { get: function () {return true;}} });",
-		"Object.defineProperties(foo, { bar: { get: function () { ~function (){ return true; }(); return true;}} });",
+    // option: {allowImplicit: true}
+    { text: "var foo = { get bar() {return;} };", options: [{ allowImplicit: true }] },
+    { text: "var foo = { get bar(){return true;} };", options: [{ allowImplicit: true }] },
+    {
+        text: "var foo = { get bar(){if(bar) {return;} return true;} };",
+        options: [{ allowImplicit: true }],
+    },
 
-		/*
-		 * test reflect.defineProperty(s)
-		 * option: {allowImplicit: false}
-		 */
-		'Reflect.defineProperty(foo, "bar", { get: function () {return true;}});',
-		'Reflect.defineProperty(foo, "bar", { get: function () { ~function (){ return true; }();return true;}});',
+    /*
+     * test class: get
+     * option: {allowImplicit: false}
+     */
+    { text: "class foo { get bar(){return true;} }" },
+    { text: "class foo { get bar(){if(baz){return true;} else {return false;} } }" },
+    { text: "class foo { get(){return true;} }" },
 
-		/*
-		 * test object.create(s)
-		 * option: {allowImplicit: false}
-		 */
-		"Object.create(foo, { bar: { get() {return true;} } });",
-		"Object.create(foo, { bar: { get: function () {return true;} } });",
-		"Object.create(foo, { bar: { get: () => {return true;} } });",
+    // option: {allowImplicit: true}
+    { text: "class foo { get bar(){return true;} }", options: [{ allowImplicit: true }] },
+    { text: "class foo { get bar(){return;} }", options: [{ allowImplicit: true }] },
 
-		// option: {allowImplicit: true}
-		{
-			code: 'Object.defineProperty(foo, "bar", { get: function () {return true;}});',
-			options: [{ allowImplicit: true }],
-		},
-		{
-			code: 'Object.defineProperty(foo, "bar", { get: function (){return;}});',
-			options: [{ allowImplicit: true }],
-		},
-		{
-			code: "Object.defineProperties(foo, { bar: { get: function () {return true;}} });",
-			options: [{ allowImplicit: true }],
-		},
-		{
-			code: "Object.defineProperties(foo, { bar: { get: function () {return;}} });",
-			options: [{ allowImplicit: true }],
-		},
-		{
-			code: 'Reflect.defineProperty(foo, "bar", { get: function () {return true;}});',
-			options: [{ allowImplicit: true }],
-		},
+    /*
+     * test object.defineProperty(s)
+     * option: {allowImplicit: false}
+     */
+    { text: 'Object.defineProperty(foo, "bar", { get: function () {return true;}});' },
+    { text: 'Object.defineProperty(foo, "bar", { get: function () { ~function (){ return true; }();return true;}});' },
+    { text: "Object.defineProperties(foo, { bar: { get: function () {return true;}} });" },
+    { text: "Object.defineProperties(foo, { bar: { get: function () { ~function (){ return true; }(); return true;}} });" },
 
-		// not getter.
-		"var get = function(){};",
-		"var get = function(){ return true; };",
-		"var foo = { bar(){} };",
-		"var foo = { bar(){ return true; } };",
-		"var foo = { bar: function(){} };",
-		"var foo = { bar: function(){return;} };",
-		"var foo = { bar: function(){return true;} };",
-		"var foo = { get: function () {} }",
-		"var foo = { get: () => {}};",
-		"class C { get; foo() {} }",
-		"foo.defineProperty(null, { get() {} });",
-		"foo.defineProperties(null, { bar: { get() {} } });",
-		"foo.create(null, { bar: { get() {} } });",
-	],
+    /*
+     * test reflect.defineProperty(s)
+     * option: {allowImplicit: false}
+     */
+    { text: 'Reflect.defineProperty(foo, "bar", { get: function () {return true;}});' },
+    { text: 'Reflect.defineProperty(foo, "bar", { get: function () { ~function (){ return true; }();return true;}});' },
 
-	invalid: [
-		/*
-		 * test obj: get
-		 * option: {allowImplicit: false}
-		 */
-		{
-			code: "var foo = { get bar() {} };",
-		},
-		{
-			code: "var foo = { get\n bar () {} };",
-		},
-		{
-			code: "var foo = { get bar(){if(baz) {return true;}} };",
-		},
-		{
-			code: "var foo = { get bar() { ~function () {return true;}} };",
-		},
-		{
-			code: "var foo = { get bar() { return; } };",
-		},
+    /*
+     * test object.create(s)
+     * option: {allowImplicit: false}
+     */
+    { text: "Object.create(foo, { bar: { get() {return true;} } });" },
+    { text: "Object.create(foo, { bar: { get: function () {return true;} } });" },
+    { text: "Object.create(foo, { bar: { get: () => {return true;} } });" },
 
-		// option: {allowImplicit: true}
-		{
-			code: "var foo = { get bar() {} };",
-			options: [{ allowImplicit: true }],
-		},
-		{
-			code: "var foo = { get bar() {if (baz) {return;}} };",
-			options: [{ allowImplicit: true }],
-		},
+    // option: {allowImplicit: true}
+    {
+        text: 'Object.defineProperty(foo, "bar", { get: function () {return true;}});',
+        options: [{ allowImplicit: true }],
+    },
+    {
+        text: 'Object.defineProperty(foo, "bar", { get: function (){return;}});',
+        options: [{ allowImplicit: true }],
+    },
+    {
+        text: "Object.defineProperties(foo, { bar: { get: function () {return true;}} });",
+        options: [{ allowImplicit: true }],
+    },
+    {
+        text: "Object.defineProperties(foo, { bar: { get: function () {return;}} });",
+        options: [{ allowImplicit: true }],
+    },
+    {
+        text: 'Reflect.defineProperty(foo, "bar", { get: function () {return true;}});',
+        options: [{ allowImplicit: true }],
+    },
 
-		/*
-		 * test class: get
-		 * option: {allowImplicit: false}
-		 */
-		{
-			code: "class foo { get bar(){} }",
-		},
-		{
-			code: "var foo = class {\n  static get\nbar(){} }",
-		},
-		{
-			code: "class foo { get bar(){ if (baz) { return true; }}}",
-		},
-		{
-			code: "class foo { get bar(){ ~function () { return true; }()}}",
-		},
+    // not getter.
+    { text: "var get = function(){};" },
+    { text: "var get = function(){ return true; };" },
+    { text: "var foo = { bar(){} };" },
+    { text: "var foo = { bar(){ return true; } };" },
+    { text: "var foo = { bar: function(){} };" },
+    { text: "var foo = { bar: function(){return;} };" },
+    { text: "var foo = { bar: function(){return true;} };" },
+    { text: "var foo = { get: function () {} }" },
+    { text: "var foo = { get: () => {}}"},
+    { text: "class C { get; foo() {} }" },
+    { text: "foo.defineProperty(null, { get() {} });" },
+    { text: "foo.defineProperties(null, { bar: { get() {} } });" },
+    { text: "foo.create(null, { bar: { get() {} } });" },
+];
 
-		// option: {allowImplicit: true}
-		{ code: "class foo { get bar(){} }", options: [{ allowImplicit: true }],},
-		{
-			code: "class foo { get bar(){if (baz) {return true;} } }",
-			options: [{ allowImplicit: true }],
-		},
+const invalid = [
+    /*
+     * test obj: get
+     * option: {allowImplicit: false}
+     */
+    {
+        text: "var foo = { get bar() {} };",
+    },
+    {
+        text: "var foo = { get\n bar () {} };",
+    },
+    {
+        text: "var foo = { get bar(){if(baz) {return true;}} };",
+    },
+    {
+        text: "var foo = { get bar() { ~function () {return true;}} };",
+    },
+    {
+        text: "var foo = { get bar() { return; } };",
+    },
 
-		/*
-		 * test object.defineProperty(s)
-		 * option: {allowImplicit: false}
-		 */
-		{
-			code: "Object.defineProperty(foo, 'bar', { get: function (){}});",
-		},
-		{
-			code: "Object.defineProperty(foo, 'bar', { get: function getfoo (){}});",
-		},
-		{
-			code: "Object.defineProperty(foo, 'bar', { get(){} });",
-		},
-		{
-			code: "Object.defineProperty(foo, 'bar', { get: () => {}});",
-		},
-		{
-			code: 'Object.defineProperty(foo, "bar", { get: function (){if(bar) {return true;}}});',
-		},
-		{
-			code: 'Object.defineProperty(foo, "bar", { get: function (){ ~function () { return true; }()}});',
-		},
+    // option: {allowImplicit: true}
+    {
+        text: "var foo = { get bar() {} };",
+        options: [{ allowImplicit: true }],
+    },
+    {
+        text: "var foo = { get bar() {if (baz) {return;}} };",
+        options: [{ allowImplicit: true }],
+    },
 
-		/*
-		 * test reflect.defineProperty(s)
-		 * option: {allowImplicit: false}
-		 */
-		{
-			code: "Reflect.defineProperty(foo, 'bar', { get: function (){}});",
-		},
+    /*
+     * test class: get
+     * option: {allowImplicit: false}
+     */
+    {
+        text: "class foo { get bar(){} }",
+    },
+    {
+        text: "var foo = class {\n  static get\nbar(){} }",
+    },
+    {
+        text: "class foo { get bar(){ if (baz) { return true; }}}",
+    },
+    {
+        text: "class foo { get bar(){ ~function () { return true; }()}}",
+    },
 
-		/*
-		 * test object.create(s)
-		 * option: {allowImplicit: false}
-		 */
-		{
-			code: "Object.create(foo, { bar: { get: function() {} } })",
-		},
-		{
-			code: "Object.create(foo, { bar: { get() {} } })",
-		},
-		{
-			code: "Object.create(foo, { bar: { get: () => {} } })",
-		},
+    // option: {allowImplicit: true}
+    { text: "class foo { get bar(){} }", options: [{ allowImplicit: true }],},
+    {
+        text: "class foo { get bar(){if (baz) {return true;} } }",
+        options: [{ allowImplicit: true }],
+    },
 
-		// option: {allowImplicit: true}
-		{
-			code: "Object.defineProperties(foo, { bar: { get: function () {}} });",
-			options: [{ allowImplicit: true }],
-		},
-		{
-			code: "Object.defineProperties(foo, { bar: { get: function (){if(bar) {return true;}}}});",
-			options: [{ allowImplicit: true }],
-		},
-		{
-			code: "Object.defineProperties(foo, { bar: { get: function () {~function () { return true; }()}} });",
-			options: [{ allowImplicit: true }],
-		},
-		{
-			code: 'Object.defineProperty(foo, "bar", { get: function (){}});',
-			options: [{ allowImplicit: true }],
-		},
-		{
-			code: "Object.create(foo, { bar: { get: function (){} } });",
-			options: [{ allowImplicit: true }],
-		},
-		{
-			code: 'Reflect.defineProperty(foo, "bar", { get: function (){}});',
-			options: [{ allowImplicit: true }],
-		},
+    /*
+     * test object.defineProperty(s)
+     * option: {allowImplicit: false}
+     */
+    {
+        text: "Object.defineProperty(foo, 'bar', { get: function (){}});",
+    },
+    {
+        text: "Object.defineProperty(foo, 'bar', { get: function getfoo (){}});",
+    },
+    {
+        text: "Object.defineProperty(foo, 'bar', { get(){} });",
+    },
+    {
+        text: "Object.defineProperty(foo, 'bar', { get: () => {}});",
+    },
+    {
+        text: 'Object.defineProperty(foo, "bar", { get: function (){if(bar) {return true;}}});',
+    },
+    {
+        text: 'Object.defineProperty(foo, "bar", { get: function (){ ~function () { return true; }()}});',
+    },
 
-		// Optional chaining
-		{
-			code: "Object?.defineProperty(foo, 'bar', { get: function (){} });",
-			languageOptions: { ecmaVersion: 2020 },
-		},
-		{
-			code: "(Object?.defineProperty)(foo, 'bar', { get: function (){} });",
-			languageOptions: { ecmaVersion: 2020 },
-		},
-		{
-			code: "Object?.defineProperty(foo, 'bar', { get: function (){} });",
-			options: [{ allowImplicit: true }],
-			languageOptions: { ecmaVersion: 2020 },
-		},
-		{
-			code: "(Object?.defineProperty)(foo, 'bar', { get: function (){} });",
-			options: [{ allowImplicit: true }],
-			languageOptions: { ecmaVersion: 2020 },
-		},
-		{
-			code: "(Object?.create)(foo, { bar: { get: function (){} } });",
-			options: [{ allowImplicit: true }],
-			languageOptions: { ecmaVersion: 2020 },
-		},
-	],
-};
+    /*
+     * test reflect.defineProperty(s)
+     * option: {allowImplicit: false}
+     */
+    {
+        text: "Reflect.defineProperty(foo, 'bar', { get: function (){}});",
+    },
+
+    /*
+     * test object.create(s)
+     * option: {allowImplicit: false}
+     */
+    {
+        text: "Object.create(foo, { bar: { get: function() {} } })",
+    },
+    {
+        text: "Object.create(foo, { bar: { get() {} } })",
+    },
+    {
+        text: "Object.create(foo, { bar: { get: () => {} } })",
+    },
+
+    // option: {allowImplicit: true}
+    {
+        text: "Object.defineProperties(foo, { bar: { get: function () {}} });",
+        options: [{ allowImplicit: true }],
+    },
+    {
+        text: "Object.defineProperties(foo, { bar: { get: function (){if(bar) {return true;}}}});",
+        options: [{ allowImplicit: true }],
+    },
+    {
+        text: "Object.defineProperties(foo, { bar: { get: function () {~function () { return true; }()}} });",
+        options: [{ allowImplicit: true }],
+    },
+    {
+        text: 'Object.defineProperty(foo, "bar", { get: function (){}});',
+        options: [{ allowImplicit: true }],
+    },
+    {
+        text: "Object.create(foo, { bar: { get: function (){} } });",
+        options: [{ allowImplicit: true }],
+    },
+    {
+        text: 'Reflect.defineProperty(foo, "bar", { get: function (){}});',
+        options: [{ allowImplicit: true }],
+    },
+
+    // Optional chaining
+    {
+        text: "Object?.defineProperty(foo, 'bar', { get: function (){} });",
+        // languageOptions: { ecmaVersion: 2020 },
+    },
+    {
+        text: "(Object?.defineProperty)(foo, 'bar', { get: function (){} });",
+        // languageOptions: { ecmaVersion: 2020 },
+    },
+    {
+        text: "Object?.defineProperty(foo, 'bar', { get: function (){} });",
+        options: [{ allowImplicit: true }],
+        // languageOptions: { ecmaVersion: 2020 },
+    },
+    {
+        text: "(Object?.defineProperty)(foo, 'bar', { get: function (){} });",
+        options: [{ allowImplicit: true }],
+        // languageOptions: { ecmaVersion: 2020 },
+    },
+    {
+        text: "(Object?.create)(foo, { bar: { get: function (){} } });",
+        options: [{ allowImplicit: true }],
+        // languageOptions: { ecmaVersion: 2020 },
+    },
+];
+
+
+describe('getter-return', ({ describe }) => {
+
+    const globalRules = { 'getter-return': [ 'error' ] };
+
+    describe('valid code', ({ it }) => {
+        it('has expected outcomes', () => {
+            valid.forEach(({ text, options }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules['getter-return'] = rules['getter-return'].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe('invalid code', ({ it }) => {
+        it('has expected outcomes', () => {
+            invalid.forEach(({ text, options }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules['getter-return'] = rules['getter-return'].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                assertEqual(1, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+
+                const [ message ] = res.messages;
+
+                assertEqual('getter-return', message.ruleId, `message.ruleId:[${i}]:${text.slice(0, 52)} ...`);
+                assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+});
