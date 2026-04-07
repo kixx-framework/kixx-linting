@@ -21,7 +21,7 @@
  */
 
 const valid = [
-    "Console.info(foo)",
+    { text: "Console.info(foo)" },
 
     // single array item
     { text: "console.info(foo)", options: [{ allow: ["info"] }] },
@@ -39,7 +39,7 @@ const valid = [
     },
 
     // https://github.com/eslint/eslint/issues/7010
-    "var console = require('myconsole'); console.log(foo)",
+    { text: "var console = require('myconsole'); console.log(foo)" },
 ];
 const invalid = [
     // no options

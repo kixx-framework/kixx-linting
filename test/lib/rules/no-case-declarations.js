@@ -37,17 +37,21 @@ const valid = [
         text: "switch (a) { case 1: { class C {} break; } default: { class C {} break; } }",
         languageOptions: { ecmaVersion: 6 },
     },
-    `
+    {
+        text: `
             switch (a) {
                 case 1:
                 case 2: {}
             }
         `,
-    `
+    },
+    {
+        text: `
             switch (a) {
                 case 1: var x;
             }
         `,
+    },
 ];
 const invalid = [
     {

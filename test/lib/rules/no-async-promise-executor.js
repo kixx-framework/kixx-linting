@@ -21,9 +21,9 @@
  */
 
 const valid = [
-    "new Promise((resolve, reject) => {})",
-    "new Promise((resolve, reject) => {}, async function unrelated() {})",
-    "new Foo(async (resolve, reject) => {})",
+    { text: "new Promise((resolve, reject) => {})" },
+    { text: "new Promise((resolve, reject) => {}, async function unrelated() {})" },
+    { text: "new Foo(async (resolve, reject) => {})" },
 ];
 
 const invalid = [

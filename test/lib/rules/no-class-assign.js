@@ -21,19 +21,19 @@
  */
 
 const valid = [
-    "class A { } foo(A);",
-    "let A = class A { }; foo(A);",
-    "class A { b(A) { A = 0; } }",
-    "class A { b() { let A; A = 0; } }",
-    "let A = class { b() { A = 0; } }",
+    { text: "class A { } foo(A);" },
+    { text: "let A = class A { }; foo(A);" },
+    { text: "class A { b(A) { A = 0; } }" },
+    { text: "class A { b() { let A; A = 0; } }" },
+    { text: "let A = class { b() { A = 0; } }" },
 
     // ignores non class.
-    "var x = 0; x = 1;",
-    "let x = 0; x = 1;",
-    "const x = 0; x = 1;",
-    "function x() {} x = 1;",
-    "function foo(x) { x = 1; }",
-    "try {} catch (x) { x = 1; }",
+    { text: "var x = 0; x = 1;" },
+    { text: "let x = 0; x = 1;" },
+    { text: "const x = 0; x = 1;" },
+    { text: "function x() {} x = 1;" },
+    { text: "function foo(x) { x = 1; }" },
+    { text: "try {} catch (x) { x = 1; }" },
 ];
 const invalid = [
     {

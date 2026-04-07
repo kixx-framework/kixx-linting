@@ -22,13 +22,13 @@
 
 const valid = [
     // Default (Always)
-    "var a = new Date();",
-    "var a = new Date(function() {});",
-    "var a = new (Date)();",
-    "var a = new ((Date))();",
-    "var a = (new Date());",
-    "var a = new foo.Bar();",
-    "var a = (new Foo()).bar;",
+    { text: "var a = new Date();" },
+    { text: "var a = new Date(function() {});" },
+    { text: "var a = new (Date)();" },
+    { text: "var a = new ((Date))();" },
+    { text: "var a = (new Date());" },
+    { text: "var a = new foo.Bar();" },
+    { text: "var a = (new Foo()).bar;" },
 
     // Explicit Always
     { text: "var a = new Date();", options: ["always"] },

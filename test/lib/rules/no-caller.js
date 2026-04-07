@@ -21,10 +21,10 @@
  */
 
 const valid = [
-    "var x = arguments.length",
-    "var x = arguments",
-    "var x = arguments[0]",
-    "var x = arguments[caller]",
+    { text: "var x = arguments.length" },
+    { text: "var x = arguments" },
+    { text: "var x = arguments[0]" },
+    { text: "var x = arguments[caller]" },
 ];
 const invalid = [
     {
