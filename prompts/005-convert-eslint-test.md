@@ -2,12 +2,18 @@ We are in the process of porting old eslint tests into our new linter.
 
 To see how we write tests, review the @skills/writing-tests/SKILL.md document.
 
-Use the @test/lib/rules/comma-dangle.test.js test module as an example of how to write tests for rules.
+Use the @test/lib/rules/eol-last.test.js test module as an example of how to write tests for rules.
 
-Your task is to reformat the @test/lib/rules/getter-return.test.js test module to match comma-dangle.test.js and write the tests for it.
+Your task is to write tests in the @test/lib/rules/new-parens.test.js test module to match the format and patterns in eol-last.test.js.
 
-For the getter-return.test.js tests, you'll comment out the languageOptions so they are documented, but ignored.
+If there are any languageOption attributes defined in the test data, comment them out so they are documented, but ignored.
 
-Commenting out language options may result in errors, but do not change the tests to make it pass. Instead, evaluate the rule implementation for bugs.
+Run your tests using:
 
-Write the tests for getter-return, and work on any bugs which are discovered, but DO NOT move on to writing tests for any other rules.
+```bash
+node run-tests.js <path-to-test-file>
+```
+
+If you encounter failed tests, do not change to the tests to make them pass. Instead, evaluate the rule implementation for bugs and attempt to fix those first.
+
+If you are unable to fix failed tests before consuming 125,000 tokens of your context window, then stop and inform the user you are out of space to continue debugging.
