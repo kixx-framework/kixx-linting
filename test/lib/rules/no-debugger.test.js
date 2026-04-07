@@ -20,11 +20,14 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: ["var test = { debugger: 1 }; test.debugger;"],
-	invalid: [
-		{
-			code: "if (foo) debugger",
-		},
-	],
-};
+const valid = [
+    {
+        text: "var test = { debugger: 1 }; test.debugger;",
+    },
+];
+
+const invalid = [
+    {
+        text: "if (foo) debugger",
+    },
+];
