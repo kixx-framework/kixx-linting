@@ -20,166 +20,164 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		"Console.info(foo)",
+const valid = [
+    "Console.info(foo)",
 
-		// single array item
-		{ code: "console.info(foo)", options: [{ allow: ["info"] }] },
-		{ code: "console.warn(foo)", options: [{ allow: ["warn"] }] },
-		{ code: "console.error(foo)", options: [{ allow: ["error"] }] },
-		{ code: "console.log(foo)", options: [{ allow: ["log"] }] },
+    // single array item
+    { text: "console.info(foo)", options: [{ allow: ["info"] }] },
+    { text: "console.warn(foo)", options: [{ allow: ["warn"] }] },
+    { text: "console.error(foo)", options: [{ allow: ["error"] }] },
+    { text: "console.log(foo)", options: [{ allow: ["log"] }] },
 
-		// multiple array items
-		{ code: "console.info(foo)", options: [{ allow: ["warn", "info"] }] },
-		{ code: "console.warn(foo)", options: [{ allow: ["error", "warn"] }] },
-		{ code: "console.error(foo)", options: [{ allow: ["log", "error"] }] },
-		{
-			code: "console.log(foo)",
-			options: [{ allow: ["info", "log", "warn"] }],
-		},
+    // multiple array items
+    { text: "console.info(foo)", options: [{ allow: ["warn", "info"] }] },
+    { text: "console.warn(foo)", options: [{ allow: ["error", "warn"] }] },
+    { text: "console.error(foo)", options: [{ allow: ["log", "error"] }] },
+    {
+        text: "console.log(foo)",
+        options: [{ allow: ["info", "log", "warn"] }],
+    },
 
-		// https://github.com/eslint/eslint/issues/7010
-		"var console = require('myconsole'); console.log(foo)",
-	],
-	invalid: [
-		// no options
-		{
-			code: "if (a) console.warn(foo)",
-		},
-		{
-			code: "foo(console.log)",
-		},
-		{
-			code: "console.log(foo)",
-		},
-		{
-			code: "console.error(foo)",
-		},
-		{
-			code: "console.info(foo)",
-		},
-		{
-			code: "console.warn(foo)",
-		},
-		{
-			code: "switch (a) { case 1: console.log(foo) }",
-		},
-		{
-			code: "if (a) { console.warn(foo) }",
-		},
-		{
-			code: "a();\nconsole.log(foo);\nb();",
-		},
-		{
-			code: "class A { static { console.info(foo) } }",
-			languageOptions: { ecmaVersion: "latest" },
-		},
-		{
-			code: "a()\nconsole.log(foo);\n[1, 2, 3].forEach(a => doSomething(a))",
-			languageOptions: { ecmaVersion: "latest" },
-		},
-		{
-			code: "a++\nconsole.log();\n/b/",
-			languageOptions: { ecmaVersion: "latest" },
-		},
-		{
-			code: "a();\nconsole.log(foo);\n[1, 2, 3].forEach(a => doSomething(a));",
-			languageOptions: { ecmaVersion: "latest" },
-		},
+    // https://github.com/eslint/eslint/issues/7010
+    "var console = require('myconsole'); console.log(foo)",
+];
+const invalid = [
+    // no options
+    {
+        text: "if (a) console.warn(foo)",
+    },
+    {
+        text: "foo(console.log)",
+    },
+    {
+        text: "console.log(foo)",
+    },
+    {
+        text: "console.error(foo)",
+    },
+    {
+        text: "console.info(foo)",
+    },
+    {
+        text: "console.warn(foo)",
+    },
+    {
+        text: "switch (a) { case 1: console.log(foo) }",
+    },
+    {
+        text: "if (a) { console.warn(foo) }",
+    },
+    {
+        text: "a();\nconsole.log(foo);\nb();",
+    },
+    {
+        text: "class A { static { console.info(foo) } }",
+        languageOptions: { ecmaVersion: "latest" },
+    },
+    {
+        text: "a()\nconsole.log(foo);\n[1, 2, 3].forEach(a => doSomething(a))",
+        languageOptions: { ecmaVersion: "latest" },
+    },
+    {
+        text: "a++\nconsole.log();\n/b/",
+        languageOptions: { ecmaVersion: "latest" },
+    },
+    {
+        text: "a();\nconsole.log(foo);\n[1, 2, 3].forEach(a => doSomething(a));",
+        languageOptions: { ecmaVersion: "latest" },
+    },
 
-		//  one option
-		{
-			code: "if (a) console.info(foo)",
-			options: [{ allow: ["warn"] }],
-		},
-		{
-			code: "foo(console.warn)",
-			options: [{ allow: ["log"] }],
-		},
-		{
-			code: "console.log(foo)",
-			options: [{ allow: ["error"] }],
-		},
-		{
-			code: "console.error(foo)",
-			options: [{ allow: ["warn"] }],
-		},
-		{
-			code: "console.info(foo)",
-			options: [{ allow: ["log"] }],
-		},
-		{
-			code: "console.warn(foo)",
-			options: [{ allow: ["error"] }],
-		},
-		{
-			code: "switch (a) { case 1: console.log(foo) }",
-			options: [{ allow: ["error"] }],
-		},
-		{
-			code: "if (a) { console.info(foo) }",
-			options: [{ allow: ["warn"] }],
-		},
-		{
-			code: "class A { static { console.error(foo) } }",
-			options: [{ allow: ["log"] }],
-			languageOptions: { ecmaVersion: "latest" },
-		},
+    //  one option
+    {
+        text: "if (a) console.info(foo)",
+        options: [{ allow: ["warn"] }],
+    },
+    {
+        text: "foo(console.warn)",
+        options: [{ allow: ["log"] }],
+    },
+    {
+        text: "console.log(foo)",
+        options: [{ allow: ["error"] }],
+    },
+    {
+        text: "console.error(foo)",
+        options: [{ allow: ["warn"] }],
+    },
+    {
+        text: "console.info(foo)",
+        options: [{ allow: ["log"] }],
+    },
+    {
+        text: "console.warn(foo)",
+        options: [{ allow: ["error"] }],
+    },
+    {
+        text: "switch (a) { case 1: console.log(foo) }",
+        options: [{ allow: ["error"] }],
+    },
+    {
+        text: "if (a) { console.info(foo) }",
+        options: [{ allow: ["warn"] }],
+    },
+    {
+        text: "class A { static { console.error(foo) } }",
+        options: [{ allow: ["log"] }],
+        languageOptions: { ecmaVersion: "latest" },
+    },
 
-		// multiple options
-		{
-			code: "if (a) console.log(foo)",
-			options: [{ allow: ["warn", "error"] }],
-		},
-		{
-			code: "foo(console.info)",
-			options: [{ allow: ["warn", "error"] }],
-		},
-		{
-			code: "console.log(foo)",
-			options: [{ allow: ["warn", "info"] }],
-		},
-		{
-			code: "console.error(foo)",
-			options: [{ allow: ["warn", "info", "log"] }],
-		},
-		{
-			code: "console.info(foo)",
-			options: [{ allow: ["warn", "error", "log"] }],
-		},
-		{
-			code: "console.warn(foo)",
-			options: [{ allow: ["info", "log"] }],
-		},
-		{
-			code: "switch (a) { case 1: console.error(foo) }",
-			options: [{ allow: ["info", "log"] }],
-		},
-		{
-			code: "if (a) { console.log(foo) }",
-			options: [{ allow: ["warn", "error"] }],
-		},
-		{
-			code: "class A { static { console.info(foo) } }",
-			options: [{ allow: ["log", "error", "warn"] }],
-			languageOptions: { ecmaVersion: "latest" },
-		},
-		{
-			code: "console[foo](bar)",
-		},
-		{
-			code: "console[0](foo)",
-		},
+    // multiple options
+    {
+        text: "if (a) console.log(foo)",
+        options: [{ allow: ["warn", "error"] }],
+    },
+    {
+        text: "foo(console.info)",
+        options: [{ allow: ["warn", "error"] }],
+    },
+    {
+        text: "console.log(foo)",
+        options: [{ allow: ["warn", "info"] }],
+    },
+    {
+        text: "console.error(foo)",
+        options: [{ allow: ["warn", "info", "log"] }],
+    },
+    {
+        text: "console.info(foo)",
+        options: [{ allow: ["warn", "error", "log"] }],
+    },
+    {
+        text: "console.warn(foo)",
+        options: [{ allow: ["info", "log"] }],
+    },
+    {
+        text: "switch (a) { case 1: console.error(foo) }",
+        options: [{ allow: ["info", "log"] }],
+    },
+    {
+        text: "if (a) { console.log(foo) }",
+        options: [{ allow: ["warn", "error"] }],
+    },
+    {
+        text: "class A { static { console.info(foo) } }",
+        options: [{ allow: ["log", "error", "warn"] }],
+        languageOptions: { ecmaVersion: "latest" },
+    },
+    {
+        text: "console[foo](bar)",
+    },
+    {
+        text: "console[0](foo)",
+    },
 
-		// In case that implicit global variable of 'console' exists
-		{
-			code: "console.log(foo)",
-			languageOptions: {
-				globals: {
-					console: "readonly",
-				},
-			},
-		},
-	],
-};
+    // In case that implicit global variable of 'console' exists
+    {
+        text: "console.log(foo)",
+        languageOptions: {
+            globals: {
+                console: "readonly",
+            },
+        },
+    },
+];
