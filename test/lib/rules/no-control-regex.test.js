@@ -20,6 +20,14 @@
  * THE SOFTWARE.
  */
 
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
+
+import { lintText } from "../../../mod.js";
+
 const valid = [
     { text: "var regex = /x1f/" },
     { text: String.raw`var regex = /\\x1f/` },
@@ -28,7 +36,7 @@ const valid = [
     { text: "new RegExp('[')" },
     { text: "RegExp('[')" },
     { text: "new (function foo(){})('\\x1f')" },
-    { text: String.raw`/\u{20}/u`, languageOptions: { ecmaVersion: 2015 } },
+    { text: String.raw`/\u{20}/u` }, // languageOptions: { ecmaVersion: 2015 }
     { text: String.raw`/\u{1F}/` },
     { text: String.raw`/\u{1F}/g` },
     { text: String.raw`new RegExp("\\u{20}", "u")` },
@@ -36,78 +44,119 @@ const valid = [
     { text: String.raw`new RegExp("\\u{1F}", "g")` },
     { text: String.raw`new RegExp("\\u{1F}", flags)` }, // when flags are unknown, this rule assumes there's no `u` flag
     { text: String.raw`new RegExp("[\\q{\\u{20}}]", "v")` },
-    {
-        text: String.raw`/[\u{20}--B]/v`,
-        languageOptions: { ecmaVersion: 2024 },
-    },
+    { text: String.raw`/[\u{20}--B]/v` }, // languageOptions: { ecmaVersion: 2024 }
 ];
 const invalid = [
     {
-        code: String.raw`var regex = /\x1f/`,
+        text: String.raw`var regex = /\x1f/`,
     },
     {
-        code: String.raw`var regex = /\\\x1f\\x1e/`,
+        text: String.raw`var regex = /\\\x1f\\x1e/`,
     },
     {
-        code: String.raw`var regex = /\\\x1fFOO\\x00/`,
+        text: String.raw`var regex = /\\\x1fFOO\\x00/`,
     },
     {
-        code: String.raw`var regex = /FOO\\\x1fFOO\\x1f/`,
+        text: String.raw`var regex = /FOO\\\x1fFOO\\x1f/`,
     },
     {
-        code: "var regex = new RegExp('\\x1f\\x1e')",
+        text: "var regex = new RegExp('\\x1f\\x1e')",
     },
     {
-        code: "var regex = new RegExp('\\x1fFOO\\x00')",
+        text: "var regex = new RegExp('\\x1fFOO\\x00')",
     },
     {
-        code: "var regex = new RegExp('FOO\\x1fFOO\\x1f')",
+        text: "var regex = new RegExp('FOO\\x1fFOO\\x1f')",
     },
     {
-        code: "var regex = RegExp('\\x1f')",
+        text: "var regex = RegExp('\\x1f')",
     },
     {
-        code: "var regex = /(?<a>\\x1f)/",
-        languageOptions: { ecmaVersion: 2018 },
+        text: "var regex = /(?<a>\\x1f)/", // languageOptions: { ecmaVersion: 2018 }
     },
     {
-        code: String.raw`var regex = /(?<\u{1d49c}>.)\x1f/`,
-        languageOptions: { ecmaVersion: 2020 },
+        text: String.raw`var regex = /(?<\u{1d49c}>.)\x1f/`, // languageOptions: { ecmaVersion: 2020 }
     },
     {
-        code: String.raw`new RegExp("\\u001F", flags)`,
+        text: String.raw`new RegExp("\\u001F", flags)`,
     },
     {
-        code: String.raw`/\u{1111}*\x1F/u`,
-        languageOptions: { ecmaVersion: 2015 },
+        text: String.raw`/\u{1111}*\x1F/u`, // languageOptions: { ecmaVersion: 2015 }
     },
     {
-        code: String.raw`new RegExp("\\u{1111}*\\x1F", "u")`,
-        languageOptions: { ecmaVersion: 2015 },
+        text: String.raw`new RegExp("\\u{1111}*\\x1F", "u")`, // languageOptions: { ecmaVersion: 2015 }
     },
     {
-        code: String.raw`/\u{1F}/u`,
-        languageOptions: { ecmaVersion: 2015 },
+        text: String.raw`/\u{1F}/u`, // languageOptions: { ecmaVersion: 2015 }
     },
     {
-        code: String.raw`/\u{1F}/gui`,
-        languageOptions: { ecmaVersion: 2015 },
+        text: String.raw`/\u{1F}/gui`, // languageOptions: { ecmaVersion: 2015 }
     },
     {
-        code: String.raw`new RegExp("\\u{1F}", "u")`,
+        text: String.raw`new RegExp("\\u{1F}", "u")`,
     },
     {
-        code: String.raw`new RegExp("\\u{1F}", "gui")`,
+        text: String.raw`new RegExp("\\u{1F}", "gui")`,
     },
     {
-        code: String.raw`new RegExp("[\\q{\\u{1F}}]", "v")`,
+        text: String.raw`new RegExp("[\\q{\\u{1F}}]", "v")`,
     },
     {
-        code: String.raw`/[\u{1F}--B]/v`,
-        languageOptions: { ecmaVersion: 2024 },
+        text: String.raw`/[\u{1F}--B]/v`, // languageOptions: { ecmaVersion: 2024 }
     },
     {
-        code: String.raw`/\x11/; RegExp("foo", "uv");`,
-        languageOptions: { ecmaVersion: 2024 },
+        text: String.raw`/\x11/; RegExp("foo", "uv");`, // languageOptions: { ecmaVersion: 2024 }
     },
 ];
+
+describe("no-control-regex", ({ describe }) => {
+
+    const globalRules = { "no-control-regex": ["error"] };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, options }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-control-regex"] = rules["no-control-regex"].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, options, errors = 1 }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-control-regex"] = rules["no-control-regex"].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                assertEqual(errors, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+
+                res.messages.forEach((message) => {
+                    assertEqual("no-control-regex", message.ruleId, `message.ruleId:[${i}]:${text.slice(0, 52)} ...`);
+                    assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`);
+                });
+            });
+        });
+    });
+});

@@ -20,6 +20,14 @@
  * THE SOFTWARE.
  */
 
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
+
+import { lintText } from "../../../mod.js";
+
 const valid = [
     { text: "class A { foo() {} bar() {} }" },
     { text: "class A { static foo() {} foo() {} }" },
@@ -61,89 +69,89 @@ const valid = [
 ];
 const invalid = [
     {
-        code: "class A { foo() {} foo() {} }",
+        text: "class A { foo() {} foo() {} }",
     },
     {
-        code: "!class A { foo() {} foo() {} };",
+        text: "!class A { foo() {} foo() {} };",
     },
     {
-        code: "class A { 'foo'() {} 'foo'() {} }",
+        text: "class A { 'foo'() {} 'foo'() {} }",
     },
     {
-        code: "class A { 10() {} 1e1() {} }",
+        text: "class A { 10() {} 1e1() {} }",
     },
     {
-        code: "class A { ['foo']() {} ['foo']() {} }",
+        text: "class A { ['foo']() {} ['foo']() {} }",
     },
     {
-        code: "class A { static ['foo']() {} static foo() {} }",
+        text: "class A { static ['foo']() {} static foo() {} }",
     },
     {
-        code: "class A { set 'foo'(value) {} set ['foo'](val) {} }",
+        text: "class A { set 'foo'(value) {} set ['foo'](val) {} }",
     },
     {
-        code: "class A { ''() {} ['']() {} }",
+        text: "class A { ''() {} ['']() {} }",
     },
     {
-        code: "class A { [`foo`]() {} [`foo`]() {} }",
+        text: "class A { [`foo`]() {} [`foo`]() {} }",
     },
     {
-        code: "class A { static get [`foo`]() {} static get ['foo']() {} }",
+        text: "class A { static get [`foo`]() {} static get ['foo']() {} }",
     },
     {
-        code: "class A { foo() {} [`foo`]() {} }",
+        text: "class A { foo() {} [`foo`]() {} }",
     },
     {
-        code: "class A { get [`foo`]() {} 'foo'() {} }",
+        text: "class A { get [`foo`]() {} 'foo'() {} }",
     },
     {
-        code: "class A { static 'foo'() {} static [`foo`]() {} }",
+        text: "class A { static 'foo'() {} static [`foo`]() {} }",
     },
     {
-        code: "class A { ['constructor']() {} ['constructor']() {} }",
+        text: "class A { ['constructor']() {} ['constructor']() {} }",
     },
     {
-        code: "class A { static [`constructor`]() {} static constructor() {} }",
+        text: "class A { static [`constructor`]() {} static constructor() {} }",
     },
     {
-        code: "class A { static constructor() {} static 'constructor'() {} }",
+        text: "class A { static constructor() {} static 'constructor'() {} }",
     },
     {
-        code: "class A { [123]() {} [123]() {} }",
+        text: "class A { [123]() {} [123]() {} }",
     },
     {
-        code: "class A { [0x10]() {} 16() {} }",
+        text: "class A { [0x10]() {} 16() {} }",
     },
     {
-        code: "class A { [100]() {} [1e2]() {} }",
+        text: "class A { [100]() {} [1e2]() {} }",
     },
     {
-        code: "class A { [123.00]() {} [`123`]() {} }",
+        text: "class A { [123.00]() {} [`123`]() {} }",
     },
     {
-        code: "class A { static '65'() {} static [0o101]() {} }",
+        text: "class A { static '65'() {} static [0o101]() {} }",
     },
     {
-        code: "class A { [123n]() {} 123() {} }",
-        languageOptions: { ecmaVersion: 2020 },
+        text: "class A { [123n]() {} 123() {} }", // languageOptions: { ecmaVersion: 2020 }
     },
     {
-        code: "class A { [null]() {} 'null'() {} }",
+        text: "class A { [null]() {} 'null'() {} }",
     },
     {
-        code: "class A { foo() {} foo() {} foo() {} }",
+        text: "class A { foo() {} foo() {} foo() {} }",
+        errors: 2,
     },
     {
-        code: "class A { static foo() {} static foo() {} }",
+        text: "class A { static foo() {} static foo() {} }",
     },
     {
-        code: "class A { foo() {} get foo() {} }",
+        text: "class A { foo() {} get foo() {} }",
     },
     {
-        code: "class A { set foo(value) {} foo() {} }",
+        text: "class A { set foo(value) {} foo() {} }",
     },
     {
-        code: "class A { foo; foo; }",
+        text: "class A { foo; foo; }",
     },
 
     /*
@@ -151,3 +159,55 @@ const invalid = [
 		 * { code: "class A { #foo; #foo; }" }
 		 */
 ];
+
+describe("no-dupe-class-members", ({ describe }) => {
+
+    const globalRules = { "no-dupe-class-members": ["error"] };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, options }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-dupe-class-members"] = rules["no-dupe-class-members"].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, options, errors = 1 }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-dupe-class-members"] = rules["no-dupe-class-members"].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                assertEqual(errors, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+
+                res.messages.forEach((message) => {
+                    assertEqual("no-dupe-class-members", message.ruleId, `message.ruleId:[${i}]:${text.slice(0, 52)} ...`);
+                    assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`);
+                });
+            });
+        });
+    });
+});
