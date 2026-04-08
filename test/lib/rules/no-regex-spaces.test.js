@@ -72,9 +72,9 @@ const valid = [
     { text: "var foo = new RegExp(' \\[   \\] ');" },
 
     // ES2024
-    { code: "var foo = /  {2}/v;", languageOptions: { ecmaVersion: 2024 } },
+    { text: "var foo = /  {2}/v;", languageOptions: { ecmaVersion: 2024 } },
     {
-        code: "var foo = /[\\q{    }]/v;",
+        text: "var foo = /[\\q{    }]/v;",
         languageOptions: { ecmaVersion: 2024 },
     },
 
@@ -90,102 +90,102 @@ const valid = [
 
 const invalid = [
     {
-        code: "var foo = /bar  baz/;",
+        text: "var foo = /bar  baz/;",
     },
     {
-        code: "var foo = /bar    baz/;",
+        text: "var foo = /bar    baz/;",
     },
     {
-        code: "var foo = / a b  c d /;",
+        text: "var foo = / a b  c d /;",
     },
     {
-        code: "var foo = RegExp(' a b c d  ');",
+        text: "var foo = RegExp(' a b c d  ');",
     },
     {
-        code: "var foo = RegExp('bar    baz');",
+        text: "var foo = RegExp('bar    baz');",
     },
     {
-        code: "var foo = new RegExp('bar    baz');",
+        text: "var foo = new RegExp('bar    baz');",
     },
     {
         // `RegExp` is not shadowed in the scope where it's called
-        code: "{ let RegExp = function() {}; } var foo = RegExp('bar    baz');",
+        text: "{ let RegExp = function() {}; } var foo = RegExp('bar    baz');",
         languageOptions: { ecmaVersion: 6 },
     },
     {
-        code: "var foo = /bar   {3}baz/;",
+        text: "var foo = /bar   {3}baz/;",
     },
     {
-        code: "var foo = /bar    ?baz/;",
+        text: "var foo = /bar    ?baz/;",
     },
     {
-        code: "var foo = new RegExp('bar   *baz')",
+        text: "var foo = new RegExp('bar   *baz')",
     },
     {
-        code: "var foo = RegExp('bar   +baz')",
+        text: "var foo = RegExp('bar   +baz')",
     },
     {
-        code: "var foo = new RegExp('bar    ');",
+        text: "var foo = new RegExp('bar    ');",
     },
     {
-        code: "var foo = /bar\\  baz/;",
+        text: "var foo = /bar\\  baz/;",
     },
     {
-        code: "var foo = /[   ]  /;",
+        text: "var foo = /[   ]  /;",
     },
     {
-        code: "var foo = /  [   ] /;",
+        text: "var foo = /  [   ] /;",
     },
     {
-        code: "var foo = new RegExp('[   ]  ');",
+        text: "var foo = new RegExp('[   ]  ');",
     },
     {
-        code: "var foo = RegExp('  [ ]');",
+        text: "var foo = RegExp('  [ ]');",
     },
     {
-        code: "var foo = /\\[  /;",
+        text: "var foo = /\\[  /;",
     },
     {
-        code: "var foo = /\\[  \\]/;",
+        text: "var foo = /\\[  \\]/;",
     },
     {
-        code: "var foo = /(?:  )/;",
+        text: "var foo = /(?:  )/;",
     },
     {
-        code: "var foo = RegExp('^foo(?=   )');",
+        text: "var foo = RegExp('^foo(?=   )');",
     },
     {
-        code: "var foo = /\\  /",
+        text: "var foo = /\\  /",
     },
     {
-        code: "var foo = / \\  /",
+        text: "var foo = / \\  /",
     },
 
     // report only the first occurrence of consecutive spaces
     {
-        code: "var foo = /  foo   /;",
+        text: "var foo = /  foo   /;",
     },
 
     // don't fix strings with escape sequences
     {
-        code: "var foo = new RegExp('\\\\d  ')",
+        text: "var foo = new RegExp('\\\\d  ')",
     },
     {
-        code: "var foo = RegExp('\\u0041   ')",
+        text: "var foo = RegExp('\\u0041   ')",
     },
     {
-        code: "var foo = new RegExp('\\\\[  \\\\]');",
+        text: "var foo = new RegExp('\\\\[  \\\\]');",
     },
 
     // ES2024
     {
-        code: "var foo = /[[    ]    ]    /v;",
+        text: "var foo = /[[    ]    ]    /v;",
         languageOptions: {
             ecmaVersion: 2024,
         },
     },
     {
-        code: "var foo = new RegExp('[[    ]    ]    ', 'v');",
+        text: "var foo = new RegExp('[[    ]    ]    ', 'v');",
     },
 ];
 

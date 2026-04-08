@@ -20,45 +20,44 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		"`Hello, ${name}`;",
-		"templateFunction`Hello, ${name}`;",
-		"`Hello, name`;",
-		"'Hello, name';",
-		"'Hello, ' + name;",
-		"`Hello, ${index + 1}`",
-		'`Hello, ${name + " foo"}`',
-		'`Hello, ${name || "foo"}`',
-		'`Hello, ${{foo: "bar"}.foo}`',
-		"'$2'",
-		"'${'",
-		"'$}'",
-		"'{foo}'",
-		"'{foo: \"bar\"}'",
-		"const number = 3",
-	],
-	invalid: [
-		{
-			code: "'Hello, ${name}'",
-		},
-		{
-			code: '"Hello, ${name}"',
-		},
-		{
-			code: "'${greeting}, ${name}'",
-		},
-		{
-			code: "'Hello, ${index + 1}'",
-		},
-		{
-			code: "'Hello, ${name + \" foo\"}'",
-		},
-		{
-			code: "'Hello, ${name || \"foo\"}'",
-		},
-		{
-			code: "'Hello, ${{foo: \"bar\"}.foo}'",
-		},
-	],
-};
+const valid = [
+    { text: "`Hello, ${name}`;" },
+    { text: "templateFunction`Hello, ${name}`;" },
+    { text: "`Hello, name`;" },
+    { text: "'Hello, name';" },
+    { text: "'Hello, ' + name;" },
+    { text: "`Hello, ${index + 1}`" },
+    { text: '`Hello, ${name + " foo"}`' },
+    { text: '`Hello, ${name || "foo"}`' },
+    { text: '`Hello, ${{foo: "bar"}.foo}`' },
+    { text: "'$2'" },
+    { text: "'${'" },
+    { text: "'$}'" },
+    { text: "'{foo}'" },
+    { text: "'{foo: \"bar\"}'" },
+    { text: "const number = 3" },
+];
+
+const invalid = [
+    {
+        text: "'Hello, ${name}'",
+    },
+    {
+        text: '"Hello, ${name}"',
+    },
+    {
+        text: "'${greeting}, ${name}'",
+    },
+    {
+        text: "'Hello, ${index + 1}'",
+    },
+    {
+        text: "'Hello, ${name + \" foo\"}'",
+    },
+    {
+        text: "'Hello, ${name || \"foo\"}'",
+    },
+    {
+        text: "'Hello, ${{foo: \"bar\"}.foo}'",
+    },
+];
