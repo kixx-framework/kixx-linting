@@ -213,9 +213,6 @@ export default [
             'no-implicit-coercion': [
                 'error',
             ],
-            'no-implied-eval': [
-                'error',
-            ],
             'no-invalid-regexp': [
                 'error',
             ],

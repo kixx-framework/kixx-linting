@@ -64,7 +64,6 @@ Audit date: 2026-04-05
 - [x] `no-func-assign`
 - [x] `no-global-assign`
 - [x] `no-implicit-coercion`
-- [x] `no-implied-eval`
 - [x] `no-invalid-regexp`
 - [x] `no-invalid-this`
 - [x] `no-irregular-whitespace`

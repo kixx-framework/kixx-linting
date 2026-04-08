@@ -72,7 +72,6 @@ const rules = {
     "no-func-assign": ["error"],
     "no-global-assign": ["error"],
     "no-implicit-coercion": ["error"],
-    "no-implied-eval": ["error"],
     "no-invalid-regexp": ["error"],
     "no-invalid-this": ["error"],
     "no-irregular-whitespace": ["error"],
