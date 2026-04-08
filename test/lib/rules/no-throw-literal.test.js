@@ -20,113 +20,111 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		"throw new Error();",
-		"throw new Error('error');",
-		"throw Error('error');",
-		"var e = new Error(); throw e;",
-		"try {throw new Error();} catch (e) {throw e;};",
-		"throw a;", // Identifier
-		"throw foo();", // CallExpression
-		"throw new foo();", // NewExpression
-		"throw foo.bar;", // MemberExpression
-		"throw foo[bar];", // MemberExpression
-		{
-			code: "class C { #field; foo() { throw foo.#field; } }",
-			languageOptions: { ecmaVersion: 2022 },
-		}, // MemberExpression
-		"throw foo = new Error();", // AssignmentExpression with the `=` operator
-		{
-			code: "throw foo.bar ||= 'literal'",
-			languageOptions: { ecmaVersion: 2021 },
-		}, // AssignmentExpression with a logical operator
-		{
-			code: "throw foo[bar] ??= 'literal'",
-			languageOptions: { ecmaVersion: 2021 },
-		}, // AssignmentExpression with a logical operator
-		"throw 1, 2, new Error();", // SequenceExpression
-		"throw 'literal' && new Error();", // LogicalExpression (right)
-		"throw new Error() || 'literal';", // LogicalExpression (left)
-		"throw foo ? new Error() : 'literal';", // ConditionalExpression (consequent)
-		"throw foo ? 'literal' : new Error();", // ConditionalExpression (alternate)
-		{ code: "throw tag `${foo}`;", languageOptions: { ecmaVersion: 6 } }, // TaggedTemplateExpression
-		{
-			code: "function* foo() { var index = 0; throw yield index++; }",
-			languageOptions: { ecmaVersion: 6 },
-		}, // YieldExpression
-		{
-			code: "async function foo() { throw await bar; }",
-			languageOptions: { ecmaVersion: 8 },
-		}, // AwaitExpression
-		{ code: "throw obj?.foo", languageOptions: { ecmaVersion: 2020 } }, // ChainExpression
-		{ code: "throw obj?.foo()", languageOptions: { ecmaVersion: 2020 } }, // ChainExpression
-	],
-	invalid: [
-		{
-			code: "throw 'error';",
-		},
-		{
-			code: "throw 0;",
-		},
-		{
-			code: "throw false;",
-		},
-		{
-			code: "throw null;",
-		},
-		{
-			code: "throw {};",
-		},
-		{
-			code: "throw undefined;",
-		},
+const valid = [
+    { text: "throw new Error();" },
+    { text: "throw new Error('error');" },
+    { text: "throw Error('error');" },
+    { text: "var e = new Error(); throw e;" },
+    { text: "try {throw new Error();} catch (e) {throw e;};" },
+    { text: "throw a;" }, // Identifier
+    { text: "throw foo();" }, // CallExpression
+    { text: "throw new foo();" }, // NewExpression
+    { text: "throw foo.bar;" }, // MemberExpression
+    { text: "throw foo[bar];" }, // MemberExpression
+    {
+        text: "class C { #field; foo() { throw foo.#field; } }",
+        languageOptions: { ecmaVersion: 2022 },
+    }, // MemberExpression
+    { text: "throw foo = new Error();" }, // AssignmentExpression with the `=` operator
+    {
+        text: "throw foo.bar ||= 'literal'",
+        languageOptions: { ecmaVersion: 2021 },
+    }, // AssignmentExpression with a logical operator
+    {
+        text: "throw foo[bar] ??= 'literal'",
+        languageOptions: { ecmaVersion: 2021 },
+    }, // AssignmentExpression with a logical operator
+    { text: "throw 1, 2, new Error();" }, // SequenceExpression
+    { text: "throw 'literal' && new Error();" }, // LogicalExpression (right)
+    { text: "throw new Error() || 'literal';" }, // LogicalExpression (left)
+    { text: "throw foo ? new Error() : 'literal';" }, // ConditionalExpression (consequent)
+    { text: "throw foo ? 'literal' : new Error();" }, // ConditionalExpression (alternate)
+    { text: "throw tag `${foo}`;", languageOptions: { ecmaVersion: 6 } }, // TaggedTemplateExpression
+    {
+        text: "function* foo() { var index = 0; throw yield index++; }",
+        languageOptions: { ecmaVersion: 6 },
+    }, // YieldExpression
+    {
+        text: "async function foo() { throw await bar; }",
+        languageOptions: { ecmaVersion: 8 },
+    }, // AwaitExpression
+    { text: "throw obj?.foo", languageOptions: { ecmaVersion: 2020 } }, // ChainExpression
+    { text: "throw obj?.foo()", languageOptions: { ecmaVersion: 2020 } }, // ChainExpression
+];
+const invalid = [
+    {
+        text: "throw 'error';",
+    },
+    {
+        text: "throw 0;",
+    },
+    {
+        text: "throw false;",
+    },
+    {
+        text: "throw null;",
+    },
+    {
+        text: "throw {};",
+    },
+    {
+        text: "throw undefined;",
+    },
 
-		// String concatenation
-		{
-			code: "throw 'a' + 'b';",
-		},
-		{
-			code: "var b = new Error(); throw 'a' + b;",
-		},
+    // String concatenation
+    {
+        text: "throw 'a' + 'b';",
+    },
+    {
+        text: "var b = new Error(); throw 'a' + b;",
+    },
 
-		// AssignmentExpression
-		{
-			code: "throw foo = 'error';", // RHS is a literal
-		},
-		{
-			code: "throw foo += new Error();", // evaluates to a primitive value, or throws while evaluating
-		},
-		{
-			code: "throw foo &= new Error();", // evaluates to a primitive value, or throws while evaluating
-		},
-		{
-			code: "throw foo &&= 'literal'", // evaluates either to a falsy value of `foo` (which, then, cannot be an Error object), or to 'literal'
-			languageOptions: { ecmaVersion: 2021 },
-		},
+    // AssignmentExpression
+    {
+        text: "throw foo = 'error';", // RHS is a literal
+    },
+    {
+        text: "throw foo += new Error();", // evaluates to a primitive value, or throws while evaluating
+    },
+    {
+        text: "throw foo &= new Error();", // evaluates to a primitive value, or throws while evaluating
+    },
+    {
+        text: "throw foo &&= 'literal'", // evaluates either to a falsy value of `foo` (which, then, cannot be an Error object), or to 'literal'
+        languageOptions: { ecmaVersion: 2021 },
+    },
 
-		// SequenceExpression
-		{
-			code: "throw new Error(), 1, 2, 3;",
-		},
+    // SequenceExpression
+    {
+        text: "throw new Error(), 1, 2, 3;",
+    },
 
-		// LogicalExpression
-		{
-			code: "throw 'literal' && 'not an Error';",
-		},
-		{
-			code: "throw foo && 'literal'", // evaluates either to a falsy value of `foo` (which, then, cannot be an Error object), or to 'literal'
-		},
+    // LogicalExpression
+    {
+        text: "throw 'literal' && 'not an Error';",
+    },
+    {
+        text: "throw foo && 'literal'", // evaluates either to a falsy value of `foo` (which, then, cannot be an Error object), or to 'literal'
+    },
 
-		// ConditionalExpression
-		{
-			code: "throw foo ? 'not an Error' : 'literal';",
-		},
+    // ConditionalExpression
+    {
+        text: "throw foo ? 'not an Error' : 'literal';",
+    },
 
-		// TemplateLiteral
-		{
-			code: "throw `${err}`;",
-			languageOptions: { ecmaVersion: 6 },
-		},
-	],
-};
+    // TemplateLiteral
+    {
+        text: "throw `${err}`;",
+        languageOptions: { ecmaVersion: 6 },
+    },
+];

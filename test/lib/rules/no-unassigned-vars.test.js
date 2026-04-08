@@ -20,38 +20,37 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		"let x;",
-		"var x;",
-		"const x = undefined; log(x);",
-		"let y = undefined; log(y);",
-		"var y = undefined; log(y);",
-		"let a = x, b = y; log(a, b);",
-		"var a = x, b = y; log(a, b);",
-		"const foo = (two) => { let one; if (one !== two) one = two; }",
-	],
-	invalid: [
-		{
-			code: "let x; let a = x, b; log(x, a, b);",
-		},
-		{
-			code: "const foo = (two) => { let one; if (one === two) {} }",
-		},
-		{
-			code: "let user; greet(user);",
-		},
-		{
-			code: "function test() { let error; return error || 'Unknown error'; }",
-		},
-		{
-			code: "let options; const { debug } = options || {};",
-		},
-		{
-			code: "let flag; while (!flag) { }",
-		},
-		{
-			code: "let config; function init() { return config?.enabled; }",
-		},
-	],
-};
+const valid = [
+    { text: "let x;" },
+    { text: "var x;" },
+    { text: "const x = undefined; log(x);" },
+    { text: "let y = undefined; log(y);" },
+    { text: "var y = undefined; log(y);" },
+    { text: "let a = x, b = y; log(a, b);" },
+    { text: "var a = x, b = y; log(a, b);" },
+    { text: "const foo = (two) => { let one; if (one !== two) one = two; }" },
+];
+
+const invalid = [
+    {
+        text: "let x; let a = x, b; log(x, a, b);",
+    },
+    {
+        text: "const foo = (two) => { let one; if (one === two) {} }",
+    },
+    {
+        text: "let user; greet(user);",
+    },
+    {
+        text: "function test() { let error; return error || 'Unknown error'; }",
+    },
+    {
+        text: "let options; const { debug } = options || {};",
+    },
+    {
+        text: "let flag; while (!flag) { }",
+    },
+    {
+        text: "let config; function init() { return config?.enabled; }",
+    },
+];

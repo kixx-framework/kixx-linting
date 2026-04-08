@@ -20,327 +20,328 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		"var a = 1, b = 2; a;",
-		"/*global b*/ function f() { b; }",
-		{
-			code: "function f() { b; }",
-			languageOptions: { globals: { b: false } },
-		},
-		"/*global b a:false*/  a;  function f() { b; a; }",
-		"function a(){}  a();",
-		"function f(b) { b; }",
-		"var a; a = 1; a++;",
-		"var a; function f() { a = 1; }",
-		"/*global b:true*/ b++;",
-		{
-			code: "window;",
-			languageOptions: { globals: globals.browser },
-		},
-		{
-			code: 'require("a");',
-			languageOptions: { sourceType: "commonjs" },
-		},
-		"Object; isNaN();",
-		"toString()",
-		"hasOwnProperty()",
-		"function evilEval(stuffToEval) { var ultimateAnswer; ultimateAnswer = 42; eval(stuffToEval); }",
-		"typeof a",
-		"typeof (a)",
-		"var b = typeof a",
-		"typeof a === 'undefined'",
-		"if (typeof a === 'undefined') {}",
-		{
-			code: "function foo() { var [a, b=4] = [1, 2]; return {a, b}; }",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{ code: "var toString = 1;", languageOptions: { ecmaVersion: 6 } },
-		{
-			code: "function myFunc(...foo) {  return foo;}",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "var console; [1,2,3].forEach(obj => {\n  console.log(obj);\n});",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "var Foo; class Bar extends Foo { constructor() { super();  }}",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "import Warning from '../lib/warning'; var warn = new Warning('text');",
-			languageOptions: { ecmaVersion: 6, sourceType: "module" },
-		},
-		{
-			code: "import * as Warning from '../lib/warning'; var warn = new Warning('text');",
-			languageOptions: { ecmaVersion: 6, sourceType: "module" },
-		},
-		{ code: "var a; [a] = [0];", languageOptions: { ecmaVersion: 6 } },
-		{ code: "var a; ({a} = {});", languageOptions: { ecmaVersion: 6 } },
-		{ code: "var a; ({b: a} = {});", languageOptions: { ecmaVersion: 6 } },
-		{
-			code: "var obj; [obj.a, obj.b] = [0, 1];",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "URLSearchParams;",
-			languageOptions: { globals: globals.browser },
-		},
-		{ code: "Intl;", languageOptions: { ecmaVersion: 2015 } },
-		{
-			code: "IntersectionObserver;",
-			languageOptions: { globals: globals.browser },
-		},
-		{ code: "Credential;", languageOptions: { globals: globals.browser } },
-		{
-			code: "requestIdleCallback;",
-			languageOptions: { globals: globals.browser },
-		},
-		{
-			code: "customElements;",
-			languageOptions: { globals: globals.browser },
-		},
-		{
-			code: "PromiseRejectionEvent;",
-			languageOptions: { globals: globals.browser },
-		},
-		{
-			code: "(foo, bar) => { foo ||= WeakRef; bar ??= FinalizationRegistry; }",
-			languageOptions: { ecmaVersion: 2021 },
-		},
-		{ code: "(class C extends C {})", languageOptions: { ecmaVersion: 6 } },
+import globals from '../../../vendor/globals/globals.json' with { type: 'json' };
 
-		// Notifications of readonly are removed: https://github.com/eslint/eslint/issues/4504
-		"/*global b:false*/ function f() { b = 1; }",
-		{
-			code: "function f() { b = 1; }",
-			languageOptions: { globals: { b: false } },
-		},
-		"/*global b:false*/ function f() { b++; }",
-		"/*global b*/ b = 1;",
-		"/*global b:false*/ var b = 1;",
-		"Array = 1;",
 
-		// new.target: https://github.com/eslint/eslint/issues/5420
-		{
-			code: "class A { constructor() { new.target; } }",
-			languageOptions: { ecmaVersion: 6 },
-		},
+const valid = [
+    { text: "var a = 1, b = 2; a;" },
+    { text: "/*global b*/ function f() { b; }" },
+    {
+        text: "function f() { b; }",
+        languageOptions: { globals: { b: false } },
+    },
+    { text: "/*global b a:false*/  a;  function f() { b; a; }" },
+    { text: "function a(){}  a();" },
+    { text: "function f(b) { b; }" },
+    { text: "var a; a = 1; a++;" },
+    { text: "var a; function f() { a = 1; }" },
+    { text: "/*global b:true*/ b++;" },
+    {
+        text: "window;",
+        languageOptions: { globals: globals.browser },
+    },
+    {
+        text: 'require("a");',
+        languageOptions: { sourceType: "commonjs" },
+    },
+    { text: "Object; isNaN();" },
+    { text: "toString()" },
+    { text: "hasOwnProperty()" },
+    { text: "function evilEval(stuffToEval) { var ultimateAnswer; ultimateAnswer = 42; eval(stuffToEval); }" },
+    { text: "typeof a" },
+    { text: "typeof (a)" },
+    { text: "var b = typeof a" },
+    { text: "typeof a === 'undefined'" },
+    { text: "if (typeof a === 'undefined') {}" },
+    {
+        text: "function foo() { var [a, b=4] = [1, 2]; return {a, b}; }",
+        languageOptions: { ecmaVersion: 6 },
+    },
+    { text: "var toString = 1;", languageOptions: { ecmaVersion: 6 } },
+    {
+        text: "function myFunc(...foo) {  return foo;}",
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text: "var console; [1,2,3].forEach(obj => {\n  console.log(obj);\n});",
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text: "var Foo; class Bar extends Foo { constructor() { super();  }}",
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text: "import Warning from '../lib/warning'; var warn = new Warning('text');",
+        languageOptions: { ecmaVersion: 6, sourceType: "module" },
+    },
+    {
+        text: "import * as Warning from '../lib/warning'; var warn = new Warning('text');",
+        languageOptions: { ecmaVersion: 6, sourceType: "module" },
+    },
+    { text: "var a; [a] = [0];", languageOptions: { ecmaVersion: 6 } },
+    { text: "var a; ({a} = {});", languageOptions: { ecmaVersion: 6 } },
+    { text: "var a; ({b: a} = {});", languageOptions: { ecmaVersion: 6 } },
+    {
+        text: "var obj; [obj.a, obj.b] = [0, 1];",
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text: "URLSearchParams;",
+        languageOptions: { globals: globals.browser },
+    },
+    { text: "Intl;", languageOptions: { ecmaVersion: 2015 } },
+    {
+        text: "IntersectionObserver;",
+        languageOptions: { globals: globals.browser },
+    },
+    { text: "Credential;", languageOptions: { globals: globals.browser } },
+    {
+        text: "requestIdleCallback;",
+        languageOptions: { globals: globals.browser },
+    },
+    {
+        text: "customElements;",
+        languageOptions: { globals: globals.browser },
+    },
+    {
+        text: "PromiseRejectionEvent;",
+        languageOptions: { globals: globals.browser },
+    },
+    {
+        text: "(foo, bar) => { foo ||= WeakRef; bar ??= FinalizationRegistry; }",
+        languageOptions: { ecmaVersion: 2021 },
+    },
+    { text: "(class C extends C {})", languageOptions: { ecmaVersion: 6 } },
 
-		// Rest property
-		{
-			code: "var {bacon, ...others} = stuff; foo(others)",
-			languageOptions: {
-				ecmaVersion: 2018,
-				globals: { stuff: false, foo: false },
-			},
-		},
+    // Notifications of readonly are removed: https://github.com/eslint/eslint/issues/4504
+    { text: "/*global b:false*/ function f() { b = 1; }" },
+    {
+        text: "function f() { b = 1; }",
+        languageOptions: { globals: { b: false } },
+    },
+    { text: "/*global b:false*/ function f() { b++; }" },
+    { text: "/*global b*/ b = 1;" },
+    { text: "/*global b:false*/ var b = 1;" },
+    { text: "Array = 1;" },
 
-		// export * as ns from "source"
-		{
-			code: 'export * as ns from "source"',
-			languageOptions: { ecmaVersion: 2020, sourceType: "module" },
-		},
+    // new.target: https://github.com/eslint/eslint/issues/5420
+    {
+        text: "class A { constructor() { new.target; } }",
+        languageOptions: { ecmaVersion: 6 },
+    },
 
-		// import.meta
-		{
-			code: "import.meta",
-			languageOptions: { ecmaVersion: 2020, sourceType: "module" },
-		},
+    // Rest property
+    {
+        text: "var {bacon, ...others} = stuff; foo(others)",
+        languageOptions: {
+            ecmaVersion: 2018,
+            globals: { stuff: false, foo: false },
+        },
+    },
 
-		// class static blocks
-		{
-			code: "let a; class C { static {} } a;",
-			languageOptions: { ecmaVersion: 2022 },
-		},
-		{
-			code: "var a; class C { static {} } a;",
-			languageOptions: { ecmaVersion: 2022 },
-		},
-		{
-			code: "a; class C { static {} } var a;",
-			languageOptions: { ecmaVersion: 2022 },
-		},
-		{
-			code: "class C { static { C; } }",
-			languageOptions: { ecmaVersion: 2022, sourceType: "module" },
-		},
-		{
-			code: "const C = class { static { C; } }",
-			languageOptions: { ecmaVersion: 2022, sourceType: "module" },
-		},
-		{
-			code: "class C { static { a; } } var a;",
-			languageOptions: { ecmaVersion: 2022, sourceType: "module" },
-		},
-		{
-			code: "class C { static { a; } } let a;",
-			languageOptions: { ecmaVersion: 2022, sourceType: "module" },
-		},
-		{
-			code: "class C { static { var a; a; } }",
-			languageOptions: { ecmaVersion: 2022, sourceType: "module" },
-		},
-		{
-			code: "class C { static { a; var a; } }",
-			languageOptions: { ecmaVersion: 2022, sourceType: "module" },
-		},
-		{
-			code: "class C { static { a; { var a; } } }",
-			languageOptions: { ecmaVersion: 2022, sourceType: "module" },
-		},
-		{
-			code: "class C { static { let a; a; } }",
-			languageOptions: { ecmaVersion: 2022, sourceType: "module" },
-		},
-		{
-			code: "class C { static { a; let a; } }",
-			languageOptions: { ecmaVersion: 2022, sourceType: "module" },
-		},
-		{
-			code: "class C { static { function a() {} a; } }",
-			languageOptions: { ecmaVersion: 2022, sourceType: "module" },
-		},
-		{
-			code: "class C { static { a; function a() {} } }",
-			languageOptions: { ecmaVersion: 2022, sourceType: "module" },
-		},
-		{
-			code: "[Float16Array, Iterator]",
-			languageOptions: { ecmaVersion: 2025 },
-		},
-		{
-			code: "AsyncDisposableStack; DisposableStack; SuppressedError; Temporal",
-			languageOptions: { ecmaVersion: 2026 },
-		},
-	],
-	invalid: [
-		{
-			code: "a = 1;",
-		},
-		{
-			code: "if (typeof anUndefinedVar === 'string') {}",
-			options: [{ typeof: true }],
-		},
-		{
-			code: "var a = b;",
-		},
-		{
-			code: "function f() { b; }",
-		},
-		{
-			code: "window;",
-		},
-		{
-			code: "Intl;",
-		},
-		{
-			code: 'require("a");',
-		},
-		{
-			code: "[a] = [0];",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "({a} = {});",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "({b: a} = {});",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "[obj.a, obj.b] = [0, 1];",
-			languageOptions: { ecmaVersion: 6 },
-		},
+    // export * as ns from "source"
+    {
+        text: 'export * as ns from "source"',
+        languageOptions: { ecmaVersion: 2020, sourceType: "module" },
+    },
 
-		// Experimental
-		{
-			code: "const c = 0; const a = {...b, c};",
-			languageOptions: {
-				ecmaVersion: 2018,
-			},
-		},
+    // import.meta
+    {
+        text: "import.meta",
+        languageOptions: { ecmaVersion: 2020, sourceType: "module" },
+    },
 
-		// class static blocks
-		{
-			code: "class C { static { a; } }",
-			languageOptions: {
-				ecmaVersion: 2022,
-			},
-		},
-		{
-			code: "class C { static { { let a; } a; } }",
-			languageOptions: {
-				ecmaVersion: 2022,
-			},
-		},
-		{
-			code: "class C { static { { function a() {} } a; } }",
-			languageOptions: {
-				ecmaVersion: 2022,
-			},
-		},
-		{
-			code: "class C { static { function foo() { var a; }  a; } }",
-			languageOptions: {
-				ecmaVersion: 2022,
-			},
-		},
-		{
-			code: "class C { static { var a; } static { a; } }",
-			languageOptions: {
-				ecmaVersion: 2022,
-			},
-		},
-		{
-			code: "class C { static { let a; } static { a; } }",
-			languageOptions: {
-				ecmaVersion: 2022,
-			},
-		},
-		{
-			code: "class C { static { function a(){} } static { a; } }",
-			languageOptions: {
-				ecmaVersion: 2022,
-			},
-		},
-		{
-			code: "class C { static { var a; } foo() { a; } }",
-			languageOptions: {
-				ecmaVersion: 2022,
-			},
-		},
-		{
-			code: "class C { static { let a; } foo() { a; } }",
-			languageOptions: {
-				ecmaVersion: 2022,
-			},
-		},
-		{
-			code: "class C { static { var a; } [a]; }",
-			languageOptions: {
-				ecmaVersion: 2022,
-			},
-		},
-		{
-			code: "class C { static { let a; } [a]; }",
-			languageOptions: {
-				ecmaVersion: 2022,
-			},
-		},
-		{
-			code: "class C { static { function a() {} } [a]; }",
-			languageOptions: {
-				ecmaVersion: 2022,
-			},
-		},
-		{
-			code: "class C { static { var a; } } a;",
-			languageOptions: {
-				ecmaVersion: 2022,
-			},
-		},
-	],
-};
+    // class static blocks
+    {
+        text: "let a; class C { static {} } a;",
+        languageOptions: { ecmaVersion: 2022 },
+    },
+    {
+        text: "var a; class C { static {} } a;",
+        languageOptions: { ecmaVersion: 2022 },
+    },
+    {
+        text: "a; class C { static {} } var a;",
+        languageOptions: { ecmaVersion: 2022 },
+    },
+    {
+        text: "class C { static { C; } }",
+        languageOptions: { ecmaVersion: 2022, sourceType: "module" },
+    },
+    {
+        text: "const C = class { static { C; } }",
+        languageOptions: { ecmaVersion: 2022, sourceType: "module" },
+    },
+    {
+        text: "class C { static { a; } } var a;",
+        languageOptions: { ecmaVersion: 2022, sourceType: "module" },
+    },
+    {
+        text: "class C { static { a; } } let a;",
+        languageOptions: { ecmaVersion: 2022, sourceType: "module" },
+    },
+    {
+        text: "class C { static { var a; a; } }",
+        languageOptions: { ecmaVersion: 2022, sourceType: "module" },
+    },
+    {
+        text: "class C { static { a; var a; } }",
+        languageOptions: { ecmaVersion: 2022, sourceType: "module" },
+    },
+    {
+        text: "class C { static { a; { var a; } } }",
+        languageOptions: { ecmaVersion: 2022, sourceType: "module" },
+    },
+    {
+        text: "class C { static { let a; a; } }",
+        languageOptions: { ecmaVersion: 2022, sourceType: "module" },
+    },
+    {
+        text: "class C { static { a; let a; } }",
+        languageOptions: { ecmaVersion: 2022, sourceType: "module" },
+    },
+    {
+        text: "class C { static { function a() {} a; } }",
+        languageOptions: { ecmaVersion: 2022, sourceType: "module" },
+    },
+    {
+        text: "class C { static { a; function a() {} } }",
+        languageOptions: { ecmaVersion: 2022, sourceType: "module" },
+    },
+    {
+        text: "[Float16Array, Iterator]",
+        languageOptions: { ecmaVersion: 2025 },
+    },
+    {
+        text: "AsyncDisposableStack; DisposableStack; SuppressedError; Temporal",
+        languageOptions: { ecmaVersion: 2026 },
+    },
+];
+const invalid = [
+    {
+        text: "a = 1;",
+    },
+    {
+        text: "if (typeof anUndefinedVar === 'string') {}",
+        options: [{ typeof: true }],
+    },
+    {
+        text: "var a = b;",
+    },
+    {
+        text: "function f() { b; }",
+    },
+    {
+        text: "window;",
+    },
+    {
+        text: "Intl;",
+    },
+    {
+        text: 'require("a");',
+    },
+    {
+        text: "[a] = [0];",
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text: "({a} = {});",
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text: "({b: a} = {});",
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text: "[obj.a, obj.b] = [0, 1];",
+        languageOptions: { ecmaVersion: 6 },
+    },
+
+    // Experimental
+    {
+        text: "const c = 0; const a = {...b, c};",
+        languageOptions: {
+            ecmaVersion: 2018,
+        },
+    },
+
+    // class static blocks
+    {
+        text: "class C { static { a; } }",
+        languageOptions: {
+            ecmaVersion: 2022,
+        },
+    },
+    {
+        text: "class C { static { { let a; } a; } }",
+        languageOptions: {
+            ecmaVersion: 2022,
+        },
+    },
+    {
+        text: "class C { static { { function a() {} } a; } }",
+        languageOptions: {
+            ecmaVersion: 2022,
+        },
+    },
+    {
+        text: "class C { static { function foo() { var a; }  a; } }",
+        languageOptions: {
+            ecmaVersion: 2022,
+        },
+    },
+    {
+        text: "class C { static { var a; } static { a; } }",
+        languageOptions: {
+            ecmaVersion: 2022,
+        },
+    },
+    {
+        text: "class C { static { let a; } static { a; } }",
+        languageOptions: {
+            ecmaVersion: 2022,
+        },
+    },
+    {
+        text: "class C { static { function a(){} } static { a; } }",
+        languageOptions: {
+            ecmaVersion: 2022,
+        },
+    },
+    {
+        text: "class C { static { var a; } foo() { a; } }",
+        languageOptions: {
+            ecmaVersion: 2022,
+        },
+    },
+    {
+        text: "class C { static { let a; } foo() { a; } }",
+        languageOptions: {
+            ecmaVersion: 2022,
+        },
+    },
+    {
+        text: "class C { static { var a; } [a]; }",
+        languageOptions: {
+            ecmaVersion: 2022,
+        },
+    },
+    {
+        text: "class C { static { let a; } [a]; }",
+        languageOptions: {
+            ecmaVersion: 2022,
+        },
+    },
+    {
+        text: "class C { static { function a() {} } [a]; }",
+        languageOptions: {
+            ecmaVersion: 2022,
+        },
+    },
+    {
+        text: "class C { static { var a; } } a;",
+        languageOptions: {
+            ecmaVersion: 2022,
+        },
+    },
+];

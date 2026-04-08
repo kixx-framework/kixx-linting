@@ -20,155 +20,153 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		{
-			code: "var a = 5;",
-			options: [{}],
-		},
-		{
-			code: "var a = 5,\n    b = 3;",
-			options: [{}],
-		},
-		"var a = 5;",
-		"var a = 5,\n    b = 3;",
-		{
-			code: "// Trailing comment test.",
-		},
-		{
-			code: "// Trailing comment test.",
-			options: [],
-		},
-		{
-			code: "/* \nTrailing comments test. \n*/",
-		},
-		{
-			code: "#!/usr/bin/env node ",
-		},
-		{
-			code: "/* \n */ // ",
-		},
-		{
-			code: "/* \n */ /* \n */",
-		},
-	],
+const valid = [
+    {
+        text: "var a = 5;",
+        options: [{}],
+    },
+    {
+        text: "var a = 5,\n    b = 3;",
+        options: [{}],
+    },
+    { text: "var a = 5;" },
+    { text: "var a = 5,\n    b = 3;" },
+    {
+        text: "// Trailing comment test.",
+    },
+    {
+        text: "// Trailing comment test.",
+        options: [],
+    },
+    {
+        text: "/* \nTrailing comments test. \n*/",
+    },
+    {
+        text: "#!/usr/bin/env node ",
+    },
+    {
+        text: "/* \n */ // ",
+    },
+    {
+        text: "/* \n */ /* \n */",
+    },
+];
 
-	invalid: [
-		{
-			code:
+const invalid = [
+    {
+        text:
 				"var short2 = true;\r\n" +
 				"\r\n" +
 				"module.exports = {\r\n" +
 				"  short: short,    \r\n" +
 				"  short2: short\r\n" +
 				"}",
-		},
-		{
-			code:
+    },
+    {
+        text:
 				"var short2 = true;\n" +
 				"\r\n" +
 				"module.exports = {\r\n" +
 				"  short: short,    \r\n" +
 				"  short2: short\n" +
 				"}",
-		},
-		{
-			code:
+    },
+    {
+        text:
 				"var short2 = true;\n" +
 				"\n" +
 				"module.exports = {\n" +
 				"  short: short,    \n" +
 				"  short2: short\n" +
 				"}\n",
-		},
-		{
-			code:
+    },
+    {
+        text:
 				"var short2 = true;\n" +
 				"\n" +
 				"module.exports = {\n" +
 				"  short,    \n" +
 				"  short2\n" +
 				"}\n",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code:
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text:
 				"\n" +
 				'measAr.push("<dl></dl>",  \n' +
 				"         \" </dt><dd class ='pta-res'>\");",
-		},
-		{
-			code:
+    },
+    {
+        text:
 				'measAr.push("<dl></dl>",  \n' +
 				"         \" </dt><dd class ='pta-res'>\");",
-		},
-		{
-			code: "var a = 5;      \n",
-		},
-		{
-			code: "var a = 5; \n b = 3; ",
-		},
-		{
-			code: "var a = 5; \n\n b = 3; ",
-		},
-		{
-			code: "var a = 5;\t\n  b = 3;",
-		},
-		{
-			code: "     \n    var c = 1;",
-		},
-		{
-			code: "\t\n\tvar c = 2;",
-		},
-		{
-			code: "var a = 5;      \n",
-			options: [{}],
-		},
-		{
-			code: "var a = 5; \n b = 3; ",
-			options: [{}],
-		},
-		{
-			code: "var a = 5;\t\n  b = 3;",
-			options: [{}],
-		},
-		{
-			code: "     \n    var c = 1;",
-			options: [{}],
-		},
-		{
-			code: "\t\n\tvar c = 2;",
-			options: [{}],
-		},
-		{
-			code: "let str = `${a}\n  \n${b}`;  \n",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "let str = `\n${a}\n  \n${b}`;  \n\t",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "let str = `  \n  ${a}\n  \n${b}`;  \n",
-			languageOptions: { ecmaVersion: 6 },
-		},
+    },
+    {
+        text: "var a = 5;      \n",
+    },
+    {
+        text: "var a = 5; \n b = 3; ",
+    },
+    {
+        text: "var a = 5; \n\n b = 3; ",
+    },
+    {
+        text: "var a = 5;\t\n  b = 3;",
+    },
+    {
+        text: "     \n    var c = 1;",
+    },
+    {
+        text: "\t\n\tvar c = 2;",
+    },
+    {
+        text: "var a = 5;      \n",
+        options: [{}],
+    },
+    {
+        text: "var a = 5; \n b = 3; ",
+        options: [{}],
+    },
+    {
+        text: "var a = 5;\t\n  b = 3;",
+        options: [{}],
+    },
+    {
+        text: "     \n    var c = 1;",
+        options: [{}],
+    },
+    {
+        text: "\t\n\tvar c = 2;",
+        options: [{}],
+    },
+    {
+        text: "let str = `${a}\n  \n${b}`;  \n",
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text: "let str = `\n${a}\n  \n${b}`;  \n\t",
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text: "let str = `  \n  ${a}\n  \n${b}`;  \n",
+        languageOptions: { ecmaVersion: 6 },
+    },
 
-		// https://github.com/eslint/eslint/issues/6933
-		{
-			code: "    \nabcdefg ",
-		},
+    // https://github.com/eslint/eslint/issues/6933
+    {
+        text: "    \nabcdefg ",
+    },
 
-		{
-			code: "// Trailing comment test. ",
-		},
-		{
-			code: "/* \nTrailing comments test. \n*/",
-		},
-		{
-			code: "#!/usr/bin/env node ",
-		},
-		{
-			code: "// Trailing comment default test. ",
-		},
-	],
-};
+    {
+        text: "// Trailing comment test. ",
+    },
+    {
+        text: "/* \nTrailing comments test. \n*/",
+    },
+    {
+        text: "#!/usr/bin/env node ",
+    },
+    {
+        text: "// Trailing comment default test. ",
+    },
+];
