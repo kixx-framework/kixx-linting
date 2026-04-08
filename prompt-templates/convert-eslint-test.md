@@ -4,11 +4,11 @@ To see how we write tests, review the skills/writing-tests/SKILL.md document.
 
 Review some of the existing lint rule tests in `test/lib/rules/*.test.js` (Note: Only `*.test.js` files are tests, the other files in test/lib/rules/ should be ignored.)
 
-Your task is to write tests in these test modules:
+Your task is to write tests in these target test modules:
 
-- test/lib/rules/no-invalid-this.test.js
+- test/lib/rules/no-irregular-whitespace.test.js
 
-If there are any ecmaVersion values defined in the test data, comment them out so they are documented, but ignored.
+Note: These target test modules are just data arrays without an executable test suite. Your approach should be to mirror the existing test harness pattern you see in other test modules in `test/lib/rules/*.test.js`.
 
 Run your tests using:
 
