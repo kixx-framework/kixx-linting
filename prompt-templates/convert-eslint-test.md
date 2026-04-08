@@ -6,11 +6,11 @@ Review some of the existing lint rule tests in `test/lib/rules/*.test.js` (Note:
 
 Your task is to write tests in these target test modules:
 
-- test/lib/rules/no-throw-literal.test.js
-- test/lib/rules/no-trailing-spaces.test.js
-- test/lib/rules/no-unassigned-vars.test.js
-- test/lib/rules/no-undef.test.js
-- test/lib/rules/no-unexpected-multiline.test.js
+- test/lib/rules/no-unmodified-loop-condition.test.js
+- test/lib/rules/no-unreachable.test.js
+- test/lib/rules/no-unsafe-finally.test.js
+- test/lib/rules/no-unsafe-negation.test.js
+- test/lib/rules/no-unused-expression.test.js
 
 Note: These target test modules are just data arrays without an executable test suite. Your approach should be to mirror the existing test harness pattern you see in other test modules in `test/lib/rules/*.test.js`.
 
