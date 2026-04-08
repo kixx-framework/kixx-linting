@@ -6,10 +6,10 @@ Review some of the existing lint rule tests in `test/lib/rules/*.test.js` (Note:
 
 Your task is to write tests in these test modules:
 
-- no-else-return.test.js
-- no-empty-character-class.test.js
-- no-empty.test.js
-- no-eq-null.test.js
+- no-ex-assign.test.js
+- no-extend-native.test.js
+- no-floating-decimal.test.js
+- no-fun-assign.test.js
 
 If there are any languageOption attributes defined in the test data, comment them out so they are documented, but ignored.
 
