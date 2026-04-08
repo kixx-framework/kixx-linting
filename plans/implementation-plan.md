@@ -31,7 +31,7 @@ Build a minimal, synchronous `lintText(sourceText, options)` function that parse
 
 - [x] **Vendor code-path analysis**
   - **Story**: Flow-sensitive rules need reachability and execution-path state
-  - **What**: Copy ESLint's code-path analysis module from `reference-libraries/eslint/lib/linter/code-path-analysis/` into the project. Audit and fix internal import paths. This module is needed by rules including `constructor-super`, `no-this-before-super`, `getter-return`, `no-setter-return`, `no-unreachable`, `no-unreachable-loop`, `no-promise-executor-return`, and `require-yield`. Confirm the module's public interface (it emits events like `onCodePathStart`, `onCodePathSegmentStart`, etc. that rules subscribe to via their visitor map).
+  - **What**: Copy ESLint's code-path analysis module from `reference-libraries/eslint/lib/linter/code-path-analysis/` into the project. Audit and fix internal import paths. This module is needed by rules including `constructor-super`, `no-this-before-super`, `getter-return`, `no-setter-return`, `no-unreachable`, `no-promise-executor-return`, and `require-yield`. Confirm the module's public interface (it emits events like `onCodePathStart`, `onCodePathSegmentStart`, etc. that rules subscribe to via their visitor map).
   - **Where**: `lib/vendor/code-path-analysis/`
   - **Acceptance criteria**: The module can be imported and integrated into the traversal loop; a rule can subscribe to `onCodePathStart` and receive a `CodePath` object with a `currentSegment` property indicating reachability
   - **Depends on**: Vendor acorn parser
@@ -122,7 +122,7 @@ Build a minimal, synchronous `lintText(sourceText, options)` function that parse
 
 - [x] **Implement AST-structure rules (batch 2: control flow, classes, and declarations)**
   - **Story**: Catch structural problems in statements, classes, and declarations
-  - **What**: Implement 19 rules: `default-case-last`, `no-case-declarations`, `no-duplicate-case`, `no-dupe-else-if`, `no-cond-assign`, `no-debugger`, `no-empty`, `no-lonely-if`, `no-unsafe-finally`, `no-unsafe-negation`, `no-unsafe-optional-chaining`, `constructor-super` (AST component only, deferring flow analysis to flow batch), `no-dupe-class-members`, `no-dupe-keys`, `no-useless-constructor`, `no-useless-computed-key`, `no-unused-private-class-members`, `no-duplicate-imports`, `no-unused-labels`.
+  - **What**: Implement 18 rules: `default-case-last`, `no-case-declarations`, `no-duplicate-case`, `no-dupe-else-if`, `no-cond-assign`, `no-debugger`, `no-empty`, `no-lonely-if`, `no-unsafe-finally`, `no-unsafe-negation`, `constructor-super` (AST component only, deferring flow analysis to flow batch), `no-dupe-class-members`, `no-dupe-keys`, `no-useless-constructor`, `no-useless-computed-key`, `no-unused-private-class-members`, `no-duplicate-imports`, `no-unused-labels`.
   - **Where**: `lib/rules/{rule-name}.js` for each; register each in `lib/rules/index.js`
   - **Acceptance criteria**: Each rule detects its target pattern; `no-dupe-keys` detects duplicate property names in object literals; `no-duplicate-imports` flags multiple `import` statements from the same module
   - **Depends on**: Build lintText() entry point
@@ -171,7 +171,7 @@ Build a minimal, synchronous `lintText(sourceText, options)` function that parse
 
 - [x] **Implement flow-sensitive rules**
   - **Story**: Rules that depend on reachability and execution-path state across control flow
-  - **What**: Implement 9 rules using the vendored code-path analysis engine integrated into the traverser. The code-path engine emits events (`onCodePathStart`, `onCodePathEnd`, `onCodePathSegmentStart`, `onCodePathSegmentEnd`, `onUnreachableCodePathSegmentStart`) that rules subscribe to via their visitor map alongside regular node visitors: `no-unreachable`, `no-unreachable-loop`, `getter-return`, `no-setter-return`, `no-this-before-super`, `constructor-super`, `no-promise-executor-return`, `require-yield`, `require-atomic-updates`. Rules that were partially implemented in earlier AST batches (e.g., `getter-return`, `constructor-super`) should be completed or replaced here using flow data.
+  - **What**: Implement 8 rules using the vendored code-path analysis engine integrated into the traverser. The code-path engine emits events (`onCodePathStart`, `onCodePathEnd`, `onCodePathSegmentStart`, `onCodePathSegmentEnd`, `onUnreachableCodePathSegmentStart`) that rules subscribe to via their visitor map alongside regular node visitors: `no-unreachable`, `getter-return`, `no-setter-return`, `no-this-before-super`, `constructor-super`, `no-promise-executor-return`, `require-yield`, `require-atomic-updates`. Rules that were partially implemented in earlier AST batches (e.g., `getter-return`, `constructor-super`) should be completed or replaced here using flow data.
   - **Where**: `lib/rules/{rule-name}.js` for each; register each in `lib/rules/index.js`
   - **Acceptance criteria**: `no-unreachable` fires on statements after `return` but not in dead branches of `if`; `getter-return` fires when a getter has a path with no `return`; `constructor-super` fires when `super()` is missing in a derived class constructor; code-path events are received correctly during traversal
   - **Depends on**: Build lintText() entry point, Vendor code-path analysis

@@ -228,16 +228,10 @@ export default [
             'no-unreachable': [
                 'error',
             ],
-            'no-unreachable-loop': [
-                'error',
-            ],
             'no-unsafe-finally': [
                 'error',
             ],
             'no-unsafe-negation': [
-                'error',
-            ],
-            'no-unsafe-optional-chaining': [
                 'error',
             ],
             'no-unused-expressions': [

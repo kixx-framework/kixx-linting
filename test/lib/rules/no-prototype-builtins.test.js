@@ -146,7 +146,7 @@ const invalid = [
         languageOptions: { ecmaVersion: 2020 },
     },
     {
-        // No suggestion where no-unsafe-optional-chaining is reported on the call
+        // No suggestion where the optional call target is unsafe
         text: "(foo?.hasOwnProperty)('bar')",
         languageOptions: { ecmaVersion: 2020 },
     },
@@ -159,7 +159,7 @@ const invalid = [
         languageOptions: { ecmaVersion: 2020 },
     },
     {
-        // No suggestion where no-unsafe-optional-chaining is reported on the call
+        // No suggestion where the optional call target is unsafe
         text: "(foo?.[`hasOwnProperty`])('bar')",
         languageOptions: { ecmaVersion: 2020 },
     },
