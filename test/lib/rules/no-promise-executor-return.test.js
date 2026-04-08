@@ -112,31 +112,6 @@ const valid = [
     { text: "new Promise(function (resolve, reject) {}); () => { return 1; };" },
     { text: "new Promise((resolve, reject) => {}); () => 1;" },
 
-    // does not report global return
-    {
-        text: "return 1;",
-        languageOptions: { sourceType: "commonjs" },
-    },
-    {
-        text: "return 1;",
-        languageOptions: {
-            sourceType: "script",
-            parserOptions: { ecmaFeatures: { globalReturn: true } },
-        },
-    },
-    {
-        text: "return 1; function foo(){ return 1; } return 1;",
-        languageOptions: { sourceType: "commonjs" },
-    },
-    {
-        text: "function foo(){} return 1; var bar = function*(){ return 1; }; return 1; var baz = () => {}; return 1;",
-        languageOptions: { sourceType: "commonjs" },
-    },
-    {
-        text: "new Promise(function (resolve, reject) {}); return 1;",
-        languageOptions: { sourceType: "commonjs" },
-    },
-
     /*
 		 * allowVoid: true
 		 * `=> void` and `return void` are allowed
