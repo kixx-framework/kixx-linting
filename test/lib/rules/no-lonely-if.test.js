@@ -20,21 +20,20 @@
  * THE SOFTWARE.
  */
 
-export default {
-	// Examples of code that should not trigger the rule
-	valid: [
-		"if (a) {;} else if (b) {;}",
-		"if (a) {;} else { if (b) {;} ; }",
-		"if (a) if (a) {} else { if (b) {} } else {}",
-	],
+// Examples of code that should not trigger the rule
+const valid = [
+    { text: "if (a) {;} else if (b) {;}" },
+    { text: "if (a) {;} else { if (b) {;} ; }" },
+    { text: "if (a) if (a) {} else { if (b) {} } else {}" },
+];
 
-	// Examples of code that should trigger the rule
-	invalid: [
-		{
-			code: "if (a) {;} else { if (b) {;} }",
-		},
-		{
-			code:
+// Examples of code that should trigger the rule
+const invalid = [
+    {
+        text: "if (a) {;} else { if (b) {;} }",
+    },
+    {
+        text:
 				"if (a) {\n" +
 				"  foo();\n" +
 				"} else {\n" +
@@ -42,9 +41,9 @@ export default {
 				"    bar();\n" +
 				"  }\n" +
 				"}",
-		},
-		{
-			code:
+    },
+    {
+        text:
 				"if (a) {\n" +
 				"  foo();\n" +
 				"} else /* comment */ {\n" +
@@ -52,9 +51,9 @@ export default {
 				"    bar();\n" +
 				"  }\n" +
 				"}",
-		},
-		{
-			code:
+    },
+    {
+        text:
 				"if (a) {\n" +
 				"  foo();\n" +
 				"} else {\n" +
@@ -62,9 +61,9 @@ export default {
 				"    bar();\n" +
 				"  }\n" +
 				"}",
-		},
-		{
-			code:
+    },
+    {
+        text:
 				"if (a) {\n" +
 				"  foo();\n" +
 				"} else {\n" +
@@ -72,9 +71,9 @@ export default {
 				"    bar();\n" +
 				"  }\n" +
 				"}",
-		},
-		{
-			code:
+    },
+    {
+        text:
 				"if (a) {\n" +
 				"  foo();\n" +
 				"} else {\n" +
@@ -82,58 +81,58 @@ export default {
 				"    bar();\n" +
 				"  } /* this comment will prevent this test case from being autofixed. */\n" +
 				"}",
-		},
-		{
-			code: "if (foo) {} else { if (bar) baz(); }",
-		},
-		{
-			// Not fixed; removing the braces would cause a SyntaxError.
-			code: "if (foo) {} else { if (bar) baz() } qux();",
-		},
-		{
-			// This is fixed because there is a semicolon after baz().
-			code: "if (foo) {} else { if (bar) baz(); } qux();",
-		},
-		{
-			// Not fixed; removing the braces would change the semantics due to ASI.
-			code:
+    },
+    {
+        text: "if (foo) {} else { if (bar) baz(); }",
+    },
+    {
+        // Not fixed; removing the braces would cause a SyntaxError.
+        text: "if (foo) {} else { if (bar) baz() } qux();",
+    },
+    {
+        // This is fixed because there is a semicolon after baz().
+        text: "if (foo) {} else { if (bar) baz(); } qux();",
+    },
+    {
+        // Not fixed; removing the braces would change the semantics due to ASI.
+        text:
 				"if (foo) {\n" +
 				"} else {\n" +
 				"  if (bar) baz()\n" +
 				"}\n" +
 				"[1, 2, 3].forEach(foo);",
-		},
-		{
-			// Not fixed; removing the braces would change the semantics due to ASI.
-			code:
+    },
+    {
+        // Not fixed; removing the braces would change the semantics due to ASI.
+        text:
 				"if (foo) {\n" +
 				"} else {\n" +
 				"  if (bar) baz++\n" +
 				"}\n" +
 				"foo;",
-		},
-		{
-			// This is fixed because there is a semicolon after baz++
-			code:
+    },
+    {
+        // This is fixed because there is a semicolon after baz++
+        text:
 				"if (foo) {\n" +
 				"} else {\n" +
 				"  if (bar) baz++;\n" +
 				"}\n" +
 				"foo;",
-		},
-		{
-			// Not fixed; bar() would be interpreted as a template literal tag
-			code:
+    },
+    {
+        // Not fixed; bar() would be interpreted as a template literal tag
+        text:
 				"if (a) {\n" +
 				"  foo();\n" +
 				"} else {\n" +
 				"  if (b) bar()\n" +
 				"}\n" +
 				"`template literal`;",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code:
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text:
 				"if (a) {\n" +
 				"  foo();\n" +
 				"} else {\n" +
@@ -145,6 +144,5 @@ export default {
 				"    qux();\n" +
 				"  }\n" +
 				"}",
-		},
-	],
-};
+    },
+];

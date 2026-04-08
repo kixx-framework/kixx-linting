@@ -6,7 +6,9 @@ Review some of the existing lint rule tests in `test/lib/rules/*.test.js` (Note:
 
 Your task is to write tests in these target test modules:
 
-- test/lib/rules/no-irregular-whitespace.test.js
+- test/lib/rules/no-lonely-if.test.js
+- test/lib/rules/no-loop-func.test.js
+- test/lib/rules/no-loss-of-precision.test.js
 
 Note: These target test modules are just data arrays without an executable test suite. Your approach should be to mirror the existing test harness pattern you see in other test modules in `test/lib/rules/*.test.js`.
 
@@ -16,7 +18,9 @@ Run your tests using:
 node run-tests.js <path-to-test-file>
 ```
 
-If you encounter failed tests, do not change to the tests to make them pass. Instead, evaluate the rule implementation for bugs and attempt to fix them.
+If you encounter failed tests, DO NOT remove or change the test data to make tests pass. Instead, evaluate the rule implementation for bugs and attempt to fix them.
+
+If the implementation of a rule seems to be in conflict with failed tests, then stop working and inform the user.
 
 When you're deciding how to approach a problem, choose an approach and commit to it. Avoid revisiting decisions unless you encounter new information that directly contradicts your reasoning. If you're weighing two approaches, pick one and see it through. You can always course-correct later if the chosen approach fails.
 
