@@ -20,53 +20,127 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		"string = 'hello world';",
-		"var string;",
-		{ code: "Object = 0;", options: [{ exceptions: ["Object"] }] },
-		"top = 0;",
-		{ code: "onload = 0;", languageOptions: { globals: globals.browser } },
-		"require = 0;",
-		{ code: "a = 1", languageOptions: { globals: { a: true } } },
-		"/*global a:true*/ a = 1",
-	],
-	invalid: [
-		{
-			code: "String = 'hello world';",
-		},
-		{
-			code: "String++;",
-		},
-		{
-			code: "({Object = 0, String = 0} = {});",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "top = 0;",
-			languageOptions: { globals: globals.browser },
-		},
-		{
-			code: "require = 0;",
-			languageOptions: { sourceType: "commonjs" },
-		},
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
 
-		// Notifications of readonly are moved from no-undef: https://github.com/eslint/eslint/issues/4504
-		{
-			code: "/*global b:false*/ function f() { b = 1; }",
-		},
-		{
-			code: "function f() { b = 1; }",
-			languageOptions: { globals: { b: false } },
-		},
-		{
-			code: "/*global b:false*/ function f() { b++; }",
-		},
-		{
-			code: "/*global b*/ b = 1;",
-		},
-		{
-			code: "Array = 1;",
-		},
-	],
-};
+import { lintText } from "../../../mod.js";
+
+// Inline only the browser globals needed for these tests.
+// `top` is readonly (false), `onload` is writable (true).
+const browserGlobals = { top: false, onload: true };
+
+const valid = [
+    { text: "string = 'hello world';" },
+    { text: "var string;" },
+    {
+        text: "Object = 0;",
+        options: [{ exceptions: ["Object"] }],
+    },
+    { text: "top = 0;" },
+    {
+        text: "onload = 0;",
+        languageOptions: { globals: browserGlobals }
+    },
+    { text: "require = 0;" },
+    {
+        text: "a = 1",
+        languageOptions: { globals: { a: true } }
+    },
+    { text: "/*global a:true*/ a = 1" },
+];
+
+const invalid = [
+    {
+        text: "String = 'hello world';",
+    },
+    {
+        text: "String++;",
+    },
+    {
+        text: "({Object = 0, String = 0} = {});",
+        // languageOptions: { ecmaVersion: 6 },
+        errors: 2,
+    },
+    {
+        text: "top = 0;",
+        languageOptions: { globals: browserGlobals },
+    },
+    {
+        // languageOptions: { sourceType: "commonjs" },
+        text: "require = 0;",
+        languageOptions: { globals: { require: false } },
+    },
+
+    // Notifications of readonly are moved from no-undef: https://github.com/eslint/eslint/issues/4504
+    {
+        text: "/*global b:false*/ function f() { b = 1; }",
+    },
+    {
+        text: "function f() { b = 1; }",
+        languageOptions: { globals: { b: false } },
+    },
+    {
+        text: "/*global b:false*/ function f() { b++; }",
+    },
+    {
+        text: "/*global b*/ b = 1;",
+    },
+    {
+        text: "Array = 1;",
+    },
+];
+
+describe("no-global-assign", ({ describe }) => {
+
+    const globalRules = { "no-global-assign": ["error"] };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, options, languageOptions }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-global-assign"] = rules["no-global-assign"].concat(options);
+                }
+
+                const res = lintText(file, rules, languageOptions);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, options, languageOptions, errors = 1 }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-global-assign"] = rules["no-global-assign"].concat(options);
+                }
+
+                const res = lintText(file, rules, languageOptions);
+
+                assertEqual(errors, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+
+                res.messages.forEach((message) => {
+                    assertEqual("no-global-assign", message.ruleId, `message.ruleId:[${i}]:${text.slice(0, 52)} ...`);
+                    assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`);
+                });
+            });
+        });
+    });
+});

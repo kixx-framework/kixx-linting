@@ -20,277 +20,335 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		"RegExp('')",
-		"RegExp()",
-		"RegExp('.', 'g')",
-		"new RegExp('.')",
-		"new RegExp",
-		"new RegExp('.', 'im')",
-		"global.RegExp('\\\\')",
-		"new RegExp('.', y)",
-		"new RegExp('.', 'y')",
-		"new RegExp('.', 'u')",
-		"new RegExp('.', 'yu')",
-		"new RegExp('/', 'yu')",
-		"new RegExp('\\/', 'yu')",
-		"new RegExp('\\\\u{65}', 'u')",
-		"new RegExp('\\\\u{65}*', 'u')",
-		"new RegExp('[\\\\u{0}-\\\\u{1F}]', 'u')",
-		"new RegExp('.', 's')",
-		"new RegExp('(?<=a)b')",
-		"new RegExp('(?<!a)b')",
-		"new RegExp('(?<a>b)\\k<a>')",
-		"new RegExp('(?<a>b)\\k<a>', 'u')",
-		"new RegExp('\\\\p{Letter}', 'u')",
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
 
-		// unknown flags
-		"RegExp('{', flags)", // valid without the "u" flag
-		"new RegExp('{', flags)", // valid without the "u" flag
-		"RegExp('\\\\u{0}*', flags)", // valid with the "u" flag
-		"new RegExp('\\\\u{0}*', flags)", // valid with the "u" flag
-		{
-			code: "RegExp('{', flags)", // valid without the "u" flag
-			options: [{ allowConstructorFlags: ["u"] }],
-		},
-		{
-			code: "RegExp('\\\\u{0}*', flags)", // valid with the "u" flag
-			options: [{ allowConstructorFlags: ["a"] }],
-		},
+import { lintText } from "../../../mod.js";
 
-		// unknown pattern
-		"new RegExp(pattern, 'g')",
-		"new RegExp('.' + '', 'g')",
-		"new RegExp(pattern, '')",
-		"new RegExp(pattern)",
+const valid = [
+    { text: "RegExp('')" },
+    { text: "RegExp()" },
+    { text: "RegExp('.', 'g')" },
+    { text: "new RegExp('.')" },
+    { text: "new RegExp" },
+    { text: "new RegExp('.', 'im')" },
+    { text: "global.RegExp('\\\\')" },
+    { text: "new RegExp('.', y)" },
+    { text: "new RegExp('.', 'y')" },
+    { text: "new RegExp('.', 'u')" },
+    { text: "new RegExp('.', 'yu')" },
+    { text: "new RegExp('/', 'yu')" },
+    { text: "new RegExp('\\/', 'yu')" },
+    { text: "new RegExp('\\\\u{65}', 'u')" },
+    { text: "new RegExp('\\\\u{65}*', 'u')" },
+    { text: "new RegExp('[\\\\u{0}-\\\\u{1F}]', 'u')" },
+    { text: "new RegExp('.', 's')" },
+    { text: "new RegExp('(?<=a)b')" },
+    { text: "new RegExp('(?<!a)b')" },
+    { text: "new RegExp('(?<a>b)\\k<a>')" },
+    { text: "new RegExp('(?<a>b)\\k<a>', 'u')" },
+    { text: "new RegExp('\\\\p{Letter}', 'u')" },
 
-		// ES2020
-		"new RegExp('(?<\\\\ud835\\\\udc9c>.)', 'g')",
-		"new RegExp('(?<\\\\u{1d49c}>.)', 'g')",
-		"new RegExp('(?<𝒜>.)', 'g');",
-		"new RegExp('\\\\p{Script=Nandinagari}', 'u');",
+    // unknown flags
+    { text: "RegExp('{', flags)" }, // valid without the "u" flag
+    { text: "new RegExp('{', flags)" }, // valid without the "u" flag
+    { text: "RegExp('\\\\u{0}*', flags)" }, // valid with the "u" flag
+    { text: "new RegExp('\\\\u{0}*', flags)" }, // valid with the "u" flag
+    {
+        text: "RegExp('{', flags)", // valid without the "u" flag
+        options: [{ allowConstructorFlags: ["u"] }],
+    },
+    {
+        text: "RegExp('\\\\u{0}*', flags)", // valid with the "u" flag
+        options: [{ allowConstructorFlags: ["a"] }],
+    },
 
-		// ES2022
-		"new RegExp('a+(?<Z>z)?', 'd')",
-		"new RegExp('\\\\p{Script=Cpmn}', 'u')",
-		"new RegExp('\\\\p{Script=Cypro_Minoan}', 'u')",
-		"new RegExp('\\\\p{Script=Old_Uyghur}', 'u')",
-		"new RegExp('\\\\p{Script=Ougr}', 'u')",
-		"new RegExp('\\\\p{Script=Tangsa}', 'u')",
-		"new RegExp('\\\\p{Script=Tnsa}', 'u')",
-		"new RegExp('\\\\p{Script=Toto}', 'u')",
-		"new RegExp('\\\\p{Script=Vith}', 'u')",
-		"new RegExp('\\\\p{Script=Vithkuqi}', 'u')",
+    // unknown pattern
+    { text: "new RegExp(pattern, 'g')" },
+    { text: "new RegExp('.' + '', 'g')" },
+    { text: "new RegExp(pattern, '')" },
+    { text: "new RegExp(pattern)" },
 
-		// ES2024
-		"new RegExp('[A--B]', 'v')",
-		"new RegExp('[A&&B]', 'v')",
-		"new RegExp('[A--[0-9]]', 'v')",
-		"new RegExp('[\\\\p{Basic_Emoji}--\\\\q{a|bc|def}]', 'v')",
-		"new RegExp('[A--B]', flags)", // valid only with `v` flag
-		"new RegExp('[[]\\\\u{0}*', flags)", // valid only with `u` flag
+    // ES2020
+    { text: "new RegExp('(?<\\\\ud835\\\\udc9c>.)', 'g')" },
+    { text: "new RegExp('(?<\\\\u{1d49c}>.)', 'g')" },
+    { text: "new RegExp('(?<𝒜>.)', 'g');" },
+    { text: "new RegExp('\\\\p{Script=Nandinagari}', 'u');" },
 
-		// ES2025
-		"new RegExp('((?<k>a)|(?<k>b))')",
-		"new RegExp('(?ims:foo)')",
-		"new RegExp('(?ims-:foo)')",
-		"new RegExp('(?-ims:foo)')",
-		"new RegExp('(?s-i:foo)')",
+    // ES2022
+    { text: "new RegExp('a+(?<Z>z)?', 'd')" },
+    { text: "new RegExp('\\\\p{Script=Cpmn}', 'u')" },
+    { text: "new RegExp('\\\\p{Script=Cypro_Minoan}', 'u')" },
+    { text: "new RegExp('\\\\p{Script=Old_Uyghur}', 'u')" },
+    { text: "new RegExp('\\\\p{Script=Ougr}', 'u')" },
+    { text: "new RegExp('\\\\p{Script=Tangsa}', 'u')" },
+    { text: "new RegExp('\\\\p{Script=Tnsa}', 'u')" },
+    { text: "new RegExp('\\\\p{Script=Toto}', 'u')" },
+    { text: "new RegExp('\\\\p{Script=Vith}', 'u')" },
+    { text: "new RegExp('\\\\p{Script=Vithkuqi}', 'u')" },
 
-		// allowConstructorFlags
-		{
-			code: "new RegExp('.', 'g')",
-			options: [{ allowConstructorFlags: [] }],
-		},
-		{
-			code: "new RegExp('.', 'g')",
-			options: [{ allowConstructorFlags: ["a"] }],
-		},
-		{
-			code: "new RegExp('.', 'a')",
-			options: [{ allowConstructorFlags: ["a"] }],
-		},
-		{
-			code: "new RegExp('.', 'ag')",
-			options: [{ allowConstructorFlags: ["a"] }],
-		},
-		{
-			code: "new RegExp('.', 'ga')",
-			options: [{ allowConstructorFlags: ["a"] }],
-		},
-		{
-			code: "new RegExp(pattern, 'ga')",
-			options: [{ allowConstructorFlags: ["a"] }],
-		},
-		{
-			code: "new RegExp('.' + '', 'ga')",
-			options: [{ allowConstructorFlags: ["a"] }],
-		},
-		{
-			code: "new RegExp('.', 'a')",
-			options: [{ allowConstructorFlags: ["a", "z"] }],
-		},
-		{
-			code: "new RegExp('.', 'z')",
-			options: [{ allowConstructorFlags: ["a", "z"] }],
-		},
-		{
-			code: "new RegExp('.', 'az')",
-			options: [{ allowConstructorFlags: ["a", "z"] }],
-		},
-		{
-			code: "new RegExp('.', 'za')",
-			options: [{ allowConstructorFlags: ["a", "z"] }],
-		},
-		{
-			code: "new RegExp('.', 'agz')",
-			options: [{ allowConstructorFlags: ["a", "z"] }],
-		},
-	],
-	invalid: [
-		{
-			code: "RegExp('[');",
-		},
-		{
-			code: "RegExp('.', 'z');",
-		},
-		{
-			code: "RegExp('.', 'a');",
-			options: [{}],
-		},
-		{
-			code: "new RegExp('.', 'a');",
-			options: [{ allowConstructorFlags: [] }],
-		},
-		{
-			code: "new RegExp('.', 'z');",
-			options: [{ allowConstructorFlags: ["a"] }],
-		},
-		{
-			code: "RegExp('.', 'a');",
-			options: [{ allowConstructorFlags: ["A"] }],
-		},
-		{
-			code: "RegExp('.', 'A');",
-			options: [{ allowConstructorFlags: ["a"] }],
-		},
-		{
-			code: "new RegExp('.', 'az');",
-			options: [{ allowConstructorFlags: ["z"] }],
-		},
-		{
-			code: "new RegExp('.', 'aa');",
-			options: [{ allowConstructorFlags: ["a"] }],
-		},
-		{
-			code: "new RegExp('.', 'aA');",
-			options: [{ allowConstructorFlags: ["a"] }],
-		},
-		{
-			code: "new RegExp('.', 'aaz');",
-			options: [{ allowConstructorFlags: ["a", "z"] }],
-		},
-		{
-			code: "new RegExp('.', 'azz');",
-			options: [{ allowConstructorFlags: ["a", "z"] }],
-		},
-		{
-			code: "new RegExp('.', 'aga');",
-			options: [{ allowConstructorFlags: ["a"] }],
-		},
-		{
-			code: "new RegExp('.', 'uu');",
-			options: [{ allowConstructorFlags: ["u"] }],
-		},
-		{
-			code: "new RegExp('.', 'ouo');",
-			options: [{ allowConstructorFlags: ["u"] }],
-		},
-		{
-			code: "new RegExp(')');",
-		},
-		{
-			code: String.raw`new RegExp('\\a', 'u');`,
-		},
-		{
-			code: String.raw`new RegExp('\\a', 'u');`,
-			options: [{ allowConstructorFlags: ["u"] }],
-		},
-		{
-			code: String.raw`RegExp('\\u{0}*');`,
-		},
-		{
-			code: String.raw`new RegExp('\\u{0}*');`,
-		},
-		{
-			code: String.raw`new RegExp('\\u{0}*', '');`,
-		},
-		{
-			code: String.raw`new RegExp('\\u{0}*', 'a');`,
-			options: [{ allowConstructorFlags: ["a"] }],
-		},
-		{
-			code: String.raw`RegExp('\\u{0}*');`,
-			options: [{ allowConstructorFlags: ["a"] }],
-		},
+    // ES2024
+    { text: "new RegExp('[A--B]', 'v')" },
+    { text: "new RegExp('[A&&B]', 'v')" },
+    { text: "new RegExp('[A--[0-9]]', 'v')" },
+    { text: "new RegExp('[\\\\p{Basic_Emoji}--\\\\q{a|bc|def}]', 'v')" },
+    { text: "new RegExp('[A--B]', flags)" }, // valid only with `v` flag
+    { text: "new RegExp('[[]\\\\u{0}*', flags)" }, // valid only with `u` flag
 
-		// https://github.com/eslint/eslint/issues/10861
-		{
-			code: String.raw`new RegExp('\\');`,
-		},
+    // ES2025
+    { text: "new RegExp('((?<k>a)|(?<k>b))')" },
+    { text: "new RegExp('(?ims:foo)')" },
+    { text: "new RegExp('(?ims-:foo)')" },
+    { text: "new RegExp('(?-ims:foo)')" },
+    { text: "new RegExp('(?s-i:foo)')" },
 
-		// https://github.com/eslint/eslint/issues/16573
-		{
-			code: "RegExp(')' + '', 'a');",
-		},
-		{
-			code: "new RegExp('.' + '', 'az');",
-			options: [{ allowConstructorFlags: ["z"] }],
-		},
-		{
-			code: "new RegExp(pattern, 'az');",
-			options: [{ allowConstructorFlags: ["a"] }],
-		},
+    // allowConstructorFlags
+    {
+        text: "new RegExp('.', 'g')",
+        options: [{ allowConstructorFlags: [] }],
+    },
+    {
+        text: "new RegExp('.', 'g')",
+        options: [{ allowConstructorFlags: ["a"] }],
+    },
+    {
+        text: "new RegExp('.', 'a')",
+        options: [{ allowConstructorFlags: ["a"] }],
+    },
+    {
+        text: "new RegExp('.', 'ag')",
+        options: [{ allowConstructorFlags: ["a"] }],
+    },
+    {
+        text: "new RegExp('.', 'ga')",
+        options: [{ allowConstructorFlags: ["a"] }],
+    },
+    {
+        text: "new RegExp(pattern, 'ga')",
+        options: [{ allowConstructorFlags: ["a"] }],
+    },
+    {
+        text: "new RegExp('.' + '', 'ga')",
+        options: [{ allowConstructorFlags: ["a"] }],
+    },
+    {
+        text: "new RegExp('.', 'a')",
+        options: [{ allowConstructorFlags: ["a", "z"] }],
+    },
+    {
+        text: "new RegExp('.', 'z')",
+        options: [{ allowConstructorFlags: ["a", "z"] }],
+    },
+    {
+        text: "new RegExp('.', 'az')",
+        options: [{ allowConstructorFlags: ["a", "z"] }],
+    },
+    {
+        text: "new RegExp('.', 'za')",
+        options: [{ allowConstructorFlags: ["a", "z"] }],
+    },
+    {
+        text: "new RegExp('.', 'agz')",
+        options: [{ allowConstructorFlags: ["a", "z"] }],
+    },
+];
+const invalid = [
+    {
+        text: "RegExp('[');",
+    },
+    {
+        text: "RegExp('.', 'z');",
+    },
+    {
+        text: "RegExp('.', 'a');",
+        options: [{}],
+    },
+    {
+        text: "new RegExp('.', 'a');",
+        options: [{ allowConstructorFlags: [] }],
+    },
+    {
+        text: "new RegExp('.', 'z');",
+        options: [{ allowConstructorFlags: ["a"] }],
+    },
+    {
+        text: "RegExp('.', 'a');",
+        options: [{ allowConstructorFlags: ["A"] }],
+    },
+    {
+        text: "RegExp('.', 'A');",
+        options: [{ allowConstructorFlags: ["a"] }],
+    },
+    {
+        text: "new RegExp('.', 'az');",
+        options: [{ allowConstructorFlags: ["z"] }],
+    },
+    {
+        text: "new RegExp('.', 'aa');",
+        options: [{ allowConstructorFlags: ["a"] }],
+    },
+    {
+        text: "new RegExp('.', 'aA');",
+        options: [{ allowConstructorFlags: ["a"] }],
+    },
+    {
+        text: "new RegExp('.', 'aaz');",
+        options: [{ allowConstructorFlags: ["a", "z"] }],
+    },
+    {
+        text: "new RegExp('.', 'azz');",
+        options: [{ allowConstructorFlags: ["a", "z"] }],
+    },
+    {
+        text: "new RegExp('.', 'aga');",
+        options: [{ allowConstructorFlags: ["a"] }],
+    },
+    {
+        text: "new RegExp('.', 'uu');",
+        options: [{ allowConstructorFlags: ["u"] }],
+    },
+    {
+        text: "new RegExp('.', 'ouo');",
+        options: [{ allowConstructorFlags: ["u"] }],
+    },
+    {
+        text: "new RegExp(')');",
+    },
+    {
+        text: String.raw`new RegExp('\\a', 'u');`,
+    },
+    {
+        text: String.raw`new RegExp('\\a', 'u');`,
+        options: [{ allowConstructorFlags: ["u"] }],
+    },
+    {
+        text: String.raw`RegExp('\\u{0}*');`,
+    },
+    {
+        text: String.raw`new RegExp('\\u{0}*');`,
+    },
+    {
+        text: String.raw`new RegExp('\\u{0}*', '');`,
+    },
+    {
+        text: String.raw`new RegExp('\\u{0}*', 'a');`,
+        options: [{ allowConstructorFlags: ["a"] }],
+    },
+    {
+        text: String.raw`RegExp('\\u{0}*');`,
+        options: [{ allowConstructorFlags: ["a"] }],
+    },
 
-		// ES2024
-		{
-			code: "new RegExp('[[]', 'v');",
-		},
-		{
-			code: "new RegExp('.', 'uv');",
-		},
-		{
-			code: "new RegExp(pattern, 'uv');",
-		},
-		{
-			code: "new RegExp('[A--B]' /* valid only with `v` flag */, 'u')",
-		},
-		{
-			code: "new RegExp('[[]\\\\u{0}*' /* valid only with `u` flag */, 'v')",
-		},
+    // https://github.com/eslint/eslint/issues/10861
+    {
+        text: String.raw`new RegExp('\\');`,
+    },
 
-		// ES2025
-		{
-			code: "new RegExp('(?<k>a)(?<k>b)')",
-		},
-		{
-			code: "new RegExp('(?ii:foo)')",
-		},
-		{
-			code: "new RegExp('(?-ii:foo)')",
-		},
-		{
-			code: "new RegExp('(?i-i:foo)')",
-		},
-		{
-			code: "new RegExp('(?-:foo)')",
-		},
-		{
-			code: "new RegExp('(?g:foo)')",
-		},
-		{
-			code: "new RegExp('(?-u:foo)')",
-		},
-	],
-};
+    // https://github.com/eslint/eslint/issues/16573
+    {
+        text: "RegExp(')' + '', 'a');",
+    },
+    {
+        text: "new RegExp('.' + '', 'az');",
+        options: [{ allowConstructorFlags: ["z"] }],
+    },
+    {
+        text: "new RegExp(pattern, 'az');",
+        options: [{ allowConstructorFlags: ["a"] }],
+    },
+
+    // ES2024
+    {
+        text: "new RegExp('[[]', 'v');",
+    },
+    {
+        text: "new RegExp('.', 'uv');",
+    },
+    {
+        text: "new RegExp(pattern, 'uv');",
+    },
+    {
+        text: "new RegExp('[A--B]' /* valid only with `v` flag */, 'u')",
+    },
+    {
+        text: "new RegExp('[[]\\\\u{0}*' /* valid only with `u` flag */, 'v')",
+    },
+
+    // ES2025
+    {
+        text: "new RegExp('(?<k>a)(?<k>b)')",
+    },
+    {
+        text: "new RegExp('(?ii:foo)')",
+    },
+    {
+        text: "new RegExp('(?-ii:foo)')",
+    },
+    {
+        text: "new RegExp('(?i-i:foo)')",
+    },
+    {
+        text: "new RegExp('(?-:foo)')",
+    },
+    {
+        text: "new RegExp('(?g:foo)')",
+    },
+    {
+        text: "new RegExp('(?-u:foo)')",
+    },
+];
+
+describe("no-invalid-regexp", ({ describe }) => {
+
+    const globalRules = { "no-invalid-regexp": ["error"] };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, options }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-invalid-regexp"] = rules["no-invalid-regexp"].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, options, errors = 1 }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-invalid-regexp"] = rules["no-invalid-regexp"].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                assertEqual(errors, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+
+                res.messages.forEach((message) => {
+                    assertEqual("no-invalid-regexp", message.ruleId, `message.ruleId:[${i}]:${text.slice(0, 52)} ...`);
+                    assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`);
+                });
+            });
+        });
+    });
+});

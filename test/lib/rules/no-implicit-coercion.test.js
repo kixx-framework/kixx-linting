@@ -20,304 +20,311 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		"Boolean(foo)",
-		"foo.indexOf(1) !== -1",
-		"Number(foo)",
-		"parseInt(foo)",
-		"parseFloat(foo)",
-		"String(foo)",
-		"!foo",
-		"~foo",
-		"-foo",
-		"+1234",
-		"-1234",
-		"- -1234",
-		"+Number(lol)",
-		"-parseFloat(lol)",
-		"2 * foo",
-		"1 * 1234",
-		"123 - 0",
-		"1 * Number(foo)",
-		"1 * parseInt(foo)",
-		"1 * parseFloat(foo)",
-		"Number(foo) * 1",
-		"Number(foo) - 0",
-		"parseInt(foo) * 1",
-		"parseFloat(foo) * 1",
-		"- -Number(foo)",
-		"1 * 1234 * 678 * Number(foo)",
-		"1 * 1234 * 678 * parseInt(foo)",
-		"(1 - 0) * parseInt(foo)",
-		"1234 * 1 * 678 * Number(foo)",
-		"1234 * 1 * Number(foo) * Number(bar)",
-		"1234 * 1 * Number(foo) * parseInt(bar)",
-		"1234 * 1 * Number(foo) * parseFloat(bar)",
-		"1234 * 1 * parseInt(foo) * parseFloat(bar)",
-		"1234 * 1 * parseInt(foo) * Number(bar)",
-		"1234 * 1 * parseFloat(foo) * Number(bar)",
-		"1234 * Number(foo) * 1 * Number(bar)",
-		"1234 * parseInt(foo) * 1 * Number(bar)",
-		"1234 * parseFloat(foo) * 1 * parseInt(bar)",
-		"1234 * parseFloat(foo) * 1 * Number(bar)",
-		"(- -1234) * (parseFloat(foo) - 0) * (Number(bar) - 0)",
-		"1234*foo*1",
-		"1234*1*foo",
-		"1234*bar*1*foo",
-		"1234*1*foo*bar",
-		"1234*1*foo*Number(bar)",
-		"1234*1*Number(foo)*bar",
-		"1234*1*parseInt(foo)*bar",
-		"0 + foo",
-		"~foo.bar()",
-		"foo + 'bar'",
-		{ code: "foo + `${bar}`", languageOptions: { ecmaVersion: 6 } },
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
 
-		{ code: "!!foo", options: [{ boolean: false }] },
-		{ code: "~foo.indexOf(1)", options: [{ boolean: false }] },
-		{ code: "+foo", options: [{ number: false }] },
-		{ code: "-(-foo)", options: [{ number: false }] },
-		{ code: "foo - 0", options: [{ number: false }] },
-		{ code: "1*foo", options: [{ number: false }] },
-		{ code: '""+foo', options: [{ string: false }] },
-		{ code: 'foo += ""', options: [{ string: false }] },
-		{ code: "var a = !!foo", options: [{ boolean: true, allow: ["!!"] }] },
-		{
-			code: "var a = ~foo.indexOf(1)",
-			options: [{ boolean: true, allow: ["~"] }],
-		},
-		{ code: "var a = ~foo", options: [{ boolean: true }] },
-		{ code: "var a = 1 * foo", options: [{ boolean: true, allow: ["*"] }] },
-		{ code: "- -foo", options: [{ number: true, allow: ["- -"] }] },
-		{ code: "foo - 0", options: [{ number: true, allow: ["-"] }] },
-		{ code: "var a = +foo", options: [{ boolean: true, allow: ["+"] }] },
-		{
-			code: 'var a = "" + foo',
-			options: [{ boolean: true, string: true, allow: ["+"] }],
-		},
+import { lintText } from "../../../mod.js";
 
-		// https://github.com/eslint/eslint/issues/7057
-		"'' + 'foo'",
-		{ code: "`` + 'foo'", languageOptions: { ecmaVersion: 6 } },
-		{ code: "'' + `${foo}`", languageOptions: { ecmaVersion: 6 } },
-		"'foo' + ''",
-		{ code: "'foo' + ``", languageOptions: { ecmaVersion: 6 } },
-		{ code: "`${foo}` + ''", languageOptions: { ecmaVersion: 6 } },
-		"foo += 'bar'",
-		{ code: "foo += `${bar}`", languageOptions: { ecmaVersion: 6 } },
-		{
-			code: "`a${foo}`",
-			options: [{ disallowTemplateShorthand: true }],
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "`${foo}b`",
-			options: [{ disallowTemplateShorthand: true }],
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "`${foo}${bar}`",
-			options: [{ disallowTemplateShorthand: true }],
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "tag`${foo}`",
-			options: [{ disallowTemplateShorthand: true }],
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{ code: "`${foo}`", languageOptions: { ecmaVersion: 6 } },
-		{
-			code: "`${foo}`",
-			options: [{}],
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "`${foo}`",
-			options: [{ disallowTemplateShorthand: false }],
-			languageOptions: { ecmaVersion: 6 },
-		},
-		"+42",
+const valid = [
+    { text: "Boolean(foo)" },
+    { text: "foo.indexOf(1) !== -1" },
+    { text: "Number(foo)" },
+    { text: "parseInt(foo)" },
+    { text: "parseFloat(foo)" },
+    { text: "String(foo)" },
+    { text: "!foo" },
+    { text: "~foo" },
+    { text: "-foo" },
+    { text: "+1234" },
+    { text: "-1234" },
+    { text: "- -1234" },
+    { text: "+Number(lol)" },
+    { text: "-parseFloat(lol)" },
+    { text: "2 * foo" },
+    { text: "1 * 1234" },
+    { text: "123 - 0" },
+    { text: "1 * Number(foo)" },
+    { text: "1 * parseInt(foo)" },
+    { text: "1 * parseFloat(foo)" },
+    { text: "Number(foo) * 1" },
+    { text: "Number(foo) - 0" },
+    { text: "parseInt(foo) * 1" },
+    { text: "parseFloat(foo) * 1" },
+    { text: "- -Number(foo)" },
+    { text: "1 * 1234 * 678 * Number(foo)" },
+    { text: "1 * 1234 * 678 * parseInt(foo)" },
+    { text: "(1 - 0) * parseInt(foo)" },
+    { text: "1234 * 1 * 678 * Number(foo)" },
+    { text: "1234 * 1 * Number(foo) * Number(bar)" },
+    { text: "1234 * 1 * Number(foo) * parseInt(bar)" },
+    { text: "1234 * 1 * Number(foo) * parseFloat(bar)" },
+    { text: "1234 * 1 * parseInt(foo) * parseFloat(bar)" },
+    { text: "1234 * 1 * parseInt(foo) * Number(bar)" },
+    { text: "1234 * 1 * parseFloat(foo) * Number(bar)" },
+    { text: "1234 * Number(foo) * 1 * Number(bar)" },
+    { text: "1234 * parseInt(foo) * 1 * Number(bar)" },
+    { text: "1234 * parseFloat(foo) * 1 * parseInt(bar)" },
+    { text: "1234 * parseFloat(foo) * 1 * Number(bar)" },
+    { text: "(- -1234) * (parseFloat(foo) - 0) * (Number(bar) - 0)" },
+    { text: "1234*foo*1" },
+    { text: "1234*1*foo" },
+    { text: "1234*bar*1*foo" },
+    { text: "1234*1*foo*bar" },
+    { text: "1234*1*foo*Number(bar)" },
+    { text: "1234*1*Number(foo)*bar" },
+    { text: "1234*1*parseInt(foo)*bar" },
+    { text: "0 + foo" },
+    { text: "~foo.bar()" },
+    { text: "foo + 'bar'" },
+    { text: "foo + `${bar}`", /* languageOptions: { ecmaVersion: 6 } */ },
 
-		// https://github.com/eslint/eslint/issues/14623
-		"'' + String(foo)",
-		"String(foo) + ''",
-		{ code: "`` + String(foo)", languageOptions: { ecmaVersion: 6 } },
-		{ code: "String(foo) + ``", languageOptions: { ecmaVersion: 6 } },
-		{
-			code: "`${'foo'}`",
-			options: [{ disallowTemplateShorthand: true }],
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "`${`foo`}`",
-			options: [{ disallowTemplateShorthand: true }],
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "`${String(foo)}`",
-			options: [{ disallowTemplateShorthand: true }],
-			languageOptions: { ecmaVersion: 6 },
-		},
+    { text: "!!foo", options: [{ boolean: false }] },
+    { text: "~foo.indexOf(1)", options: [{ boolean: false }] },
+    { text: "+foo", options: [{ number: false }] },
+    { text: "-(-foo)", options: [{ number: false }] },
+    { text: "foo - 0", options: [{ number: false }] },
+    { text: "1*foo", options: [{ number: false }] },
+    { text: '""+foo', options: [{ string: false }] },
+    { text: 'foo += ""', options: [{ string: false }] },
+    { text: "var a = !!foo", options: [{ boolean: true, allow: ["!!"] }] },
+    {
+        text: "var a = ~foo.indexOf(1)",
+        options: [{ boolean: true, allow: ["~"] }],
+    },
+    { text: "var a = ~foo", options: [{ boolean: true }] },
+    { text: "var a = 1 * foo", options: [{ boolean: true, allow: ["*"] }] },
+    { text: "- -foo", options: [{ number: true, allow: ["- -"] }] },
+    { text: "foo - 0", options: [{ number: true, allow: ["-"] }] },
+    { text: "var a = +foo", options: [{ boolean: true, allow: ["+"] }] },
+    {
+        text: 'var a = "" + foo',
+        options: [{ boolean: true, string: true, allow: ["+"] }],
+    },
 
-		// https://github.com/eslint/eslint/issues/16373
-		"console.log(Math.PI * 1/4)",
-		"a * 1 / 2",
-		"a * 1 / b",
-	],
-	invalid: [
-		{
-			code: "!!foo",
-		},
-		{
-			code: "!!(foo + bar)",
-		},
-		{
-			code: "!!(foo + bar); var Boolean = null",
-		},
-		{
-			code: "!!(foo + bar)",
-			languageOptions: {
-				globals: {
-					Boolean: "off",
-				},
-			},
-		},
-		{
-			code: "~foo.indexOf(1)",
-		},
-		{
-			code: "~foo.bar.indexOf(2)",
-		},
-		{
-			code: "+foo",
-		},
-		{
-			code: "-(-foo)",
-		},
-		{
-			code: "+foo.bar",
-		},
-		{
-			code: "1*foo",
-		},
-		{
-			code: "foo*1",
-		},
-		{
-			code: "1*foo.bar",
-		},
-		{
-			code: "foo.bar-0",
-		},
-		{
-			code: '""+foo',
-		},
-		{
-			code: "``+foo",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: 'foo+""',
-		},
-		{
-			code: "foo+``",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: '""+foo.bar',
-		},
-		{
-			code: "``+foo.bar",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: 'foo.bar+""',
-		},
-		{
-			code: "foo.bar+``",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "`${foo}`",
-			options: [{ disallowTemplateShorthand: true }],
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "`\\\n${foo}`",
-			options: [{ disallowTemplateShorthand: true }],
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "`${foo}\\\n`",
-			options: [{ disallowTemplateShorthand: true }],
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: 'foo += ""',
-		},
-		{
-			code: "foo += ``",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "var a = !!foo",
-			options: [{ boolean: true, allow: ["~"] }],
-		},
-		{
-			code: "var a = ~foo.indexOf(1)",
-			options: [{ boolean: true, allow: ["!!"] }],
-		},
-		{
-			code: "var a = 1 * foo",
-			options: [{ boolean: true, allow: ["+"] }],
-		},
-		{
-			code: "var a = +foo",
-			options: [{ boolean: true, allow: ["*"] }],
-		},
-		{
-			code: 'var a = "" + foo',
-			options: [{ boolean: true, allow: ["*"] }],
-		},
-		{
-			code: "var a = `` + foo",
-			options: [{ boolean: true, allow: ["*"] }],
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "typeof+foo",
-		},
-		{
-			code: "typeof +foo",
-		},
-		{
-			code: "let x ='' + 1n;",
-			languageOptions: { ecmaVersion: 2020 },
-		},
+    // https://github.com/eslint/eslint/issues/7057
+    { text: "'' + 'foo'" },
+    { text: "`` + 'foo'", /* languageOptions: { ecmaVersion: 6 } */ },
+    { text: "'' + `${foo}`", /* languageOptions: { ecmaVersion: 6 } */ },
+    { text: "'foo' + ''" },
+    { text: "'foo' + ``", /* languageOptions: { ecmaVersion: 6 } */ },
+    { text: "`${foo}` + ''", /* languageOptions: { ecmaVersion: 6 } */ },
+    { text: "foo += 'bar'" },
+    { text: "foo += `${bar}`", /* languageOptions: { ecmaVersion: 6 } */ },
+    { text: "`${foo}`", /* languageOptions: { ecmaVersion: 6 } */ },
+    {
+        text: "`${foo}`",
+        options: [{}],
+        /* languageOptions: { ecmaVersion: 6 }, */
+    },
+    "+42",
 
-		// Optional chaining
-		{
-			code: "~foo?.indexOf(1)",
-			languageOptions: { ecmaVersion: 2020 },
-		},
-		{
-			code: "~(foo?.indexOf)(1)",
-			languageOptions: { ecmaVersion: 2020 },
-		},
+    // https://github.com/eslint/eslint/issues/14623
+    { text: "'' + String(foo)" },
+    { text: "String(foo) + ''" },
+    { text: "`` + String(foo)", /* languageOptions: { ecmaVersion: 6 } */ },
+    { text: "String(foo) + ``", /* languageOptions: { ecmaVersion: 6 } */ },
 
-		// https://github.com/eslint/eslint/issues/16373 regression tests
-		{
-			code: "1 * a / 2",
-		},
-		{
-			code: "(a * 1) / 2",
-		},
-		{
-			code: "a * 1 / (b * 1)",
-		},
-		{
-			code: "a * 1 + 2",
-		},
-	],
-};
+    // https://github.com/eslint/eslint/issues/16373
+    { text: "console.log(Math.PI * 1/4)" },
+    { text: "a * 1 / 2" },
+    { text: "a * 1 / b" },
+];
+const invalid = [
+    {
+        text: "!!foo",
+    },
+    {
+        text: "!!(foo + bar)",
+    },
+    {
+        text: "!!(foo + bar); var Boolean = null",
+    },
+    {
+        text: "!!(foo + bar)",
+        languageOptions: {
+            globals: {
+                Boolean: "off",
+            },
+        },
+    },
+    {
+        text: "~foo.indexOf(1)",
+    },
+    {
+        text: "~foo.bar.indexOf(2)",
+    },
+    {
+        text: "+foo",
+    },
+    {
+        text: "-(-foo)",
+    },
+    {
+        text: "+foo.bar",
+    },
+    {
+        text: "1*foo",
+    },
+    {
+        text: "foo*1",
+    },
+    {
+        text: "1*foo.bar",
+    },
+    {
+        text: "foo.bar-0",
+    },
+    {
+        text: '""+foo',
+    },
+    {
+        text: "``+foo",
+        /* languageOptions: { ecmaVersion: 6 }, */
+    },
+    {
+        text: 'foo+""',
+    },
+    {
+        text: "foo+``",
+        /* languageOptions: { ecmaVersion: 6 }, */
+    },
+    {
+        text: '""+foo.bar',
+    },
+    {
+        text: "``+foo.bar",
+        /* languageOptions: { ecmaVersion: 6 }, */
+    },
+    {
+        text: 'foo.bar+""',
+    },
+    {
+        text: "foo.bar+``",
+        /* languageOptions: { ecmaVersion: 6 }, */
+    },
+    {
+        text: 'foo += ""',
+    },
+    {
+        text: "foo += ``",
+        /* languageOptions: { ecmaVersion: 6 }, */
+    },
+    {
+        text: "var a = !!foo",
+        options: [{ boolean: true, allow: ["~"] }],
+    },
+    {
+        text: "var a = ~foo.indexOf(1)",
+        options: [{ boolean: true, allow: ["!!"] }],
+    },
+    {
+        text: "var a = 1 * foo",
+        options: [{ boolean: true, allow: ["+"] }],
+    },
+    {
+        text: "var a = +foo",
+        options: [{ boolean: true, allow: ["*"] }],
+    },
+    {
+        text: 'var a = "" + foo',
+        options: [{ boolean: true, allow: ["*"] }],
+    },
+    {
+        text: "var a = `` + foo",
+        options: [{ boolean: true, allow: ["*"] }],
+        /* languageOptions: { ecmaVersion: 6 }, */
+    },
+    {
+        text: "typeof+foo",
+    },
+    {
+        text: "typeof +foo",
+    },
+    {
+        text: "let x ='' + 1n;",
+        /* languageOptions: { ecmaVersion: 2020 }, */
+    },
+
+    // Optional chaining
+    {
+        text: "~foo?.indexOf(1)",
+        /* languageOptions: { ecmaVersion: 2020 }, */
+    },
+    {
+        text: "~(foo?.indexOf)(1)",
+        /* languageOptions: { ecmaVersion: 2020 }, */
+    },
+
+    // https://github.com/eslint/eslint/issues/16373 regression tests
+    {
+        text: "1 * a / 2",
+    },
+    {
+        text: "(a * 1) / 2",
+    },
+    {
+        text: "a * 1 / (b * 1)",
+        errors: 2,
+    },
+    {
+        text: "a * 1 + 2",
+    },
+];
+
+describe("no-implicit-coercion", ({ describe }) => {
+
+    const globalRules = { "no-implicit-coercion": ["error"] };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach((item, i) => {
+                if (typeof item === "string") return; // bare string entries like "+42"
+                const { text, options } = item;
+
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-implicit-coercion"] = rules["no-implicit-coercion"].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, options, errors = 1 }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-implicit-coercion"] = rules["no-implicit-coercion"].concat(options);
+                }
+
+                const res = lintText(file, rules);
+
+                assertEqual(errors, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+
+                res.messages.forEach((message) => {
+                    assertEqual("no-implicit-coercion", message.ruleId, `message.ruleId:[${i}]:${text.slice(0, 52)} ...`);
+                    assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`);
+                });
+            });
+        });
+    });
+});

@@ -1,17 +1,16 @@
 We are in the process of porting old eslint tests into our new linter.
 
-To see how we write tests, review the @skills/writing-tests/SKILL.md document.
+To see how we write tests, review the skills/writing-tests/SKILL.md document.
 
 Review some of the existing lint rule tests in `test/lib/rules/*.test.js` (Note: Only `*.test.js` files are tests, the other files in test/lib/rules/ should be ignored.)
 
 Your task is to write tests in these test modules:
 
-- no-ex-assign.test.js
-- no-extend-native.test.js
-- no-floating-decimal.test.js
-- no-fun-assign.test.js
+- test/lib/rules/no-global-assign.test.js
+- test/lib/rules/no-implicit-coercion.test.js
+- test/lib/rules/no-invalid-regexp.test.js
 
-If there are any languageOption attributes defined in the test data, comment them out so they are documented, but ignored.
+If there are any ecmaVersion values defined in the test data, comment them out so they are documented, but ignored.
 
 Run your tests using:
 
