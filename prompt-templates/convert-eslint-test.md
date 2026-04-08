@@ -6,11 +6,12 @@ Review some of the existing lint rule tests in `test/lib/rules/*.test.js` (Note:
 
 Your task is to write tests in these target test modules:
 
-- test/lib/rules/no-misleading-character-class.test.js
-- test/lib/rules/no-mixed-operators.test.js
-- test/lib/rules/no-multi-assign.test.js
-- test/lib/rules/no-nested-ternary.test.js
-- test/lib/rules/no-new-native-nonconstructor.test.js
+- test/lib/rules/no-new-wrappers.test.js
+- test/lib/rules/no-obj-calls.test.js
+- test/lib/rules/no-plusplus.test.js
+- test/lib/rules/no-promise-executor-return.test.js
+- test/lib/rules/no-prototype-builtins.test.js
+- test/lib/rules/no-regex-spaces.test.js
 
 Note: These target test modules are just data arrays without an executable test suite. Your approach should be to mirror the existing test harness pattern you see in other test modules in `test/lib/rules/*.test.js`.
 
