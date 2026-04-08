@@ -20,6 +20,14 @@
  * THE SOFTWARE.
  */
 
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
+
+import { lintText } from "../../../mod.js";
+
 const valid = [
     /*
 		 * if the class has no extends or `extends null`, just ignore.
@@ -266,3 +274,57 @@ const invalid = [
             }`,
     },
 ];
+
+describe("no-this-before-super", ({ describe }) => {
+
+    const globalRules = { "no-this-before-super": ["error"] };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach((entry, i) => {
+                const testCase = typeof entry === "string" ? { text: entry } : entry;
+                const { text, options, languageOptions } = testCase;
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-this-before-super"] = rules["no-this-before-super"].concat(options);
+                }
+
+                const res = lintText(file, rules, languageOptions);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, options, languageOptions, errors = 1 }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-this-before-super"] = rules["no-this-before-super"].concat(options);
+                }
+
+                const res = lintText(file, rules, languageOptions);
+
+                assertEqual(errors, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+
+                res.messages.forEach((message) => {
+                    assertEqual("no-this-before-super", message.ruleId, `message.ruleId:[${i}]:${text.slice(0, 52)} ...`);
+                    assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`);
+                });
+            });
+        });
+    });
+});

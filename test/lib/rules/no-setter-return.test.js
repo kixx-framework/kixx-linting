@@ -20,6 +20,14 @@
  * THE SOFTWARE.
  */
 
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
+
+import { lintText } from "../../../mod.js";
+
 const valid = [
     //------------------------------------------------------------------------------
     // General
@@ -443,3 +451,59 @@ const invalid = [
         languageOptions: { ecmaVersion: 2020 },
     },
 ];
+
+describe("no-setter-return", ({ describe }) => {
+
+    const globalRules = { "no-setter-return": ["error"] };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, options, languageOptions }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-setter-return"] = rules["no-setter-return"].concat(options);
+                }
+
+                const res = lintText(file, rules, languageOptions);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, options, languageOptions, errors }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-setter-return"] = rules["no-setter-return"].concat(options);
+                }
+
+                const res = lintText(file, rules, languageOptions);
+
+                if (errors === undefined) {
+                    assertEqual(true, res.errorCount > 0, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                } else {
+                    assertEqual(errors, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                }
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+
+                res.messages.forEach((message) => {
+                    assertEqual("no-setter-return", message.ruleId, `message.ruleId:[${i}]:${text.slice(0, 52)} ...`);
+                    assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`);
+                });
+            });
+        });
+    });
+});

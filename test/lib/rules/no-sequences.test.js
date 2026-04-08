@@ -20,6 +20,14 @@
  * THE SOFTWARE.
  */
 
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
+
+import { lintText } from "../../../mod.js";
+
 // Examples of code that should not trigger the rule
 const valid = [
     { text: "var arr = [1, 2];" },
@@ -130,3 +138,57 @@ const invalid = [
         languageOptions: { ecmaVersion: 6 },
     },
 ];
+
+describe("no-sequences", ({ describe }) => {
+
+    const globalRules = { "no-sequences": ["error"] };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, options, languageOptions }, i) => {
+                const file = { text };
+                const effectiveLanguageOptions = { sourceType: "script", ...languageOptions };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-sequences"] = rules["no-sequences"].concat(options);
+                }
+
+                const res = lintText(file, rules, effectiveLanguageOptions);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, options, languageOptions, errors = 1 }, i) => {
+                const file = { text };
+                const effectiveLanguageOptions = { sourceType: "script", ...languageOptions };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-sequences"] = rules["no-sequences"].concat(options);
+                }
+
+                const res = lintText(file, rules, effectiveLanguageOptions);
+
+                assertEqual(errors, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+
+                res.messages.forEach((message) => {
+                    assertEqual("no-sequences", message.ruleId, `message.ruleId:[${i}]:${text.slice(0, 52)} ...`);
+                    assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`);
+                });
+            });
+        });
+    });
+});

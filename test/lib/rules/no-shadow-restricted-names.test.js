@@ -20,6 +20,14 @@
  * THE SOFTWARE.
  */
 
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
+
+import { lintText } from "../../../mod.js";
+
 const valid = [
     { text: "function foo(bar){ var baz; }" },
     { text: "!function foo(bar){ var baz; }" },
@@ -210,3 +218,61 @@ const invalid = [
         },
     },
 ];
+
+describe("no-shadow-restricted-names", ({ describe }) => {
+
+    const globalRules = { "no-shadow-restricted-names": ["error"] };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, options, languageOptions }, i) => {
+                const file = { text };
+                const effectiveLanguageOptions = { sourceType: "script", ...languageOptions };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-shadow-restricted-names"] = rules["no-shadow-restricted-names"].concat(options);
+                }
+
+                const res = lintText(file, rules, effectiveLanguageOptions);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, options, languageOptions, errors }, i) => {
+                const file = { text };
+                const effectiveLanguageOptions = { sourceType: "script", ...languageOptions };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-shadow-restricted-names"] = rules["no-shadow-restricted-names"].concat(options);
+                }
+
+                const res = lintText(file, rules, effectiveLanguageOptions);
+
+                if (errors === undefined) {
+                    assertEqual(true, res.errorCount > 0, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                } else {
+                    assertEqual(errors, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                }
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+
+                res.messages.forEach((message) => {
+                    assertEqual("no-shadow-restricted-names", message.ruleId, `message.ruleId:[${i}]:${text.slice(0, 52)} ...`);
+                    assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`);
+                });
+            });
+        });
+    });
+});
