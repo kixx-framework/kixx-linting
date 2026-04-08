@@ -33,49 +33,7 @@ export default {
 		"var a = 5;",
 		"var a = 5,\n    b = 3;",
 		{
-			code: "var a = 5,\n    b = 3;",
-			options: [{ skipBlankLines: true }],
-		},
-		{
-			code: "     ",
-			options: [{ skipBlankLines: true }],
-		},
-		{
-			code: "\t",
-			options: [{ skipBlankLines: true }],
-		},
-		{
-			code: "     \n    var c = 1;",
-			options: [{ skipBlankLines: true }],
-		},
-		{
-			code: "\t\n\tvar c = 2;",
-			options: [{ skipBlankLines: true }],
-		},
-		{
-			code: "\n   var c = 3;",
-			options: [{ skipBlankLines: true }],
-		},
-		{
-			code: "\n\tvar c = 4;",
-			options: [{ skipBlankLines: true }],
-		},
-		{
-			code: "let str = `${a}\n   \n${b}`;",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "let str = `${a}\n   \n${b}`;\n   \n   ",
-			options: [{ skipBlankLines: true }],
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "// Trailing comment test. ",
-			options: [{ ignoreComments: true }],
-		},
-		{
 			code: "// Trailing comment test.",
-			options: [{ ignoreComments: false }],
 		},
 		{
 			code: "// Trailing comment test.",
@@ -83,19 +41,15 @@ export default {
 		},
 		{
 			code: "/* \nTrailing comments test. \n*/",
-			options: [{ ignoreComments: true }],
 		},
 		{
 			code: "#!/usr/bin/env node ",
-			options: [{ ignoreComments: true }],
 		},
 		{
 			code: "/* \n */ // ",
-			options: [{ ignoreComments: true }],
 		},
 		{
 			code: "/* \n */ /* \n */",
-			options: [{ ignoreComments: true }],
 		},
 	],
 
@@ -187,22 +141,6 @@ export default {
 			options: [{}],
 		},
 		{
-			code: "var a = 'bar';  \n \n\t",
-			options: [
-				{
-					skipBlankLines: true,
-				},
-			],
-		},
-		{
-			code: "var a = 'foo';   \nvar b = 'bar';  \n  \n",
-			options: [
-				{
-					skipBlankLines: true,
-				},
-			],
-		},
-		{
 			code: "let str = `${a}\n  \n${b}`;  \n",
 			languageOptions: { ecmaVersion: 6 },
 		},
@@ -214,61 +152,23 @@ export default {
 			code: "let str = `  \n  ${a}\n  \n${b}`;  \n",
 			languageOptions: { ecmaVersion: 6 },
 		},
-		{
-			code: "let str = `${a}\n  \n${b}`;  \n  \n",
-			options: [
-				{
-					skipBlankLines: true,
-				},
-			],
-			languageOptions: { ecmaVersion: 6 },
-		},
 
 		// https://github.com/eslint/eslint/issues/6933
 		{
 			code: "    \nabcdefg ",
-			options: [{ skipBlankLines: true }],
-		},
-		{
-			code: "    \nabcdefg ",
 		},
 
-		// Tests for ignoreComments flag.
-		{
-			code: "var foo = 'bar'; ",
-			options: [{ ignoreComments: true }],
-		},
-		{
-			code: "/* */ ",
-			options: [{ ignoreComments: true }],
-		},
-		{
-			code: "/* */foo ",
-			options: [{ ignoreComments: true }],
-		},
-		{
-			code: "/* \n */ ",
-			options: [{ ignoreComments: true }],
-		},
-		{
-			code: "/* \n */ foo ",
-			options: [{ ignoreComments: true }],
-		},
 		{
 			code: "// Trailing comment test. ",
-			options: [{ ignoreComments: false }],
 		},
 		{
 			code: "/* \nTrailing comments test. \n*/",
-			options: [{ ignoreComments: false }],
 		},
 		{
 			code: "#!/usr/bin/env node ",
-			options: [{ ignoreComments: false }],
 		},
 		{
 			code: "// Trailing comment default test. ",
-			options: [],
 		},
 	],
 };

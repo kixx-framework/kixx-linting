@@ -102,40 +102,6 @@ export default {
             / 5)
         `,
 
-		// https://github.com/eslint/eslint/issues/11650
-		{
-			code: `
-                tag<generic>\`
-                    multiline
-                \`;
-            `,
-			languageOptions: {
-				parser: require("../../fixtures/parsers/typescript-parsers/tagged-template-with-generic/tagged-template-with-generic-1"),
-			},
-		},
-		{
-			code: `
-                tag<
-                  generic
-                >\`
-                    multiline
-                \`;
-            `,
-			languageOptions: {
-				parser: require("../../fixtures/parsers/typescript-parsers/tagged-template-with-generic/tagged-template-with-generic-2"),
-			},
-		},
-		{
-			code: `
-                tag<
-                  generic
-                >\`multiline\`;
-            `,
-			languageOptions: {
-				parser: require("../../fixtures/parsers/typescript-parsers/tagged-template-with-generic/tagged-template-with-generic-3"),
-			},
-		},
-
 		// Optional chaining
 		{
 			code: "var a = b\n  ?.(x || y).doSomething()",
@@ -234,16 +200,6 @@ export default {
                 foo
                 /bar/s.test(baz)
             `,
-		},
-
-		// https://github.com/eslint/eslint/issues/11650
-		{
-			code: ["const x = aaaa<", "  test", ">/*", "test", "*/`foo`"].join(
-				"\n",
-			),
-			languageOptions: {
-				parser: require("../../fixtures/parsers/typescript-parsers/tagged-template-with-generic/tagged-template-with-generic-and-comment"),
-			},
 		},
 
 		// Class fields

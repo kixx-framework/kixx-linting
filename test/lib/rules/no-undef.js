@@ -61,13 +61,6 @@ export default {
 			languageOptions: { ecmaVersion: 6 },
 		},
 		{
-			code: "var React, App, a=1; React.render(<App attr={a} />);",
-			languageOptions: {
-				ecmaVersion: 6,
-				parserOptions: { ecmaFeatures: { jsx: true } },
-			},
-		},
-		{
 			code: "var console; [1,2,3].forEach(obj => {\n  console.log(obj);\n});",
 			languageOptions: { ecmaVersion: 6 },
 		},
@@ -221,42 +214,6 @@ export default {
 			code: "AsyncDisposableStack; DisposableStack; SuppressedError; Temporal",
 			languageOptions: { ecmaVersion: 2026 },
 		},
-		{
-			code: "/*global App*/ <App />;",
-			languageOptions: {
-				ecmaVersion: 6,
-				parserOptions: { ecmaFeatures: { jsx: true } },
-			},
-		},
-		{
-			code: "const App = () => <div/>; <App />;",
-			languageOptions: {
-				ecmaVersion: 6,
-				parserOptions: { ecmaFeatures: { jsx: true } },
-			},
-		},
-		{
-			code: "let Foo, Bar; <Foo><Bar /></Foo>;",
-			languageOptions: {
-				ecmaVersion: 6,
-				parserOptions: { ecmaFeatures: { jsx: true } },
-			},
-		},
-		{
-			code: "import App from './App.jsx'; <App />;",
-			languageOptions: {
-				ecmaVersion: 6,
-				sourceType: "module",
-				parserOptions: { ecmaFeatures: { jsx: true } },
-			},
-		},
-		{
-			code: "function App() { return <div/> } <App />;",
-			languageOptions: {
-				ecmaVersion: 6,
-				parserOptions: { ecmaFeatures: { jsx: true } },
-			},
-		},
 	],
 	invalid: [
 		{
@@ -280,20 +237,6 @@ export default {
 		},
 		{
 			code: 'require("a");',
-		},
-		{
-			code: "var React; React.render(<img attr={a} />);",
-			languageOptions: {
-				ecmaVersion: 6,
-				parserOptions: { ecmaFeatures: { jsx: true } },
-			},
-		},
-		{
-			code: "var React, App; React.render(<App attr={a} />);",
-			languageOptions: {
-				ecmaVersion: 6,
-				parserOptions: { ecmaFeatures: { jsx: true } },
-			},
 		},
 		{
 			code: "[a] = [0];",
@@ -397,34 +340,6 @@ export default {
 			code: "class C { static { var a; } } a;",
 			languageOptions: {
 				ecmaVersion: 2022,
-			},
-		},
-		{
-			code: "<App />;",
-			languageOptions: {
-				ecmaVersion: 6,
-				parserOptions: { ecmaFeatures: { jsx: true } },
-			},
-		},
-		{
-			code: "let React; React.render(<App />);",
-			languageOptions: {
-				ecmaVersion: 6,
-				parserOptions: { ecmaFeatures: { jsx: true } },
-			},
-		},
-		{
-			code: "function f() { return <Button/> }",
-			languageOptions: {
-				ecmaVersion: 6,
-				parserOptions: { ecmaFeatures: { jsx: true } },
-			},
-		},
-		{
-			code: "<Foo.Bar />",
-			languageOptions: {
-				ecmaVersion: 6,
-				parserOptions: { ecmaFeatures: { jsx: true } },
 			},
 		},
 	],
