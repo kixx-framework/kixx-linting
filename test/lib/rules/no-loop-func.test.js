@@ -20,6 +20,14 @@
  * THE SOFTWARE.
  */
 
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
+
+import { lintText } from "../../../mod.js";
+
 const valid = [
     { text: "string = 'function a() {}';" },
     { text: "for (var i=0; i<l; i++) { } var a = function() { i; };" },
@@ -549,3 +557,59 @@ const invalid = [
         languageOptions: { ecmaVersion: 2022 },
     },
 ];
+
+describe("no-loop-func", ({ describe }) => {
+
+    const globalRules = { "no-loop-func": ["error"] };
+    const normalizeLanguageOptions = (languageOptions) => ({
+        ecmaVersion: 2024,
+        ...(languageOptions || {}),
+    });
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, options, languageOptions }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-loop-func"] = rules["no-loop-func"].concat(options);
+                }
+
+                const res = lintText(file, rules, normalizeLanguageOptions(languageOptions));
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, options, languageOptions, errors = 1 }, i) => {
+                const file = { text };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-loop-func"] = rules["no-loop-func"].concat(options);
+                }
+
+                const res = lintText(file, rules, normalizeLanguageOptions(languageOptions));
+
+                assertEqual(errors, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
+
+                res.messages.forEach((message) => {
+                    assertEqual("no-loop-func", message.ruleId, `message.ruleId:[${i}]:${text.slice(0, 52)} ...`);
+                    assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`);
+                });
+            });
+        });
+    });
+});
