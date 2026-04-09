@@ -23,6 +23,8 @@ If you encounter failed tests, DO NOT remove or change the test data to make tes
 
 If the implementation of a rule seems to be in conflict with failed tests, then stop working and inform the user.
 
+If it will require more than incremental changes to a rule implementation to make the tests pass, then write a detailed refactoring plan in the todos/ directory, and then stop your work on that rule, leaving the tests in a broken state.
+
 When you're deciding how to approach a problem, choose an approach and commit to it. Avoid revisiting decisions unless you encounter new information that directly contradicts your reasoning. If you're weighing two approaches, pick one and see it through. You can always course-correct later if the chosen approach fails.
 
 Your token budget is 125,000 tokens. If you are unable to fix the implementation before consuming 125,000 tokens of your context window, then stop and inform the user you are out of space and cannot continue working.
