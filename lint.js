@@ -109,7 +109,6 @@ const rules = {
     "no-unused-private-class-members": ["error"],
     "no-use-before-define": ["error", { functions: false, classes: false }],
     "no-useless-assignment": ["error"],
-    "no-useless-backreference": ["error"],
     "no-useless-catch": ["error"],
     "no-useless-computed-key": ["error"],
     "no-var": ["error"],

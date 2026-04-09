@@ -20,6 +20,14 @@
  * THE SOFTWARE.
  */
 
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
+
+import { lintText } from "../../../mod.js";
+
 const valid = [
     { text: "const JOE = 'schmoe';" },
     { text: "let moo = 'car';" },
@@ -246,9 +254,11 @@ const invalid = [
     // https://github.com/eslint/eslint/issues/11830
     {
         text: "function foo() { var let; }",
+        languageOptions: { sourceType: "script" },
     },
     {
         text: "function foo() { var { let } = {}; }",
+        languageOptions: { sourceType: "script" },
     },
 
     // https://github.com/eslint/eslint/issues/16610
@@ -329,3 +339,61 @@ const invalid = [
         languageOptions: { ecmaVersion: 6, sourceType: "module" },
     },
 ];
+
+describe("no-var", ({ describe }) => {
+
+    const globalRules = { "no-var": ["error"] };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, code, options, languageOptions }, i) => {
+                const sourceText = text ?? code;
+                const file = { text: sourceText };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-var"] = rules["no-var"].concat(options);
+                }
+
+                const res = lintText(file, rules, languageOptions);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, code, options, languageOptions, errors }, i) => {
+                const sourceText = text ?? code;
+                const file = { text: sourceText };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-var"] = rules["no-var"].concat(options);
+                }
+
+                const res = lintText(file, rules, languageOptions);
+
+                if (errors === undefined) {
+                    assertEqual(true, res.errorCount > 0, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+                } else {
+                    assertEqual(errors, res.errorCount, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+                }
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+
+                res.messages.forEach((message) => {
+                    assertEqual("no-var", message.ruleId, `message.ruleId:[${i}]:${sourceText.slice(0, 52)} ...`);
+                    assertNonEmptyString(message.message, `message.message:[${i}]:${sourceText.slice(0, 52)} ...`);
+                });
+            });
+        });
+    });
+});

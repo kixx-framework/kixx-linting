@@ -250,9 +250,6 @@ export default [
             'no-useless-assignment': [
                 'error',
             ],
-            'no-useless-backreference': [
-                'error',
-            ],
             'no-useless-catch': [
                 'error',
             ],

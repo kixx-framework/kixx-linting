@@ -108,7 +108,7 @@ Build a minimal, synchronous `lintText(sourceText, options)` function that parse
 
 - [x] **Implement regex analysis helpers**
   - **Story**: Regex-focused rules need to inspect regular expression literal structure beyond what the AST exposes
-  - **What**: Create shared helper functions for analyzing regex literals and `RegExp` constructor calls used by multiple rules. Helpers needed: `parseRegexLiteral(node)` returning `{ pattern, flags }` from a `Literal` node with `regex` property; `hasControlCharacter(pattern)` for `no-control-regex`; `hasEmptyCharacterClass(pattern)` for `no-empty-character-class`; `hasRedundantSpaces(pattern)` for `no-regex-spaces`; `hasUselessBackreference(pattern)` for `no-useless-backreference`; `getMisleadingCharacterClassNodes(pattern)` for `no-misleading-character-class`. Do not vendor a third-party regex parser unless the logic genuinely requires it — evaluate whether native JS regex introspection suffices for each helper.
+  - **What**: Create shared helper functions for analyzing regex literals and `RegExp` constructor calls used by multiple rules. Helpers needed: `parseRegexLiteral(node)` returning `{ pattern, flags }` from a `Literal` node with `regex` property; `hasControlCharacter(pattern)` for `no-control-regex`; `hasEmptyCharacterClass(pattern)` for `no-empty-character-class`; `hasRedundantSpaces(pattern)` for `no-regex-spaces`; `getMisleadingCharacterClassNodes(pattern)` for `no-misleading-character-class`. Do not vendor a third-party regex parser unless the logic genuinely requires it — evaluate whether native JS regex introspection suffices for each helper.
   - **Where**: `lib/rules/regex-helpers.js`
   - **Acceptance criteria**: Each helper function is independently testable; `hasEmptyCharacterClass('/[]/')` returns true; `hasControlCharacter('/\\x00/')` returns true; helpers handle edge cases like escaped characters and unicode flags
   - **Depends on**: Build lintText() entry point
@@ -136,9 +136,9 @@ Build a minimal, synchronous `lintText(sourceText, options)` function that parse
 
 - [x] **Implement regex rules**
   - **Story**: Catch defects in regular expression literals
-  - **What**: Implement 4 rules using the regex helpers: `no-regex-spaces`, `no-misleading-character-class`, `no-useless-backreference`, `no-irregular-whitespace` (if not already in text batch — covers regex literals as well as other contexts).
-  - **Where**: `lib/rules/no-regex-spaces.js`, `lib/rules/no-misleading-character-class.js`, `lib/rules/no-useless-backreference.js`; register each in `lib/rules/index.js`
-  - **Acceptance criteria**: `no-regex-spaces` flags `/  /` (two spaces); `no-misleading-character-class` flags `/[👶🏽]/`; `no-useless-backreference` flags `/(?<a>x)\2/`
+  - **What**: Implement 3 rules using the regex helpers: `no-regex-spaces`, `no-misleading-character-class`, `no-irregular-whitespace` (if not already in text batch — covers regex literals as well as other contexts).
+  - **Where**: `lib/rules/no-regex-spaces.js`, `lib/rules/no-misleading-character-class.js`; register each in `lib/rules/index.js`
+  - **Acceptance criteria**: `no-regex-spaces` flags `/  /` (two spaces); `no-misleading-character-class` flags `/[👶🏽]/`
   - **Depends on**: Implement regex analysis helpers
 
 - [x] **Implement scope-based rules (batch 1: illegal assignments)**
@@ -178,7 +178,7 @@ Build a minimal, synchronous `lintText(sourceText, options)` function that parse
 
 - [x] **Implement remaining scope-based rules**
   - **Story**: Detect complex patterns in async and loop contexts
-  - **What**: Implement 4 remaining rules that were deferred because they interact with both scope and flow: `no-unmodified-loop-condition` (flag loop conditions that reference variables never modified within the loop), `no-useless-backreference` (if not in regex batch), `for-direction` (flag `for` loops where the update moves away from the termination condition), `require-atomic-updates` (flag async assignments where a non-atomic read-modify-write pattern could be interrupted).
+  - **What**: Implement 3 remaining rules that were deferred because they interact with both scope and flow: `no-unmodified-loop-condition` (flag loop conditions that reference variables never modified within the loop), `for-direction` (flag `for` loops where the update moves away from the termination condition), `require-atomic-updates` (flag async assignments where a non-atomic read-modify-write pattern could be interrupted).
   - **Where**: `lib/rules/{rule-name}.js` for each; register each in `lib/rules/index.js`
   - **Acceptance criteria**: `for-direction` fires on `for (let i = 0; i < 10; i--)` but not `for (let i = 0; i < 10; i++)`; `no-unmodified-loop-condition` fires when the loop condition variable is never written inside the loop body
   - **Depends on**: Build lintText() entry point, Vendor eslint-scope, Vendor code-path analysis

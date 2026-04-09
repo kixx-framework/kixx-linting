@@ -6,7 +6,6 @@ Review some of the existing lint rule tests in `test/lib/rules/*.test.js` (Note:
 
 Your task is to write tests in these target test modules:
 
-- test/lib/rules/no-useless-backreference.test.js
 - test/lib/rules/no-useless-catch.test.js
 - test/lib/rules/no-useless-computed-key.test.js
 - test/lib/rules/no-var.test.js
