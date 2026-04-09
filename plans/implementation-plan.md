@@ -115,14 +115,14 @@ Build a minimal, synchronous `lintText(sourceText, options)` function that parse
 
 - [x] **Implement AST-structure rules (batch 1: literals, operators, and simple expressions)**
   - **Story**: Catch local structural mistakes detectable from a single AST node or its immediate children
-  - **What**: Implement 18 rules: `eqeqeq`, `no-compare-neg-zero`, `no-eq-null`, `no-floating-decimal` (if not already in layout batch), `no-loss-of-precision`, `no-sequences`, `no-return-assign`, `no-throw-literal`, `no-caller`, `no-multi-assign`, `no-nested-ternary`, `no-plusplus`, `no-mixed-operators` (warn), `use-isnan`, `valid-typeof`, `prefer-numeric-literals`, `no-useless-concat`, `no-useless-escape`.
+  - **What**: Implement 16 rules: `eqeqeq`, `no-compare-neg-zero`, `no-eq-null`, `no-floating-decimal` (if not already in layout batch), `no-loss-of-precision`, `no-sequences`, `no-return-assign`, `no-throw-literal`, `no-caller`, `no-multi-assign`, `no-nested-ternary`, `no-plusplus`, `no-mixed-operators` (warn), `use-isnan`, `valid-typeof`, `prefer-numeric-literals`.
   - **Where**: `lib/rules/{rule-name}.js` for each; register each in `lib/rules/index.js`
   - **Acceptance criteria**: Each rule detects its target pattern and reports with correct location; `no-mixed-operators` uses severity `warn`; `valid-typeof` catches comparisons like `typeof x === 'nunber'`
   - **Depends on**: Build lintText() entry point
 
 - [x] **Implement AST-structure rules (batch 2: control flow, classes, and declarations)**
   - **Story**: Catch structural problems in statements, classes, and declarations
-  - **What**: Implement 18 rules: `default-case-last`, `no-case-declarations`, `no-duplicate-case`, `no-dupe-else-if`, `no-cond-assign`, `no-debugger`, `no-empty`, `no-lonely-if`, `no-unsafe-finally`, `no-unsafe-negation`, `constructor-super` (AST component only, deferring flow analysis to flow batch), `no-dupe-class-members`, `no-dupe-keys`, `no-useless-constructor`, `no-useless-computed-key`, `no-unused-private-class-members`, `no-duplicate-imports`, `no-unused-labels`.
+  - **What**: Implement 17 rules: `default-case-last`, `no-case-declarations`, `no-duplicate-case`, `no-dupe-else-if`, `no-cond-assign`, `no-debugger`, `no-empty`, `no-lonely-if`, `no-unsafe-finally`, `no-unsafe-negation`, `constructor-super` (AST component only, deferring flow analysis to flow batch), `no-dupe-class-members`, `no-dupe-keys`, `no-useless-computed-key`, `no-unused-private-class-members`, `no-duplicate-imports`, `no-unused-labels`.
   - **Where**: `lib/rules/{rule-name}.js` for each; register each in `lib/rules/index.js`
   - **Acceptance criteria**: Each rule detects its target pattern; `no-dupe-keys` detects duplicate property names in object literals; `no-duplicate-imports` flags multiple `import` statements from the same module
   - **Depends on**: Build lintText() entry point
@@ -148,11 +148,11 @@ Build a minimal, synchronous `lintText(sourceText, options)` function that parse
   - **Acceptance criteria**: Each rule correctly identifies illegal assignments; `no-shadow-restricted-names` fires on `let undefined = 1`; `no-extend-native` fires on `Array.prototype.x = 1`; `no-const-assign` does not fire for `const` declarations that are only read
   - **Depends on**: Build lintText() entry point, Vendor eslint-scope
 
-- [x] **Implement scope-based rules (batch 2: undefined and unused variables)**
-  - **Story**: Catch references to undeclared variables and declarations that are never used
-  - **What**: Implement 4 rules: `no-undef` (flag references with no binding in any scope, respecting `globals` config), `no-unused-vars` (flag declared variables never read — handle function params, destructuring, and export exceptions), `no-use-before-define` (with `{ functions: false, classes: false }` — flag variable references that appear before their declaration in source order), `no-unassigned-vars` (custom rule — flag variables declared but never assigned; confirm exact semantics from the rule inventory task).
-  - **Where**: `lib/rules/no-undef.js`, `lib/rules/no-unused-vars.js`, `lib/rules/no-use-before-define.js`, `lib/rules/no-unassigned-vars.js`; register each in `lib/rules/index.js`
-  - **Acceptance criteria**: `no-undef` does not fire for globals listed in `reference-lint.config.js` (console, setTimeout, etc.); `no-unused-vars` handles `export { x }` as a usage; `no-use-before-define` does not fire for function declarations when `functions: false`
+- [x] **Implement scope-based rules (batch 2: undefined variables and declaration ordering)**
+  - **Story**: Catch references to undeclared variables and invalid declaration ordering
+  - **What**: Implement 3 rules: `no-undef` (flag references with no binding in any scope, respecting `globals` config), `no-use-before-define` (with `{ functions: false, classes: false }` — flag variable references that appear before their declaration in source order), `no-unassigned-vars` (custom rule — flag variables declared but never assigned; confirm exact semantics from the rule inventory task).
+  - **Where**: `lib/rules/no-undef.js`, `lib/rules/no-use-before-define.js`, `lib/rules/no-unassigned-vars.js`; register each in `lib/rules/index.js`
+  - **Acceptance criteria**: `no-undef` does not fire for globals listed in `reference-lint.config.js` (console, setTimeout, etc.); `no-use-before-define` does not fire for function declarations when `functions: false`
   - **Depends on**: Build lintText() entry point, Vendor eslint-scope
 
 - [x] **Implement scope-based rules (batch 3: variable declarations and preference)**

@@ -243,9 +243,6 @@ export default [
             'no-unused-private-class-members': [
                 'error',
             ],
-            'no-unused-vars': [
-                'error',
-            ],
             'no-use-before-define': [
                 'error',
                 { functions: false, classes: false },
@@ -260,15 +257,6 @@ export default [
                 'error',
             ],
             'no-useless-computed-key': [
-                'error',
-            ],
-            'no-useless-concat': [
-                'error',
-            ],
-            'no-useless-constructor': [
-                'error',
-            ],
-            'no-useless-escape': [
                 'error',
             ],
             'no-var': [

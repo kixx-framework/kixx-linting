@@ -73,15 +73,11 @@ no-unsafe-negation
 no-unused-expressions
 no-unused-labels
 no-unused-private-class-members
-no-unused-vars
 no-use-before-define
 no-useless-assignment
 no-useless-backreference
 no-useless-catch
 no-useless-computed-key
-no-useless-concat
-no-useless-constructor
-no-useless-escape
 no-var
 no-warning-comments
 preserve-caught-error
