@@ -205,6 +205,7 @@ const invalid = [
                     }
                 }
             `,
+        errors: 2,
     },
     {
         text: `
@@ -220,6 +221,7 @@ const invalid = [
                     e();
                 }
             `,
+        errors: 3,
     },
     {
         text: `
@@ -260,6 +262,7 @@ const invalid = [
         languageOptions: {
             ecmaVersion: 6,
         },
+        errors: 2,
     },
 
     /*
@@ -284,10 +287,12 @@ const invalid = [
     {
         text: "class C extends B { foo; constructor() {} bar; }",
         languageOptions: { ecmaVersion: 2022 },
+        errors: 2,
     },
     {
         text: "(class extends B { foo; constructor() {} bar; })",
         languageOptions: { ecmaVersion: 2022 },
+        errors: 2,
     },
     {
         text: "class B extends A { x; constructor() { class C extends D { [super().x]; constructor() {} } } }",
@@ -300,6 +305,7 @@ const invalid = [
     {
         text: "class B extends A { x; static y; z; static q; constructor() {} }",
         languageOptions: { ecmaVersion: 2022 },
+        errors: 2,
     },
 ];
 
