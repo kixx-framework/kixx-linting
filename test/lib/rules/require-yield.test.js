@@ -20,36 +20,35 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		"function foo() { return 0; }",
-		"function* foo() { yield 0; }",
-		"function* foo() { }",
-		"(function* foo() { yield 0; })();",
-		"(function* foo() { })();",
-		"var obj = { *foo() { yield 0; } };",
-		"var obj = { *foo() { } };",
-		"class A { *foo() { yield 0; } };",
-		"class A { *foo() { } };",
-	],
-	invalid: [
-		{
-			code: "function* foo() { return 0; }",
-		},
-		{
-			code: "(function* foo() { return 0; })();",
-		},
-		{
-			code: "var obj = { *foo() { return 0; } }",
-		},
-		{
-			code: "class A { *foo() { return 0; } }",
-		},
-		{
-			code: "function* foo() { function* bar() { yield 0; } }",
-		},
-		{
-			code: "function* foo() { function* bar() { return 0; } yield 0; }",
-		},
-	],
-};
+const valid = [
+    { text: "function foo() { return 0; }" },
+    { text: "function* foo() { yield 0; }" },
+    { text: "function* foo() { }" },
+    { text: "(function* foo() { yield 0; })();" },
+    { text: "(function* foo() { })();" },
+    { text: "var obj = { *foo() { yield 0; } };" },
+    { text: "var obj = { *foo() { } };" },
+    { text: "class A { *foo() { yield 0; } };" },
+    { text: "class A { *foo() { } };" },
+];
+
+const invalid = [
+    {
+        text: "function* foo() { return 0; }",
+    },
+    {
+        text: "(function* foo() { return 0; })();",
+    },
+    {
+        text: "var obj = { *foo() { return 0; } }",
+    },
+    {
+        text: "class A { *foo() { return 0; } }",
+    },
+    {
+        text: "function* foo() { function* bar() { yield 0; } }",
+    },
+    {
+        text: "function* foo() { function* bar() { return 0; } yield 0; }",
+    },
+];
