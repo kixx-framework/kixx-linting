@@ -20,28 +20,27 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		"arguments;",
-		"function foo(arguments) { arguments; }",
-		"function foo() { var arguments; arguments; }",
-		"var foo = () => arguments;", // Arrows don't have "arguments".,
-		"function foo(...args) { args; }",
-		"function foo() { arguments.length; }",
-		"function foo() { arguments.callee; }",
-	],
-	invalid: [
-		{
-			code: "function foo() { arguments; }",
-		},
-		{
-			code: "function foo() { arguments[0]; }",
-		},
-		{
-			code: "function foo() { arguments[1]; }",
-		},
-		{
-			code: "function foo() { arguments[Symbol.iterator]; }",
-		},
-	],
-};
+const valid = [
+    { text: "arguments;" },
+    { text: "function foo(arguments) { arguments; }" },
+    { text: "function foo() { var arguments; arguments; }" },
+    { text: "var foo = () => arguments;" }, // Arrows don't have "arguments".,
+    { text: "function foo(...args) { args; }" },
+    { text: "function foo() { arguments.length; }" },
+    { text: "function foo() { arguments.callee; }" },
+];
+
+const invalid = [
+    {
+        text: "function foo() { arguments; }",
+    },
+    {
+        text: "function foo() { arguments[0]; }",
+    },
+    {
+        text: "function foo() { arguments[1]; }",
+    },
+    {
+        text: "function foo() { arguments[Symbol.iterator]; }",
+    },
+];

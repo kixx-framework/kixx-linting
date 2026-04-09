@@ -112,7 +112,6 @@ Audit date: 2026-04-05
 - [x] `prefer-promise-reject-errors`
 - [x] `prefer-rest-params`
 - [x] `radix`
-- [x] `require-atomic-updates`
 - [x] `require-yield`
 - [x] `rest-spread-spacing`
 - [x] `semi`

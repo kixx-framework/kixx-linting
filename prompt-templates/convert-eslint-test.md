@@ -6,10 +6,10 @@ Review some of the existing lint rule tests in `test/lib/rules/*.test.js` (Note:
 
 Your task is to write tests in these target test modules:
 
-- test/lib/rules/prefer-arrow-callback.test.js
-- test/lib/rules/prefer-const.test.js
-- test/lib/rules/prefer-numeric-literals.test.js
-
+- test/lib/rules/prefer-promise-reject-errors.test.js
+- test/lib/rules/prefer-rest-params.test.js
+- test/lib/rules/preserve-caught-error.test.js
+- test/lib/rules/radix.test.js
 
 Note: These target test modules are just data arrays without an executable test suite. Your approach should be to mirror the existing test harness pattern you see in other test modules in `test/lib/rules/*.test.js`.
 

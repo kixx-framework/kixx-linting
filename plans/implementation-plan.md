@@ -171,14 +171,14 @@ Build a minimal, synchronous `lintText(sourceText, options)` function that parse
 
 - [x] **Implement flow-sensitive rules**
   - **Story**: Rules that depend on reachability and execution-path state across control flow
-  - **What**: Implement 8 rules using the vendored code-path analysis engine integrated into the traverser. The code-path engine emits events (`onCodePathStart`, `onCodePathEnd`, `onCodePathSegmentStart`, `onCodePathSegmentEnd`, `onUnreachableCodePathSegmentStart`) that rules subscribe to via their visitor map alongside regular node visitors: `no-unreachable`, `getter-return`, `no-setter-return`, `no-this-before-super`, `constructor-super`, `no-promise-executor-return`, `require-yield`, `require-atomic-updates`. Rules that were partially implemented in earlier AST batches (e.g., `getter-return`, `constructor-super`) should be completed or replaced here using flow data.
+  - **What**: Implement 7 rules using the vendored code-path analysis engine integrated into the traverser. The code-path engine emits events (`onCodePathStart`, `onCodePathEnd`, `onCodePathSegmentStart`, `onCodePathSegmentEnd`, `onUnreachableCodePathSegmentStart`) that rules subscribe to via their visitor map alongside regular node visitors: `no-unreachable`, `getter-return`, `no-setter-return`, `no-this-before-super`, `constructor-super`, `no-promise-executor-return`, `require-yield`. Rules that were partially implemented in earlier AST batches (e.g., `getter-return`, `constructor-super`) should be completed or replaced here using flow data.
   - **Where**: `lib/rules/{rule-name}.js` for each; register each in `lib/rules/index.js`
   - **Acceptance criteria**: `no-unreachable` fires on statements after `return` but not in dead branches of `if`; `getter-return` fires when a getter has a path with no `return`; `constructor-super` fires when `super()` is missing in a derived class constructor; code-path events are received correctly during traversal
   - **Depends on**: Build lintText() entry point, Vendor code-path analysis
 
 - [x] **Implement remaining scope-based rules**
   - **Story**: Detect complex patterns in async and loop contexts
-  - **What**: Implement 3 remaining rules that were deferred because they interact with both scope and flow: `no-unmodified-loop-condition` (flag loop conditions that reference variables never modified within the loop), `for-direction` (flag `for` loops where the update moves away from the termination condition), `require-atomic-updates` (flag async assignments where a non-atomic read-modify-write pattern could be interrupted).
+  - **What**: Implement 2 remaining rules that were deferred because they interact with both scope and flow: `no-unmodified-loop-condition` (flag loop conditions that reference variables never modified within the loop), `for-direction` (flag `for` loops where the update moves away from the termination condition).
   - **Where**: `lib/rules/{rule-name}.js` for each; register each in `lib/rules/index.js`
   - **Acceptance criteria**: `for-direction` fires on `for (let i = 0; i < 10; i--)` but not `for (let i = 0; i < 10; i++)`; `no-unmodified-loop-condition` fires when the loop condition variable is never written inside the loop body
   - **Depends on**: Build lintText() entry point, Vendor eslint-scope, Vendor code-path analysis
