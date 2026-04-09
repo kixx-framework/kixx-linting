@@ -20,6 +20,14 @@
  * THE SOFTWARE.
  */
 
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
+
+import { lintText } from "../../../mod.js";
+
 const valid = [
     {
         text: `try {
@@ -130,6 +138,7 @@ const valid = [
 			} catch (error) {
 				throw Error("Failed to perform error prone operations");
 			}`,
+        languageOptions: { ecmaVersion: 2022, sourceType: "module" },
     },
     /* It's valid to discard the caught error at parameter level of catch block `requireCatchParameter` is set to `false` (default behavior) */
     {
@@ -139,6 +148,7 @@ const valid = [
 		throw new Error("Something went wrong");
 	}`,
         options: [{ requireCatchParameter: false }],
+        languageOptions: { ecmaVersion: 2022 },
     },
     /* Multiple cause properties are present and the last one is the expected caught error value. */
     {
@@ -273,7 +283,7 @@ const invalid = [
             }
             throw new TypeError("Fallback error");
         }`,
-        // This should have multiple errors
+        errors: 2,
     },
     /* 11. When an Error is created without `new` keyword */
     {
@@ -343,6 +353,7 @@ const invalid = [
 			throw new Error("Something went wrong");
 		}`,
         options: [{ requireCatchParameter: true }],
+        languageOptions: { ecmaVersion: 2022 },
     },
     /* 18. Throwing a new Error with unrelated cause, and complex fix is needed. */
     {
@@ -444,3 +455,58 @@ const invalid = [
 			}`,
     },
 ];
+
+describe("preserve-caught-error", ({ describe }) => {
+
+    const globalRules = { "preserve-caught-error": ["error"] };
+    const defaultLanguageOptions = { ecmaVersion: 2022, sourceType: "script" };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, code, options, languageOptions }, i) => {
+                const sourceText = text ?? code;
+                const file = { text: sourceText };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["preserve-caught-error"] = rules["preserve-caught-error"].concat(options);
+                }
+
+                const res = lintText(file, rules, { ...defaultLanguageOptions, ...languageOptions });
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, code, options, languageOptions, errors = 1 }, i) => {
+                const sourceText = text ?? code;
+                const file = { text: sourceText };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["preserve-caught-error"] = rules["preserve-caught-error"].concat(options);
+                }
+
+                const res = lintText(file, rules, { ...defaultLanguageOptions, ...languageOptions });
+
+                assertEqual(errors, res.errorCount, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+
+                res.messages.forEach((message) => {
+                    assertEqual("preserve-caught-error", message.ruleId, `message.ruleId:[${i}]:${sourceText.slice(0, 52)} ...`);
+                    assertNonEmptyString(message.message, `message.message:[${i}]:${sourceText.slice(0, 52)} ...`);
+                });
+            });
+        });
+    });
+});
