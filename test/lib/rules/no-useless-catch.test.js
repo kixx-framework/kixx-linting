@@ -20,16 +20,15 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		`
+const valid = [
+    { text: `
             try {
                 foo();
             } catch (err) {
                 console.error(err);
             }
-        `,
-		`
+        ` },
+    { text: `
             try {
                 foo();
             } catch (err) {
@@ -37,63 +36,63 @@ export default {
             } finally {
                 bar();
             }
-        `,
-		`
+        ` },
+    { text: `
             try {
                 foo();
             } catch (err) {
                 doSomethingBeforeRethrow();
                 throw err;
             }
-        `,
-		`
+        ` },
+    { text: `
             try {
                 foo();
             } catch (err) {
                 throw err.msg;
             }
-        `,
-		`
+        ` },
+    { text: `
             try {
                 foo();
             } catch (err) {
                 throw new Error("whoops!");
             }
-        `,
-		`
+        ` },
+    { text: `
             try {
                 foo();
             } catch (err) {
                 throw bar;
             }
-        `,
-		`
+        ` },
+    { text: `
             try {
                 foo();
             } catch (err) { }
-        `,
-		{
-			code: `
+        ` },
+    {
+        text: `
                 try {
                     foo();
                 } catch ({ err }) {
                     throw err;
                 }
             `,
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: `
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text: `
                 try {
                     foo();
                 } catch ([ err ]) {
                     throw err;
                 }
             `,
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: `
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text: `
                 async () => {
                     try {
                         await doSomething();
@@ -103,31 +102,32 @@ export default {
                     }
                 }
             `,
-			languageOptions: { ecmaVersion: 8 },
-		},
-		{
-			code: `
+        languageOptions: { ecmaVersion: 8 },
+    },
+    {
+        text: `
                 try {
                     throw new Error('foo');
                 } catch {
                     throw new Error('foo');
                 }
             `,
-			languageOptions: { ecmaVersion: 2019 },
-		},
-	],
-	invalid: [
-		{
-			code: `
+        languageOptions: { ecmaVersion: 2019 },
+    },
+];
+
+const invalid = [
+    {
+        text: `
                 try {
                     foo();
                 } catch (err) {
                     throw err;
                 }
             `,
-		},
-		{
-			code: `
+    },
+    {
+        text: `
                 try {
                     foo();
                 } catch (err) {
@@ -136,9 +136,9 @@ export default {
                     foo();
                 }
             `,
-		},
-		{
-			code: `
+    },
+    {
+        text: `
                 try {
                     foo();
                 } catch (err) {
@@ -146,9 +146,9 @@ export default {
                     throw err;
                 }
             `,
-		},
-		{
-			code: `
+    },
+    {
+        text: `
                 try {
                     foo();
                 } catch (err) {
@@ -158,9 +158,9 @@ export default {
                     foo();
                 }
             `,
-		},
-		{
-			code: `
+    },
+    {
+        text: `
                 async () => {
                     try {
                         await doSomething();
@@ -169,7 +169,6 @@ export default {
                     }
                 }
             `,
-			languageOptions: { ecmaVersion: 8 },
-		},
-	],
-};
+        languageOptions: { ecmaVersion: 8 },
+    },
+];
