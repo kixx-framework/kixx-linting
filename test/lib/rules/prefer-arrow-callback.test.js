@@ -20,6 +20,14 @@
  * THE SOFTWARE.
  */
 
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
+
+import { lintText } from "../../../mod.js";
+
 const valid = [
     { text: "foo(a => a);" },
     { text: "foo(function*() {});" },
@@ -167,3 +175,62 @@ const invalid = [
             `,
     },
 ];
+
+describe("prefer-arrow-callback", ({ describe }) => {
+
+    const globalRules = { "prefer-arrow-callback": ["error"] };
+    const defaultLanguageOptions = { sourceType: "script" };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, code, options, languageOptions }, i) => {
+                const sourceText = text ?? code;
+                const file = { text: sourceText };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["prefer-arrow-callback"] = rules["prefer-arrow-callback"].concat(options);
+                }
+
+                const res = lintText(file, rules, { ...defaultLanguageOptions, ...languageOptions });
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, code, options, languageOptions, errors }, i) => {
+                const sourceText = text ?? code;
+                const file = { text: sourceText };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["prefer-arrow-callback"] = rules["prefer-arrow-callback"].concat(options);
+                }
+
+                const res = lintText(file, rules, { ...defaultLanguageOptions, ...languageOptions });
+
+                if (errors === undefined) {
+                    assertEqual(true, res.errorCount > 0, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+                } else {
+                    assertEqual(errors, res.errorCount, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+                }
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+
+                res.messages.forEach((message) => {
+                    assertEqual("prefer-arrow-callback", message.ruleId, `message.ruleId:[${i}]:${sourceText.slice(0, 52)} ...`);
+                    assertNonEmptyString(message.message, `message.message:[${i}]:${sourceText.slice(0, 52)} ...`);
+                });
+            });
+        });
+    });
+});

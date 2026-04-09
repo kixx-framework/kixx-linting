@@ -6,10 +6,10 @@ Review some of the existing lint rule tests in `test/lib/rules/*.test.js` (Note:
 
 Your task is to write tests in these target test modules:
 
-- test/lib/rules/no-useless-catch.test.js
-- test/lib/rules/no-useless-computed-key.test.js
-- test/lib/rules/no-var.test.js
-- test/lib/rules/no-warning-comments.test.js
+- test/lib/rules/prefer-arrow-callback.test.js
+- test/lib/rules/prefer-const.test.js
+- test/lib/rules/prefer-numeric-literals.test.js
+
 
 Note: These target test modules are just data arrays without an executable test suite. Your approach should be to mirror the existing test harness pattern you see in other test modules in `test/lib/rules/*.test.js`.
 
