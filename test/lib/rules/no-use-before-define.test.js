@@ -964,6 +964,10 @@ describe("no-use-before-define", ({ describe }) => {
             valid.forEach(({ text, code, options, languageOptions }, i) => {
                 const sourceText = text ?? code;
                 const file = { text: sourceText };
+                const effectiveLanguageOptions = {
+                    sourceType: "script",
+                    ...languageOptions,
+                };
 
                 let rules = globalRules;
                 if (options) {
@@ -971,7 +975,7 @@ describe("no-use-before-define", ({ describe }) => {
                     rules["no-use-before-define"] = rules["no-use-before-define"].concat(options);
                 }
 
-                const res = lintText(file, rules, languageOptions);
+                const res = lintText(file, rules, effectiveLanguageOptions);
 
                 if (res.errorCount > 0 || res.warningCount > 0) {
                     console.error(res);
@@ -988,6 +992,10 @@ describe("no-use-before-define", ({ describe }) => {
             invalid.forEach(({ text, code, options, languageOptions, errors }, i) => {
                 const sourceText = text ?? code;
                 const file = { text: sourceText };
+                const effectiveLanguageOptions = {
+                    sourceType: "script",
+                    ...languageOptions,
+                };
 
                 let rules = globalRules;
                 if (options) {
@@ -995,7 +1003,7 @@ describe("no-use-before-define", ({ describe }) => {
                     rules["no-use-before-define"] = rules["no-use-before-define"].concat(options);
                 }
 
-                const res = lintText(file, rules, languageOptions);
+                const res = lintText(file, rules, effectiveLanguageOptions);
 
                 if (errors === undefined) {
                     assertEqual(true, res.errorCount > 0, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
