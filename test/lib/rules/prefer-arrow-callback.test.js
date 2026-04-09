@@ -20,142 +20,142 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		"foo(a => a);",
-		"foo(function*() {});",
-		"foo(function() { this; });",
-		{
-			code: "foo(function bar() {});",
-			options: [{ allowNamedFunctions: true }],
-		},
-		"foo(function() { (() => this); });",
-		"foo(function() { this; }.bind(obj));",
-		"foo(function() { this; }.call(this));",
-		"foo(a => { (function() {}); });",
-		"var foo = function foo() {};",
-		"(function foo() {})();",
-		"foo(function bar() { bar; });",
-		"foo(function bar() { arguments; });",
-		"foo(function bar() { arguments; }.bind(this));",
-		"foo(function bar() { new.target; });",
-		"foo(function bar() { new.target; }.bind(this));",
-		"foo(function bar() { this; }.bind(this, somethingElse));",
-		"foo((function() {}).bind.bar)",
-		"foo((function() { this.bar(); }).bind(obj).bind(this))",
-	],
-	invalid: [
-		{
-			code: "foo(function bar() {});",
-		},
-		{
-			code: "foo(function() {});",
-			options: [{ allowNamedFunctions: true }],
-		},
-		{
-			code: "foo(function bar() {});",
-			options: [{ allowNamedFunctions: false }],
-		},
-		{
-			code: "foo(function() {});",
-		},
-		{
-			code: "foo(nativeCb || function() {});",
-		},
-		{
-			code: "foo(bar ? function() {} : function() {});",
-		},
-		{
-			code: "foo(function() { (function() { this; }); });",
-		},
-		{
-			code: "foo(function() { this; }.bind(this));",
-		},
-		{
-			code: "foo(bar || function() { this; }.bind(this));",
-		},
-		{
-			code: "foo(function() { (() => this); }.bind(this));",
-		},
-		{
-			code: "foo(function bar(a) { a; });",
-		},
-		{
-			code: "foo(function(a) { a; });",
-		},
-		{
-			code: "foo(function(arguments) { arguments; });",
-		},
-		{
-			code: "foo(function() { this; });",
-			options: [{ allowUnboundThis: false }],
-		},
-		{
-			code: "foo(function() { (() => this); });",
-			options: [{ allowUnboundThis: false }],
-		},
-		{
-			code: "qux(function(foo, bar, baz) { return foo * 2; })",
-		},
-		{
-			code: "qux(function(foo, bar, baz) { return foo * bar; }.bind(this))",
-		},
-		{
-			code: "qux(function(foo, bar, baz) { return foo * this.qux; }.bind(this))",
-		},
-		{
-			code: "foo(function() {}.bind(this, somethingElse))",
-		},
-		{
-			code: "qux(function(foo = 1, [bar = 2] = [], {qux: baz = 3} = {foo: 'bar'}) { return foo + bar; });",
-		},
-		{
-			code: "qux(function(baz, baz) { })",
-		},
-		{
-			code: "qux(function( /* no params */ ) { })",
-		},
-		{
-			code: "qux(function( /* a */ foo /* b */ , /* c */ bar /* d */ , /* e */ baz /* f */ ) { return foo; })",
-		},
-		{
-			code: "qux(async function (foo = 1, bar = 2, baz = 3) { return baz; })",
-		},
-		{
-			code: "qux(async function (foo = 1, bar = 2, baz = 3) { return this; }.bind(this))",
-		},
-		{
-			code: "foo((bar || function() {}).bind(this))",
-		},
-		{
-			code: "foo(function() {}.bind(this).bind(obj))",
-		},
+const valid = [
+    { text: "foo(a => a);" },
+    { text: "foo(function*() {});" },
+    { text: "foo(function() { this; });" },
+    {
+        text: "foo(function bar() {});",
+        options: [{ allowNamedFunctions: true }],
+    },
+    { text: "foo(function() { (() => this); });" },
+    { text: "foo(function() { this; }.bind(obj));" },
+    { text: "foo(function() { this; }.call(this));" },
+    { text: "foo(a => { (function() {}); });" },
+    { text: "var foo = function foo() {};" },
+    { text: "(function foo() {})();" },
+    { text: "foo(function bar() { bar; });" },
+    { text: "foo(function bar() { arguments; });" },
+    { text: "foo(function bar() { arguments; }.bind(this));" },
+    { text: "foo(function bar() { new.target; });" },
+    { text: "foo(function bar() { new.target; }.bind(this));" },
+    { text: "foo(function bar() { this; }.bind(this, somethingElse));" },
+    { text: "foo((function() {}).bind.bar)" },
+    { text: "foo((function() { this.bar(); }).bind(obj).bind(this))" },
+];
 
-		// Optional chaining
-		{
-			code: "foo?.(function() {});",
-		},
-		{
-			code: "foo?.(function() { return this; }.bind(this));",
-		},
-		{
-			code: "foo(function() { return this; }?.bind(this));",
-		},
-		{
-			code: "foo((function() { return this; }?.bind)(this));",
-		},
+const invalid = [
+    {
+        text: "foo(function bar() {});",
+    },
+    {
+        text: "foo(function() {});",
+        options: [{ allowNamedFunctions: true }],
+    },
+    {
+        text: "foo(function bar() {});",
+        options: [{ allowNamedFunctions: false }],
+    },
+    {
+        text: "foo(function() {});",
+    },
+    {
+        text: "foo(nativeCb || function() {});",
+    },
+    {
+        text: "foo(bar ? function() {} : function() {});",
+    },
+    {
+        text: "foo(function() { (function() { this; }); });",
+    },
+    {
+        text: "foo(function() { this; }.bind(this));",
+    },
+    {
+        text: "foo(bar || function() { this; }.bind(this));",
+    },
+    {
+        text: "foo(function() { (() => this); }.bind(this));",
+    },
+    {
+        text: "foo(function bar(a) { a; });",
+    },
+    {
+        text: "foo(function(a) { a; });",
+    },
+    {
+        text: "foo(function(arguments) { arguments; });",
+    },
+    {
+        text: "foo(function() { this; });",
+        options: [{ allowUnboundThis: false }],
+    },
+    {
+        text: "foo(function() { (() => this); });",
+        options: [{ allowUnboundThis: false }],
+    },
+    {
+        text: "qux(function(foo, bar, baz) { return foo * 2; })",
+    },
+    {
+        text: "qux(function(foo, bar, baz) { return foo * bar; }.bind(this))",
+    },
+    {
+        text: "qux(function(foo, bar, baz) { return foo * this.qux; }.bind(this))",
+    },
+    {
+        text: "foo(function() {}.bind(this, somethingElse))",
+    },
+    {
+        text: "qux(function(foo = 1, [bar = 2] = [], {qux: baz = 3} = {foo: 'bar'}) { return foo + bar; });",
+    },
+    {
+        text: "qux(function(baz, baz) { })",
+    },
+    {
+        text: "qux(function( /* no params */ ) { })",
+    },
+    {
+        text: "qux(function( /* a */ foo /* b */ , /* c */ bar /* d */ , /* e */ baz /* f */ ) { return foo; })",
+    },
+    {
+        text: "qux(async function (foo = 1, bar = 2, baz = 3) { return baz; })",
+    },
+    {
+        text: "qux(async function (foo = 1, bar = 2, baz = 3) { return this; }.bind(this))",
+    },
+    {
+        text: "foo((bar || function() {}).bind(this))",
+    },
+    {
+        text: "foo(function() {}.bind(this).bind(obj))",
+    },
 
-		// https://github.com/eslint/eslint/issues/16718
-		{
-			code: `
+    // Optional chaining
+    {
+        text: "foo?.(function() {});",
+    },
+    {
+        text: "foo?.(function() { return this; }.bind(this));",
+    },
+    {
+        text: "foo(function() { return this; }?.bind(this));",
+    },
+    {
+        text: "foo((function() { return this; }?.bind)(this));",
+    },
+
+    // https://github.com/eslint/eslint/issues/16718
+    {
+        text: `
             test(
                 function ()
                 { }
             );
             `,
-		},
-		{
-			code: `
+    },
+    {
+        text: `
             test(
                 function (
                     ...args
@@ -165,6 +165,5 @@ export default {
                 }
             );
             `,
-		},
-	],
-};
+    },
+];
