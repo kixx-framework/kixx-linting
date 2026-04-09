@@ -300,13 +300,6 @@ export default [
                 'error',
                 'always',
             ],
-            'space-infix-ops': [
-                'error',
-            ],
-            'space-unary-ops': [
-                'error',
-                { words: true, nonwords: false },
-            ],
             'strict': [
                 'error',
             ],

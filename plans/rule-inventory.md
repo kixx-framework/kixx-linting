@@ -115,8 +115,6 @@ Audit date: 2026-04-05
 - [x] `require-yield`
 - [x] `rest-spread-spacing`
 - [x] `semi`
-- [x] `space-infix-ops`
-- [x] `space-unary-ops`
 - [x] `strict`
 - [x] `use-isnan`
 - [x] `valid-typeof`

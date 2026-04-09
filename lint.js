@@ -123,8 +123,6 @@ const rules = {
     "require-yield": ["error"],
     "rest-spread-spacing": ["error", "never"],
     "semi": ["error", "always"],
-    "space-infix-ops": ["error"],
-    "space-unary-ops": ["error", { words: true, nonwords: false }],
     "strict": ["error"],
     "use-isnan": ["error"],
     "valid-typeof": ["error"],

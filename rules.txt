@@ -89,8 +89,6 @@ radix
 require-yield
 rest-spread-spacing
 semi
-space-infix-ops
-space-unary-ops
 strict
 use-isnan
 valid-typeof

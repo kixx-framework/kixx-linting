@@ -101,7 +101,7 @@ Build a minimal, synchronous `lintText(sourceText, options)` function that parse
 
 - [x] **Implement layout/token-spacing rules**
   - **Story**: Catch formatting issues via token adjacency and line structure
-  - **What**: Implement 10 rules that rely on token positions from `sourceCode.getTokens()`, `getTokenBefore()`, `getTokenAfter()`, and `getTokensBetween()`: `comma-dangle` (with per-context options), `func-call-spacing`, `indent` (with `4` and `{ SwitchCase: 1 }` options), `max-statements-per-line` (with `{ max: 1 }`), `new-parens`, `rest-spread-spacing` (`'never'`), `semi` (`'always'`), `space-infix-ops`, `space-unary-ops` (with `{ words: true, nonwords: false }`), `no-floating-decimal`.
+  - **What**: Implement 8 rules that rely on token positions from `sourceCode.getTokens()`, `getTokenBefore()`, `getTokenAfter()`, and `getTokensBetween()`: `comma-dangle` (with per-context options), `func-call-spacing`, `indent` (with `4` and `{ SwitchCase: 1 }` options), `max-statements-per-line` (with `{ max: 1 }`), `new-parens`, `rest-spread-spacing` (`'never'`), `semi` (`'always'`), `no-floating-decimal`.
   - **Where**: `lib/rules/{rule-name}.js` for each; register each in `lib/rules/index.js`
   - **Acceptance criteria**: Each rule detects its target violation and reports correct line/column; none produce fix output; `indent` correctly handles `SwitchCase: 1` indentation; `comma-dangle` applies correct setting per context (arrays, objects, functions, imports, exports)
   - **Depends on**: Build lintText() entry point
