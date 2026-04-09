@@ -120,7 +120,6 @@ const rules = {
     "prefer-promise-reject-errors": ["error"],
     "prefer-rest-params": ["error"],
     "radix": ["error"],
-    "require-atomic-updates": ["error"],
     "require-yield": ["error"],
     "rest-spread-spacing": ["error", "never"],
     "semi": ["error", "always"],

@@ -289,9 +289,6 @@ export default [
             'radix': [
                 'error',
             ],
-            'require-atomic-updates': [
-                'error',
-            ],
             'require-yield': [
                 'error',
             ],

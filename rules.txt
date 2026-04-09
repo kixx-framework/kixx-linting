@@ -86,7 +86,6 @@ prefer-numeric-literals
 prefer-promise-reject-errors
 prefer-rest-params
 radix
-require-atomic-updates
 require-yield
 rest-spread-spacing
 semi
