@@ -20,20 +20,27 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		// Basic tests
-		`let v = 'used';
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
+
+import { lintText } from "../../../mod.js";
+
+const valid = [
+    // Basic tests
+    { text: `let v = 'used';
         console.log(v);
         v = 'used-2'
-        console.log(v);`,
-		`function foo() {
+        console.log(v);` },
+    { text: `function foo() {
             let v = 'used';
             console.log(v);
             v = 'used-2';
             console.log(v);
-        }`,
-		`function foo() {
+        }` },
+    { text: `function foo() {
             let v = 'used';
             if (condition) {
                 v = 'used-2';
@@ -41,8 +48,8 @@ export default {
                 return
             }
             console.log(v);
-        }`,
-		`function foo() {
+        }` },
+    { text: `function foo() {
             let v = 'used';
             if (condition) {
                 console.log(v);
@@ -50,8 +57,8 @@ export default {
                 v = 'used-2';
                 console.log(v);
             }
-        }`,
-		`function foo() {
+        }` },
+    { text: `function foo() {
             let v = 'used';
             if (condition) {
                 //
@@ -59,132 +66,132 @@ export default {
                 v = 'used-2';
             }
             console.log(v);
-        }`,
-		`var foo = function () {
+        }` },
+    { text: `var foo = function () {
             let v = 'used';
             console.log(v);
             v = 'used-2'
             console.log(v);
-        }`,
-		`var foo = () => {
+        }` },
+    { text: `var foo = () => {
             let v = 'used';
             console.log(v);
             v = 'used-2'
             console.log(v);
-        }`,
-		`class foo {
+        }` },
+    { text: `class foo {
             static {
                 let v = 'used';
                 console.log(v);
                 v = 'used-2'
                 console.log(v);
             }
-        }`,
-		`function foo () {
+        }` },
+    { text: `function foo () {
             let v = 'used';
             for (let i = 0; i < 10; i++) {
                 console.log(v);
                 v = 'used in next iteration';
             }
-        }`,
-		`function foo () {
+        }` },
+    { text: `function foo () {
             let i = 0;
             i++;
             i++;
             console.log(i);
-        }`,
+        }` },
 
-		// Exported
-		`export let foo = 'used';
+    // Exported
+    { text: `export let foo = 'used';
         console.log(foo);
-        foo = 'unused like but exported';`,
-		`export function foo () {};
+        foo = 'unused like but exported';` },
+    { text: `export function foo () {};
         console.log(foo);
-        foo = 'unused like but exported';`,
-		`export class foo {};
+        foo = 'unused like but exported';` },
+    { text: `export class foo {};
         console.log(foo);
-        foo = 'unused like but exported';`,
-		`export default function foo () {};
+        foo = 'unused like but exported';` },
+    { text: `export default function foo () {};
         console.log(foo);
-        foo = 'unused like but exported';`,
-		`export default class foo {};
+        foo = 'unused like but exported';` },
+    { text: `export default class foo {};
         console.log(foo);
-        foo = 'unused like but exported';`,
-		`let foo = 'used';
+        foo = 'unused like but exported';` },
+    { text: `let foo = 'used';
         export { foo };
         console.log(foo);
-        foo = 'unused like but exported';`,
-		`function foo () {};
+        foo = 'unused like but exported';` },
+    { text: `function foo () {};
         export { foo };
         console.log(foo);
-        foo = 'unused like but exported';`,
-		`class foo {};
+        foo = 'unused like but exported';` },
+    { text: `class foo {};
         export { foo };
         console.log(foo);
-        foo = 'unused like but exported';`,
-		{
-			code: `/* exported foo */
+        foo = 'unused like but exported';` },
+    {
+        code: `/* exported foo */
             let foo = 'used';
             console.log(foo);
             foo = 'unused like but exported with directive';`,
-			languageOptions: { sourceType: "script" },
-		},
+        languageOptions: { sourceType: "script" },
+    },
 
-		// Mark variables as used via markVariableAsUsed()
-		`/*eslint test/use-a:1*/
+    // Mark variables as used via markVariableAsUsed()
+    { text: `/*eslint test/use-a:1*/
         let a = 'used';
         console.log(a);
         a = 'unused like but marked by markVariableAsUsed()';
-        `,
+        ` },
 
-		// Unknown variable
-		`v = 'used';
+    // Unknown variable
+    { text: `v = 'used';
         console.log(v);
-        v = 'unused'`,
+        v = 'unused'` },
 
-		// Unused variable
-		"let v = 'used variable';",
+    // Unused variable
+    { text: "let v = 'used variable';" },
 
-		// Unreachable
-		`function foo() {
+    // Unreachable
+    { text: `function foo() {
             return;
 
             const x = 1;
             if (y) {
                 bar(x);
             }
-        }`,
-		`function foo() {
+        }` },
+    { text: `function foo() {
             const x = 1;
             console.log(x);
             return;
 
             x = 'Foo'
-        }`,
+        }` },
 
-		// Update
-		`function foo() {
+    // Update
+    { text: `function foo() {
             let a = 42;
             console.log(a);
             a++;
             console.log(a);
-        }`,
-		`function foo() {
+        }` },
+    { text: `function foo() {
             let a = 42;
             console.log(a);
             a--;
             console.log(a);
-        }`,
+        }` },
 
-		// Assign with update
-		`function foo() {
+    // Assign with update
+    { text: `function foo() {
             let a = 42;
             console.log(a);
             a = 10;
             a = a + 1;
             console.log(a);
-        }`,
-		`function foo() {
+        }` },
+    { text: `function foo() {
             let a = 42;
             console.log(a);
             a = 10;
@@ -194,34 +201,34 @@ export default {
                 a = 2 + a;
             }
             console.log(a);
-        }`,
+        }` },
 
-		// Assign to complex patterns
-		`function foo() {
+    // Assign to complex patterns
+    { text: `function foo() {
             let a = 'used', b = 'used', c = 'used', d = 'used';
             console.log(a, b, c, d);
             ({ a, arr: [b, c, ...d] } = fn());
             console.log(a, b, c, d);
-        }`,
-		`function foo() {
+        }` },
+    { text: `function foo() {
             let a = 'used', b = 'used', c = 'used';
             console.log(a, b, c);
             ({ a = 'unused', foo: b, ...c } = fn());
             console.log(a, b, c);
-        }`,
-		`function foo() {
+        }` },
+    { text: `function foo() {
             let a = {};
             console.log(a);
             a.b = 'unused like, but maybe used in setter';
-        }`,
-		`function foo() {
+        }` },
+    { text: `function foo() {
             let a = { b: 42 };
             console.log(a);
             a.b++;
-        }`,
+        }` },
 
-		// Value may be used in other scopes.
-		`function foo () {
+    // Value may be used in other scopes.
+    { text: `function foo () {
             let v = 'used';
             console.log(v);
             function bar() {
@@ -229,16 +236,16 @@ export default {
             }
             bar();
             console.log(v);
-        }`,
-		`function foo () {
+        }` },
+    { text: `function foo () {
             let v = 'used';
             console.log(v);
             setTimeout(() => console.log(v), 1);
             v = 'used in other scope';
-        }`,
+        }` },
 
-		// Loops
-		`function foo () {
+    // Loops
+    { text: `function foo () {
             let v = 'used';
             console.log(v);
             for (let i = 0; i < 10; i++) {
@@ -248,19 +255,19 @@ export default {
                 }
                 console.log(v);
             }
-        }`,
+        }` },
 
-		// Ignore known globals
-		`/* globals foo */
+    // Ignore known globals
+    { text: `/* globals foo */
         const bk = foo;
         foo = 42;
         try {
             // process
         } finally {
             foo = bk;
-        }`,
-		{
-			code: `
+        }` },
+    {
+        code: `
             const bk = console;
             console = { log () {} };
             try {
@@ -268,28 +275,28 @@ export default {
             } finally {
                 console = bk;
             }`,
-			languageOptions: {
-				globals: { console: false },
-			},
-		},
+        languageOptions: {
+            globals: { console: false },
+        },
+    },
 
-		// Try catch finally
-		`let message = 'init';
+    // Try catch finally
+    { text: `let message = 'init';
         try {
             const result = call();
             message = result.message;
         } catch (e) {
             // ignore
         }
-        console.log(message)`,
-		`let message = 'init';
+        console.log(message)` },
+    { text: `let message = 'init';
         try {
             message = call().message;
         } catch (e) {
             // ignore
         }
-        console.log(message)`,
-		`let v = 'init';
+        console.log(message)` },
+    { text: `let v = 'init';
         try {
             v = callA();
             try {
@@ -300,8 +307,8 @@ export default {
         } catch (e) {
             // ignore
         }
-        console.log(v)`,
-		`let v = 'init';
+        console.log(v)` },
+    { text: `let v = 'init';
         try {
             try {
                 v = callA();
@@ -311,33 +318,33 @@ export default {
         } catch (e) {
             // ignore
         }
-        console.log(v)`,
-		`let a;
+        console.log(v)` },
+    { text: `let a;
         try {
             foo();
         } finally {
             a = 5;
         }
-        console.log(a);`,
+        console.log(a);` },
 
-		// An expression within an assignment.
-		`const obj = { a: 5 };
+    // An expression within an assignment.
+    { text: `const obj = { a: 5 };
         const { a, b = a } = obj;
-        console.log(b); // 5`,
-		`const arr = [6];
+        console.log(b); // 5` },
+    { text: `const arr = [6];
         const [c, d = c] = arr;
-        console.log(d); // 6`,
-		`const obj = { a: 1 };
+        console.log(d); // 6` },
+    { text: `const obj = { a: 1 };
         let {
             a,
             b = (a = 2)
         } = obj;
-        console.log(a, b);`,
-		`let { a, b: {c = a} = {} } = obj;
-        console.log(c);`,
+        console.log(a, b);` },
+    { text: `let { a, b: {c = a} = {} } = obj;
+        console.log(c);` },
 
-		// ignore assignments in try block
-		`function foo(){
+    // ignore assignments in try block
+    { text: `function foo(){
             let bar;
             try {
                 bar = 2;
@@ -349,8 +356,8 @@ export default {
         }   
         function unsafeFn() {
             throw new Error();
-        }`,
-		`function foo(){
+        }` },
+    { text: `function foo(){
             let bar, baz;
             try {
                 bar = 2;
@@ -363,8 +370,8 @@ export default {
         }   
         function unsafeFn() {
             throw new Error();
-        }`,
-		`function foo(){
+        }` },
+    { text: `function foo(){
             let bar;
             try {
                 bar = 2;
@@ -377,18 +384,18 @@ export default {
         }   
         function unsafeFn() {
             throw new Error();
-        }`,
-		`/*eslint test/unknown-ref:1*/
+        }` },
+    { text: `/*eslint test/unknown-ref:1*/
         let a = "used";
 		console.log(a);
-		a = "unused";`,
-		`/*eslint test/unknown-ref:1*/
+		a = "unused";` },
+    { text: `/*eslint test/unknown-ref:1*/
 		function foo() {
 			let a = "used";
 			console.log(a);
 			a = "unused";
-		}`,
-		`/*eslint test/unknown-ref:1*/
+		}` },
+    { text: `/*eslint test/unknown-ref:1*/
 		function foo() {
 			let a = "used";
 			if (condition) {
@@ -396,232 +403,24 @@ export default {
 				return
 			}
 			console.log(a);
-        }`,
-		{
-			code: `
-                function App() {
-                    const A = "";
-                    return <A/>;
-                }
-            `,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: {
-						jsx: true,
-					},
-				},
-			},
-		},
-		{
-			code: `
-                function App() {
-                    let A = "";
-                    foo(A);
-                    A = "A";
-                    return <A/>;
-                }
-            `,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: {
-						jsx: true,
-					},
-				},
-			},
-		},
-		{
-			code: `
-                function App() {
-					let A = "a";
-                    foo(A);
-                    return <A/>;
-                }
-            `,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: {
-						jsx: true,
-					},
-				},
-			},
-		},
-		{
-			code: `function App() {
-				let x = 0;
-				foo(x);
-				x = 1;
-				return <A prop={x} />;
-			}`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-				let x = "init";
-				foo(x);
-				x = "used";
-				return <A>{x}</A>;
-			}`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-				let props = { a: 1 };
-				foo(props);
-				props = { b: 2 };
-				return <A {...props} />;
-			}`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-				let NS = Lib;
-				return <NS.Cmp />;
-			}`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-				let a = 0;
-				a++;
-				return <A prop={a} />;
-			}`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-				const obj = { a: 1 };
-				const { a, b = a } = obj;
-				return <A prop={b} />;
-			}`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-				let { a, b: { c = a } = {} } = obj;
-				return <A prop={c} />;
-			}`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-				let x = "init";
-				if (cond) {
-					x = "used";
-					return <A prop={x} />;
-				}
-				return <A prop={x} />;
-			}`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-				let A;
-				if (cond) {
-				  A = Foo;
-				} else {
-				  A = Bar;
-				}
-				return <A />;
-			}`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-				let m;
-				try {
-				  m = 2;
-				  unsafeFn();
-				  m = 4;
-				} catch (e) {
-				  // ignore
-				}
-				return <A prop={m} />;
-			}`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-				const arr = [6];
-				const [c, d = c] = arr;
-				return <A prop={d} />;
-			}`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-				const obj = { a: 1 };
-				let {
-				  a,
-				  b = (a = 2)
-				} = obj;
-				return <A prop={a} />;
-			}`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-	],
-	invalid: [
-		{
-			code: `let v = 'used';
+        }` },
+];
+
+const invalid = [
+    {
+        code: `let v = 'used';
             console.log(v);
             v = 'unused'`,
-		},
-		{
-			code: `function foo() {
+    },
+    {
+        code: `function foo() {
                 let v = 'used';
                 console.log(v);
                 v = 'unused';
             }`,
-		},
-		{
-			code: `function foo() {
+    },
+    {
+        code: `function foo() {
                 let v = 'used';
                 if (condition) {
                     v = 'unused';
@@ -629,9 +428,9 @@ export default {
                 }
                 console.log(v);
             }`,
-		},
-		{
-			code: `function foo() {
+    },
+    {
+        code: `function foo() {
                 let v = 'used';
                 if (condition) {
                     console.log(v);
@@ -639,32 +438,32 @@ export default {
                     v = 'unused';
                 }
             }`,
-		},
-		{
-			code: `var foo = function () {
+    },
+    {
+        code: `var foo = function () {
                 let v = 'used';
                 console.log(v);
                 v = 'unused'
             }`,
-		},
-		{
-			code: `var foo = () => {
+    },
+    {
+        code: `var foo = () => {
                 let v = 'used';
                 console.log(v);
                 v = 'unused'
             }`,
-		},
-		{
-			code: `class foo {
+    },
+    {
+        code: `class foo {
                 static {
                     let v = 'used';
                     console.log(v);
                     v = 'unused'
                 }
             }`,
-		},
-		{
-			code: `function foo() {
+    },
+    {
+        code: `function foo() {
                 let v = 'unused';
                 if (condition) {
                     v = 'used';
@@ -672,17 +471,17 @@ export default {
                     return
                 }
             }`,
-		},
-		{
-			code: `function foo() {
+    },
+    {
+        code: `function foo() {
                 let v = 'used';
                 console.log(v);
                 v = 'unused';
                 v = 'unused';
             }`,
-		},
-		{
-			code: `function foo() {
+    },
+    {
+        code: `function foo() {
                 let v = 'used';
                 console.log(v);
                 v = 'unused';
@@ -691,9 +490,9 @@ export default {
                 v = 'used';
                 console.log(v);
             }`,
-		},
-		{
-			code: `
+    },
+    {
+        code: `
             let v;
             v = 'unused';
             if (foo) {
@@ -702,9 +501,9 @@ export default {
                 v = 'used';
             }
             console.log(v);`,
-		},
-		{
-			code: `function foo() {
+    },
+    {
+        code: `function foo() {
                 let v = 'used';
                 console.log(v);
                 v = 'unused';
@@ -712,9 +511,9 @@ export default {
                 v = 'used';
                 console.log(v);
             }`,
-		},
-		{
-			code: `function foo() {
+    },
+    {
+        code: `function foo() {
                 let v = 'unused';
                 if (condition) {
                     if (condition2) {
@@ -727,9 +526,9 @@ export default {
                 }
                 console.log(v);
             }`,
-		},
-		{
-			code: `function foo() {
+    },
+    {
+        code: `function foo() {
                 let v;
                 if (condition) {
                     v = 'unused';
@@ -743,9 +542,9 @@ export default {
                 }
                 console.log(v);
             }`,
-		},
-		{
-			code: `function foo() {
+    },
+    {
+        code: `function foo() {
                 let v = 'used';
                 if (condition) {
                     v = 'unused';
@@ -754,54 +553,54 @@ export default {
                 }
                 console.log(v);
             }`,
-		},
+    },
 
-		// Update
-		{
-			code: `function foo() {
+    // Update
+    {
+        code: `function foo() {
                 let a = 42;
                 console.log(a);
                 a++;
             }`,
-		},
-		{
-			code: `function foo() {
+    },
+    {
+        code: `function foo() {
                 let a = 42;
                 console.log(a);
                 a--;
             }`,
-		},
+    },
 
-		// Assign to complex patterns
-		{
-			code: `function foo() {
+    // Assign to complex patterns
+    {
+        code: `function foo() {
                 let a = 'used', b = 'used', c = 'used', d = 'used';
                 console.log(a, b, c, d);
                 ({ a, arr: [b, c,, ...d] } = fn());
                 console.log(c);
             }`,
-		},
-		{
-			code: `function foo() {
+    },
+    {
+        code: `function foo() {
                 let a = 'used', b = 'used', c = 'used';
                 console.log(a, b, c);
                 ({ a = 'unused', foo: b, ...c } = fn());
             }`,
-		},
+    },
 
-		// Variable used in other scopes, but write only.
-		{
-			code: `function foo () {
+    // Variable used in other scopes, but write only.
+    {
+        code: `function foo () {
                 let v = 'used';
                 console.log(v);
                 setTimeout(() => v = 42, 1);
                 v = 'unused and variable is only updated in other scopes';
             }`,
-		},
+    },
 
-		// Code Path Segment End Statements
-		{
-			code: `function foo() {
+    // Code Path Segment End Statements
+    {
+        code: `function foo() {
                 let v = 'used';
                 if (condition) {
                     let v = 'used';
@@ -811,9 +610,9 @@ export default {
                 console.log(v);
                 v = 'unused';
             }`,
-		},
-		{
-			code: `function foo() {
+    },
+    {
+        code: `function foo() {
                 let v = 'used';
                 if (condition) {
                     console.log(v);
@@ -822,27 +621,27 @@ export default {
                     v = 'unused';
                 }
             }`,
-		},
-		{
-			code: `function foo () {
+    },
+    {
+        code: `function foo () {
                 let v = 'used';
                 console.log(v);
                 v = 'unused';
                 return;
                 console.log(v);
             }`,
-		},
-		{
-			code: `function foo () {
+    },
+    {
+        code: `function foo () {
                 let v = 'used';
                 console.log(v);
                 v = 'unused';
                 throw new Error();
                 console.log(v);
             }`,
-		},
-		{
-			code: `function foo () {
+    },
+    {
+        code: `function foo () {
                 let v = 'used';
                 console.log(v);
                 for (let i = 0; i < 10; i++) {
@@ -860,9 +659,9 @@ export default {
                     console.log(v);
                 }
             }`,
-		},
-		{
-			code: `function foo () {
+    },
+    {
+        code: `function foo () {
                 let v = 'used';
                 console.log(v);
                 for (let i = 0; i < 10; i++) {
@@ -873,11 +672,11 @@ export default {
                     console.log(v);
                 }
             }`,
-		},
+    },
 
-		// Try catch
-		{
-			code: `let message = 'unused';
+    // Try catch
+    {
+        code: `let message = 'unused';
             try {
                 const result = call();
                 message = result.message;
@@ -885,26 +684,26 @@ export default {
                 message = 'used';
             }
             console.log(message)`,
-		},
-		{
-			code: `let message = 'unused';
+    },
+    {
+        code: `let message = 'unused';
             try {
                 message = 'used';
                 console.log(message)
             } catch (e) {
             }`,
-		},
-		{
-			code: `let message = 'unused';
+    },
+    {
+        code: `let message = 'unused';
             try {
                 message = call();
             } catch (e) {
                 message = 'used';
             }
             console.log(message)`,
-		},
-		{
-			code: `let v = 'unused';
+    },
+    {
+        code: `let v = 'unused';
             try {
                 v = callA();
                 try {
@@ -916,154 +715,88 @@ export default {
                 v = 'used';
             }
             console.log(v)`,
-		},
+    },
 
-		// An expression within an assignment.
-		{
-			code: `
+    // An expression within an assignment.
+    {
+        code: `
             var x = 1; // used
             x = x + 1; // unused
             x = 5; // used
             f(x);`,
-		},
-		{
-			code: `
+    },
+    {
+        code: `
             var x = 1; // used
             x = // used
                 x++; // unused
             f(x);`,
-		},
-		{
-			code: `const obj = { a: 1 };
+    },
+    {
+        code: `const obj = { a: 1 };
             let {
                 a,
                 b = (a = 2)
             } = obj;
             a = 3
             console.log(a, b);`,
-		},
-		{
-			code: `function App() {
-            let A = "unused";
-            A = "used";
-            return <A/>;
-            }`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-            let A = "unused";
-            A = "used";
-            return <A></A>;
-            }`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-            let A = "unused";
-            A = "used";
-            return <A.B />;
-            }`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-            let x = "used";
-            if (cond) {
-              return <A prop={x} />;
-            } else {
-              x = "unused";
-            }
-            }`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-            let A;
-            A = "unused";
-            if (cond) {
-              A = "used1";
-            } else {
-              A = "used2";
-            }
-            return <A/>;
-            }`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-            let message = 'unused';
-            try {
-              const result = call();
-              message = result.message;
-            } catch (e) {
-              message = 'used';
-            }
-            return <A prop={message} />;
-            }`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-            let x = 1;
-            x = x + 1;
-            x = 5;
-            return <A prop={x} />;
-            }`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-            let x = 1;
-            x = 2;
-            return <A>{x}</A>;
-            }`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-		{
-			code: `function App() {
-            let x = 0;
-            x = 1;
-            x = 2;
-            return <A prop={x} />;
-            }`,
-			languageOptions: {
-				parserOptions: {
-					ecmaFeatures: { jsx: true },
-				},
-			},
-		},
-	],
-};
+    },
+];
+
+describe("no-useless-assignment", ({ describe }) => {
+
+    const globalRules = { "no-useless-assignment": ["error"] };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, code, options, languageOptions }, i) => {
+                const sourceText = text ?? code;
+                const file = { text: sourceText };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-useless-assignment"] = rules["no-useless-assignment"].concat(options);
+                }
+
+                const res = lintText(file, rules, languageOptions);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, code, options, languageOptions, errors }, i) => {
+                const sourceText = text ?? code;
+                const file = { text: sourceText };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-useless-assignment"] = rules["no-useless-assignment"].concat(options);
+                }
+
+                const res = lintText(file, rules, languageOptions);
+
+                if (errors === undefined) {
+                    assertEqual(true, res.errorCount > 0, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+                } else {
+                    assertEqual(errors, res.errorCount, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+                }
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+
+                res.messages.forEach((message) => {
+                    assertEqual("no-useless-assignment", message.ruleId, `message.ruleId:[${i}]:${sourceText.slice(0, 52)} ...`);
+                    assertNonEmptyString(message.message, `message.message:[${i}]:${sourceText.slice(0, 52)} ...`);
+                });
+            });
+        });
+    });
+});

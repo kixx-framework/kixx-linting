@@ -20,42 +20,49 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		"class Foo {}",
-		`class Foo {
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
+
+import { lintText } from "../../../mod.js";
+
+const valid = [
+    { text: "class Foo {}" },
+    { text: `class Foo {
     publicMember = 42;
-}`,
-		`class Foo {
+}` },
+    { text: `class Foo {
     #usedMember = 42;
     method() {
         return this.#usedMember;
     }
-}`,
-		`class Foo {
+}` },
+    { text: `class Foo {
     #usedMember = 42;
     anotherMember = this.#usedMember;
-}`,
-		`class Foo {
+}` },
+    { text: `class Foo {
     #usedMember = 42;
     foo() {
         anotherMember = this.#usedMember;
     }
-}`,
-		`class C {
+}` },
+    { text: `class C {
     #usedMember;
 
     foo() {
         bar(this.#usedMember += 1);
     }
-}`,
-		`class Foo {
+}` },
+    { text: `class Foo {
     #usedMember = 42;
     method() {
         return someGlobalMethod(this.#usedMember);
     }
-}`,
-		`class C {
+}` },
+    { text: `class C {
     #usedInOuterClass;
 
     foo() {
@@ -65,49 +72,49 @@ export default {
     bar() {
         return this.#usedInOuterClass;
     }
-}`,
-		`class Foo {
+}` },
+    { text: `class Foo {
     #usedInForInLoop;
     method() {
         for (const bar in this.#usedInForInLoop) {
 
         }
     }
-}`,
-		`class Foo {
+}` },
+    { text: `class Foo {
     #usedInForOfLoop;
     method() {
         for (const bar of this.#usedInForOfLoop) {
 
         }
     }
-}`,
-		`class Foo {
+}` },
+    { text: `class Foo {
     #usedInAssignmentPattern;
     method() {
         [bar = 1] = this.#usedInAssignmentPattern;
     }
-}`,
-		`class Foo {
+}` },
+    { text: `class Foo {
     #usedInArrayPattern;
     method() {
         [bar] = this.#usedInArrayPattern;
     }
-}`,
-		`class Foo {
+}` },
+    { text: `class Foo {
     #usedInAssignmentPattern;
     method() {
         [bar] = this.#usedInAssignmentPattern;
     }
-}`,
-		`class C {
+}` },
+    { text: `class C {
     #usedInObjectAssignment;
 
     method() {
         ({ [this.#usedInObjectAssignment]: a } = foo);
     }
-}`,
-		`class C {
+}` },
+    { text: `class C {
     set #accessorWithSetterFirst(value) {
         doSomething(value);
     }
@@ -117,15 +124,15 @@ export default {
     method() {
         this.#accessorWithSetterFirst += 1;
     }
-}`,
-		`class Foo {
+}` },
+    { text: `class Foo {
     set #accessorUsedInMemberAccess(value) {}
 
     method(a) {
         [this.#accessorUsedInMemberAccess] = a;
     }
-}`,
-		`class C {
+}` },
+    { text: `class C {
     get #accessorWithGetterFirst() {
         return something();
     }
@@ -135,8 +142,8 @@ export default {
     method() {
         this.#accessorWithGetterFirst += 1;
     }
-}`,
-		`class C {
+}` },
+    { text: `class C {
     #usedInInnerClass;
 
     method(a) {
@@ -144,20 +151,20 @@ export default {
             foo = a.#usedInInnerClass;
         }
     }
-}`,
+}` },
 
-		//--------------------------------------------------------------------------
-		// Method definitions
-		//--------------------------------------------------------------------------
-		`class Foo {
+    //--------------------------------------------------------------------------
+    // Method definitions
+    //--------------------------------------------------------------------------
+    { text: `class Foo {
     #usedMethod() {
         return 42;
     }
     anotherMethod() {
         return this.#usedMethod();
     }
-}`,
-		`class C {
+}` },
+    { text: `class C {
     set #x(value) {
         doSomething(value);
     }
@@ -165,59 +172,60 @@ export default {
     foo() {
         this.#x = 1;
     }
-}`,
-	],
-	invalid: [
-		{
-			code: `class Foo {
+}` },
+];
+
+const invalid = [
+    {
+        text: `class Foo {
     #unusedMember = 5;
 }`,
-		},
-		{
-			code: `class First {}
+    },
+    {
+        text: `class First {}
 class Second {
     #unusedMemberInSecondClass = 5;
 }`,
-		},
-		{
-			code: `class First {
+    },
+    {
+        text: `class First {
     #unusedMemberInFirstClass = 5;
 }
 class Second {}`,
-		},
-		{
-			code: `class First {
+    },
+    {
+        text: `class First {
     #firstUnusedMemberInSameClass = 5;
     #secondUnusedMemberInSameClass = 5;
 }`,
-		},
-		{
-			code: `class Foo {
+    },
+    {
+        text: `class Foo {
     #usedOnlyInWrite = 5;
     method() {
         this.#usedOnlyInWrite = 42;
     }
 }`,
-		},
-		{
-			code: `class Foo {
+    },
+    {
+        text: `class Foo {
     #usedOnlyInWriteStatement = 5;
     method() {
         this.#usedOnlyInWriteStatement += 42;
     }
 }`,
-		},
-		{
-			code: `class C {
+    },
+    {
+        text: `class C {
     #usedOnlyInIncrement;
 
     foo() {
         this.#usedOnlyInIncrement++;
     }
 }`,
-		},
-		{
-			code: `class C {
+    },
+    {
+        text: `class C {
     #unusedInOuterClass;
 
     foo() {
@@ -230,9 +238,9 @@ class Second {}`,
         };
     }
 }`,
-		},
-		{
-			code: `class C {
+    },
+    {
+        text: `class C {
     #unusedOnlyInSecondNestedClass;
 
     foo() {
@@ -255,18 +263,18 @@ class Second {}`,
         }
     }
 }`,
-		},
+    },
 
-		//--------------------------------------------------------------------------
-		// Unused method definitions
-		//--------------------------------------------------------------------------
-		{
-			code: `class Foo {
+    //--------------------------------------------------------------------------
+    // Unused method definitions
+    //--------------------------------------------------------------------------
+    {
+        text: `class Foo {
     #unusedMethod() {}
 }`,
-		},
-		{
-			code: `class Foo {
+    },
+    {
+        text: `class Foo {
     #unusedMethod() {}
     #usedMethod() {
         return 42;
@@ -275,14 +283,14 @@ class Second {}`,
         return this.#usedMethod();
     }
 }`,
-		},
-		{
-			code: `class Foo {
+    },
+    {
+        text: `class Foo {
     set #unusedSetter(value) {}
 }`,
-		},
-		{
-			code: `class Foo {
+    },
+    {
+        text: `class Foo {
     #unusedForInLoop;
     method() {
         for (this.#unusedForInLoop in bar) {
@@ -290,9 +298,9 @@ class Second {}`,
         }
     }
 }`,
-		},
-		{
-			code: `class Foo {
+    },
+    {
+        text: `class Foo {
     #unusedForOfLoop;
     method() {
         for (this.#unusedForOfLoop of bar) {
@@ -300,41 +308,41 @@ class Second {}`,
         }
     }
 }`,
-		},
-		{
-			code: `class Foo {
+    },
+    {
+        text: `class Foo {
     #unusedInDestructuring;
     method() {
         ({ x: this.#unusedInDestructuring } = bar);
     }
 }`,
-		},
-		{
-			code: `class Foo {
+    },
+    {
+        text: `class Foo {
     #unusedInRestPattern;
     method() {
         [...this.#unusedInRestPattern] = bar;
     }
 }`,
-		},
-		{
-			code: `class Foo {
+    },
+    {
+        text: `class Foo {
     #unusedInAssignmentPattern;
     method() {
         [this.#unusedInAssignmentPattern = 1] = bar;
     }
 }`,
-		},
-		{
-			code: `class Foo {
+    },
+    {
+        text: `class Foo {
     #unusedInAssignmentPattern;
     method() {
         [this.#unusedInAssignmentPattern] = bar;
     }
 }`,
-		},
-		{
-			code: `class C {
+    },
+    {
+        text: `class C {
     #usedOnlyInTheSecondInnerClass;
 
     method(a) {
@@ -351,6 +359,63 @@ class Second {}`,
         }
     }
 }`,
-		},
-	],
-};
+    },
+];
+
+describe("no-unused-private-class-members", ({ describe }) => {
+
+    const globalRules = { "no-unused-private-class-members": ["error"] };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, code, options, languageOptions }, i) => {
+                const sourceText = text ?? code;
+                const file = { text: sourceText };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-unused-private-class-members"] = rules["no-unused-private-class-members"].concat(options);
+                }
+
+                const res = lintText(file, rules, languageOptions);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, code, options, languageOptions, errors }, i) => {
+                const sourceText = text ?? code;
+                const file = { text: sourceText };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-unused-private-class-members"] = rules["no-unused-private-class-members"].concat(options);
+                }
+
+                const res = lintText(file, rules, languageOptions);
+
+                if (errors === undefined) {
+                    assertEqual(true, res.errorCount > 0, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+                } else {
+                    assertEqual(errors, res.errorCount, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+                }
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+
+                res.messages.forEach((message) => {
+                    assertEqual("no-unused-private-class-members", message.ruleId, `message.ruleId:[${i}]:${sourceText.slice(0, 52)} ...`);
+                    assertNonEmptyString(message.message, `message.message:[${i}]:${sourceText.slice(0, 52)} ...`);
+                });
+            });
+        });
+    });
+});

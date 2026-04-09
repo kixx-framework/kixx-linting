@@ -20,84 +20,149 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		"A: break A;",
-		"A: { foo(); break A; bar(); }",
-		"A: if (a) { foo(); if (b) break A; bar(); }",
-		"A: for (var i = 0; i < 10; ++i) { foo(); if (a) break A; bar(); }",
-		"A: for (var i = 0; i < 10; ++i) { foo(); if (a) continue A; bar(); }",
-		"A: { B: break B; C: for (var i = 0; i < 10; ++i) { foo(); if (a) break A; if (c) continue C; bar(); } }",
-		"A: { var A = 0; console.log(A); break A; console.log(A); }",
-	],
-	invalid: [
-		{
-			code: "A: var foo = 0;",
-		},
-		{
-			code: "A: { foo(); bar(); }",
-		},
-		{
-			code: "A: if (a) { foo(); bar(); }",
-		},
-		{
-			code: "A: for (var i = 0; i < 10; ++i) { foo(); if (a) break; bar(); }",
-		},
-		{
-			code: "A: for (var i = 0; i < 10; ++i) { foo(); if (a) continue; bar(); }",
-		},
-		{
-			code: "A: for (var i = 0; i < 10; ++i) { B: break A; }",
-		},
-		{
-			code: "A: { var A = 0; console.log(A); }",
-		},
-		{
-			code: "A: /* comment */ foo",
-		},
-		{
-			code: "A /* comment */: foo",
-		},
+import {
+    describe,
+    assertEqual,
+    assertNonEmptyString,
+} from "../../deps.js";
 
-		// https://github.com/eslint/eslint/issues/16988
-		{
-			code: 'A: "use strict"',
-		},
-		{
-			code: '"use strict"; foo: "bar"',
-		},
-		{
-			code: 'A: ("use strict")', // Parentheses may be removed by another rule.
-		},
-		{
-			code: "A: `use strict`", // `use strict` may be changed to "use strict" by another rule.
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "if (foo) { bar: 'baz' }",
-		},
-		{
-			code: "A: B: 'foo'",
-		},
-		{
-			code: "A: B: C: 'foo'",
-		},
-		{
-			code: "A: B: C: D: 'foo'",
-		},
-		{
-			code: "A: B: C: D: E: 'foo'",
-		},
-		{
-			code: "A: 42",
-		},
+import { lintText } from "../../../mod.js";
 
-		/*
+const valid = [
+    { text: "A: break A;" },
+    { text: "A: { foo(); break A; bar(); }" },
+    { text: "A: if (a) { foo(); if (b) break A; bar(); }" },
+    { text: "A: for (var i = 0; i < 10; ++i) { foo(); if (a) break A; bar(); }" },
+    { text: "A: for (var i = 0; i < 10; ++i) { foo(); if (a) continue A; bar(); }" },
+    { text: "A: { B: break B; C: for (var i = 0; i < 10; ++i) { foo(); if (a) break A; if (c) continue C; bar(); } }" },
+    { text: "A: { var A = 0; console.log(A); break A; console.log(A); }" },
+];
+
+const invalid = [
+    {
+        text: "A: var foo = 0;",
+    },
+    {
+        text: "A: { foo(); bar(); }",
+    },
+    {
+        text: "A: if (a) { foo(); bar(); }",
+    },
+    {
+        text: "A: for (var i = 0; i < 10; ++i) { foo(); if (a) break; bar(); }",
+    },
+    {
+        text: "A: for (var i = 0; i < 10; ++i) { foo(); if (a) continue; bar(); }",
+    },
+    {
+        text: "A: for (var i = 0; i < 10; ++i) { B: break A; }",
+    },
+    {
+        text: "A: { var A = 0; console.log(A); }",
+    },
+    {
+        text: "A: /* comment */ foo",
+    },
+    {
+        text: "A /* comment */: foo",
+    },
+
+    // https://github.com/eslint/eslint/issues/16988
+    {
+        text: 'A: "use strict"',
+    },
+    {
+        text: '"use strict"; foo: "bar"',
+    },
+    {
+        text: 'A: ("use strict")', // Parentheses may be removed by another rule.
+    },
+    {
+        text: "A: `use strict`", // `use strict` may be changed to "use strict" by another rule.
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text: "if (foo) { bar: 'baz' }",
+    },
+    {
+        text: "A: B: 'foo'",
+    },
+    {
+        text: "A: B: C: 'foo'",
+    },
+    {
+        text: "A: B: C: D: 'foo'",
+    },
+    {
+        text: "A: B: C: D: E: 'foo'",
+    },
+    {
+        text: "A: 42",
+    },
+
+    /*
 		 * Below is fatal errors.
 		 * "A: break B",
 		 * "A: function foo() { break A; }",
 		 * "A: class Foo { foo() { break A; } }",
 		 * "A: { A: { break A; } }"
 		 */
-	],
-};
+];
+
+describe("no-unused-labels", ({ describe }) => {
+
+    const globalRules = { "no-unused-labels": ["error"] };
+
+    describe("valid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            valid.forEach(({ text, code, options, languageOptions }, i) => {
+                const sourceText = text ?? code;
+                const file = { text: sourceText };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-unused-labels"] = rules["no-unused-labels"].concat(options);
+                }
+
+                const res = lintText(file, rules, languageOptions);
+
+                if (res.errorCount > 0 || res.warningCount > 0) {
+                    console.error(res);
+                }
+
+                assertEqual(0, res.errorCount, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+            });
+        });
+    });
+
+    describe("invalid code", ({ it }) => {
+        it("has expected outcomes", () => {
+            invalid.forEach(({ text, code, options, languageOptions, errors }, i) => {
+                const sourceText = text ?? code;
+                const file = { text: sourceText };
+
+                let rules = globalRules;
+                if (options) {
+                    rules = structuredClone(globalRules);
+                    rules["no-unused-labels"] = rules["no-unused-labels"].concat(options);
+                }
+
+                const res = lintText(file, rules, languageOptions);
+
+                if (errors === undefined) {
+                    assertEqual(true, res.errorCount > 0, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+                } else {
+                    assertEqual(errors, res.errorCount, `errorCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+                }
+                assertEqual(0, res.warningCount, `warningCount:[${i}]:${sourceText.slice(0, 52)} ...`);
+
+                res.messages.forEach((message) => {
+                    assertEqual("no-unused-labels", message.ruleId, `message.ruleId:[${i}]:${sourceText.slice(0, 52)} ...`);
+                    assertNonEmptyString(message.message, `message.message:[${i}]:${sourceText.slice(0, 52)} ...`);
+                });
+            });
+        });
+    });
+});
