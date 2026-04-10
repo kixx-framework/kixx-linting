@@ -67,6 +67,17 @@ const valid = [
 		{ text: "var foo = 0, bar = 0; for (bar; foo;) { ++foo }" },
 		{ text: "var foo; if (foo) { }" },
 		{ text: "var a = [1, 2, 3]; var len = a.length; for (var i = 0; i < len - 1; i++) {}" },
+		{
+			text: `
+				function isAncestorOf(node, stopNode) {
+					let current = node.parent;
+					while (current && current !== stopNode) {
+						current = current.parent;
+					}
+					return current === stopNode;
+				}
+			`,
+		},
 ];
 
 const invalid = [
