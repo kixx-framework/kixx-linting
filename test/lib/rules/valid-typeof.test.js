@@ -20,139 +20,137 @@
  * THE SOFTWARE.
  */
 
-export default {
-	valid: [
-		"typeof foo === 'string'",
-		"typeof foo === 'object'",
-		"typeof foo === 'function'",
-		"typeof foo === 'undefined'",
-		"typeof foo === 'boolean'",
-		"typeof foo === 'number'",
-		"typeof foo === 'bigint'",
-		"'string' === typeof foo",
-		"'object' === typeof foo",
-		"'function' === typeof foo",
-		"'undefined' === typeof foo",
-		"'boolean' === typeof foo",
-		"'number' === typeof foo",
-		"typeof foo === typeof bar",
-		"typeof foo === baz",
-		"typeof foo !== someType",
-		"typeof bar != someType",
-		"someType === typeof bar",
-		"someType == typeof bar",
-		"typeof foo == 'string'",
-		"typeof(foo) === 'string'",
-		"typeof(foo) !== 'string'",
-		"typeof(foo) == 'string'",
-		"typeof(foo) != 'string'",
-		"var oddUse = typeof foo + 'thing'",
-		"function f(undefined) { typeof x === undefined }",
-		{
-			code: "typeof foo === 'number'",
-			options: [{ requireStringLiterals: true }],
-		},
-		{
-			code: 'typeof foo === "number"',
-			options: [{ requireStringLiterals: true }],
-		},
-		{
-			code: "var baz = typeof foo + 'thing'",
-			options: [{ requireStringLiterals: true }],
-		},
-		{
-			code: "typeof foo === typeof bar",
-			options: [{ requireStringLiterals: true }],
-		},
-		{
-			code: "typeof foo === `string`",
-			options: [{ requireStringLiterals: true }],
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "`object` === typeof foo",
-			options: [{ requireStringLiterals: true }],
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "typeof foo === `str${somethingElse}`",
-			languageOptions: { ecmaVersion: 6 },
-		},
-	],
+const valid = [
+    { text: "typeof foo === 'string'" },
+    { text: "typeof foo === 'object'" },
+    { text: "typeof foo === 'function'" },
+    { text: "typeof foo === 'undefined'" },
+    { text: "typeof foo === 'boolean'" },
+    { text: "typeof foo === 'number'" },
+    { text: "typeof foo === 'bigint'" },
+    { text: "'string' === typeof foo" },
+    { text: "'object' === typeof foo" },
+    { text: "'function' === typeof foo" },
+    { text: "'undefined' === typeof foo" },
+    { text: "'boolean' === typeof foo" },
+    { text: "'number' === typeof foo" },
+    { text: "typeof foo === typeof bar" },
+    { text: "typeof foo === baz" },
+    { text: "typeof foo !== someType" },
+    { text: "typeof bar != someType" },
+    { text: "someType === typeof bar" },
+    { text: "someType == typeof bar" },
+    { text: "typeof foo == 'string'" },
+    { text: "typeof(foo) === 'string'" },
+    { text: "typeof(foo) !== 'string'" },
+    { text: "typeof(foo) == 'string'" },
+    { text: "typeof(foo) != 'string'" },
+    { text: "var oddUse = typeof foo + 'thing'" },
+    { text: "function f(undefined) { typeof x === undefined }" },
+    {
+        text: "typeof foo === 'number'",
+        options: [{ requireStringLiterals: true }],
+    },
+    {
+        text: 'typeof foo === "number"',
+        options: [{ requireStringLiterals: true }],
+    },
+    {
+        text: "var baz = typeof foo + 'thing'",
+        options: [{ requireStringLiterals: true }],
+    },
+    {
+        text: "typeof foo === typeof bar",
+        options: [{ requireStringLiterals: true }],
+    },
+    {
+        text: "typeof foo === `string`",
+        options: [{ requireStringLiterals: true }],
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text: "`object` === typeof foo",
+        options: [{ requireStringLiterals: true }],
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text: "typeof foo === `str${somethingElse}`",
+        languageOptions: { ecmaVersion: 6 },
+    },
+];
 
-	invalid: [
-		{
-			code: "typeof foo === 'strnig'",
-		},
-		{
-			code: "'strnig' === typeof foo",
-		},
-		{
-			code: "if (typeof bar === 'umdefined') {}",
-		},
-		{
-			code: "typeof foo !== 'strnig'",
-		},
-		{
-			code: "'strnig' !== typeof foo",
-		},
-		{
-			code: "if (typeof bar !== 'umdefined') {}",
-		},
-		{
-			code: "typeof foo != 'strnig'",
-		},
-		{
-			code: "'strnig' != typeof foo",
-		},
-		{
-			code: "if (typeof bar != 'umdefined') {}",
-		},
-		{
-			code: "typeof foo == 'strnig'",
-		},
-		{
-			code: "'strnig' == typeof foo",
-		},
-		{
-			code: "if (typeof bar == 'umdefined') {}",
-		},
-		{
-			code: "if (typeof bar === `umdefined`) {}",
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "typeof foo == 'invalid string'",
-			options: [{ requireStringLiterals: true }],
-		},
-		{
-			code: "if (typeof bar !== undefined) {}",
-		},
-		{
-			code: "typeof foo == Object",
-			options: [{ requireStringLiterals: true }],
-		},
-		{
-			code: "typeof foo === undefined",
-			options: [{ requireStringLiterals: true }],
-		},
-		{
-			code: "undefined === typeof foo",
-			options: [{ requireStringLiterals: true }],
-		},
-		{
-			code: "undefined == typeof foo",
-			options: [{ requireStringLiterals: true }],
-		},
-		{
-			code: "typeof foo === `undefined${foo}`",
-			options: [{ requireStringLiterals: true }],
-			languageOptions: { ecmaVersion: 6 },
-		},
-		{
-			code: "typeof foo === `${string}`",
-			options: [{ requireStringLiterals: true }],
-			languageOptions: { ecmaVersion: 6 },
-		},
-	],
-};
+const invalid = [
+    {
+        text: "typeof foo === 'strnig'",
+    },
+    {
+        text: "'strnig' === typeof foo",
+    },
+    {
+        text: "if (typeof bar === 'umdefined') {}",
+    },
+    {
+        text: "typeof foo !== 'strnig'",
+    },
+    {
+        text: "'strnig' !== typeof foo",
+    },
+    {
+        text: "if (typeof bar !== 'umdefined') {}",
+    },
+    {
+        text: "typeof foo != 'strnig'",
+    },
+    {
+        text: "'strnig' != typeof foo",
+    },
+    {
+        text: "if (typeof bar != 'umdefined') {}",
+    },
+    {
+        text: "typeof foo == 'strnig'",
+    },
+    {
+        text: "'strnig' == typeof foo",
+    },
+    {
+        text: "if (typeof bar == 'umdefined') {}",
+    },
+    {
+        text: "if (typeof bar === `umdefined`) {}",
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text: "typeof foo == 'invalid string'",
+        options: [{ requireStringLiterals: true }],
+    },
+    {
+        text: "if (typeof bar !== undefined) {}",
+    },
+    {
+        text: "typeof foo == Object",
+        options: [{ requireStringLiterals: true }],
+    },
+    {
+        text: "typeof foo === undefined",
+        options: [{ requireStringLiterals: true }],
+    },
+    {
+        text: "undefined === typeof foo",
+        options: [{ requireStringLiterals: true }],
+    },
+    {
+        text: "undefined == typeof foo",
+        options: [{ requireStringLiterals: true }],
+    },
+    {
+        text: "typeof foo === `undefined${foo}`",
+        options: [{ requireStringLiterals: true }],
+        languageOptions: { ecmaVersion: 6 },
+    },
+    {
+        text: "typeof foo === `${string}`",
+        options: [{ requireStringLiterals: true }],
+        languageOptions: { ecmaVersion: 6 },
+    },
+];
