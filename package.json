@@ -1,9 +1,9 @@
 {
     "name": "kixx-linting",
     "version": "0.1.0",
-    "description": "Linting POC",
-    "license": "UNLICENSED",
-    "author": "Kris Walker (www.kriswalker.me)",
+    "description": "A lightweight JavaScript linter for Kixx modules, components, plugins, and frontend stuff.",
     "type": "module",
-    "main": "index.js"
+    "main": "mod.js",
+    "author": "Kris Walker (www.kriswalker.me)",
+    "license": "MIT"
 }
