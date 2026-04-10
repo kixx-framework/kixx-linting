@@ -74,6 +74,11 @@ const valid = [
     { text: "foo ?? null ?? bar" },
     { text: "a ?? (doSomething(), undefined) ?? b" },
     { text: "a ?? (something = null) ?? b" },
+
+    // Non-comparison binary expressions should not be reported by this rule.
+    { text: '"a" + "b"' },
+    { text: '"a" + "b" + "c"' },
+    { text: "1 + 2" },
 ];
 
 const invalid = [
