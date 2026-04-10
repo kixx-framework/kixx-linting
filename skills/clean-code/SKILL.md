@@ -36,3 +36,14 @@ Your objects should hide their data and information behind abstractions and expo
 One way to separate specialized code is to push it downwards. An example of this is device drivers: An operating system typically must support many different device types of devices. Each of these device types has its own specialized command set. In order to prevent specialized device characteristics from leaking into the main operating system code, operating systems define an interface with general-purpose operations that any secondary storage device must implement. You should follow this pattern in your code as well.
 
 Another way to separate specialized code is to pull it upwards. The top-level classes of an application, which provide specific features, will necessarily be specialized for those features. That specialization should be contained in those classes. You can usually find these kinds of specific features by thinking of the user stories. If the code seems to be directly associated to a specific thing the user would want to do, like sending an invoice, then it can probably be pulled upward into a separate class or routine.
+
+**Smaller modules, classes, and methods are NOT always better**
+
+Creating small classes and small methods is NOT your goal when writing or refactoring code; making the code simpler is your goal. There are times when you should bring code together instead of decomposing it.
+
+Bringing pieces of code together when they are closely related:
+
+- They share information; for example, both pieces of code might depend on information about a common protocol.
+- They are used together: anyone using one of the pieces of code is likely to use the other as well.
+- They overlap conceptually, in that there is a simple higher-level category that includes both of the pieces of code.
+- It is hard to understand one of the pieces of code without looking at the other.

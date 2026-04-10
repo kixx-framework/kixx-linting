@@ -100,7 +100,6 @@ Audit date: 2026-04-05
 - [x] `no-unused-labels`
 - [x] `no-unused-private-class-members`
 - [x] `no-use-before-define`
-- [x] `no-useless-assignment`
 - [x] `no-useless-catch`
 - [x] `no-useless-computed-key`
 - [x] `no-var`

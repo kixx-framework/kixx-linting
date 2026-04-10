@@ -261,9 +261,6 @@ export default [
                 'error',
                 { functions: false, classes: false },
             ],
-            'no-useless-assignment': [
-                'error',
-            ],
             'no-useless-catch': [
                 'error',
             ],

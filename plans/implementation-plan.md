@@ -164,7 +164,7 @@ Build a minimal, synchronous `lintText(sourceText, options)` function that parse
 
 - [x] **Implement scope-based rules (batch 4: code quality and misuse patterns)**
   - **Story**: Catch misuse of globals, implicit conversions, and other scope-dependent quality issues
-  - **What**: Implement 12 rules: `no-console`, `no-invalid-this`, `no-new-native-nonconstructor`, `no-new-wrappers`, `no-obj-calls`, `no-prototype-builtins`, `no-implicit-coercion`, `radix`, `prefer-promise-reject-errors`, `no-useless-assignment`, `preserve-caught-error` (custom — confirm semantics from rule inventory; likely: flag `catch (e) { ... }` blocks where the caught error variable is shadowed or discarded without being used).
+  - **What**: Implement 11 rules: `no-console`, `no-invalid-this`, `no-new-native-nonconstructor`, `no-new-wrappers`, `no-obj-calls`, `no-prototype-builtins`, `no-implicit-coercion`, `radix`, `prefer-promise-reject-errors`, `preserve-caught-error` (custom — confirm semantics from rule inventory; likely: flag `catch (e) { ... }` blocks where the caught error variable is shadowed or discarded without being used).
   - **Where**: `lib/rules/{rule-name}.js` for each; register each in `lib/rules/index.js`
   - **Acceptance criteria**: `no-console` fires on `console.log()` and related; `no-invalid-this` fires on `this` outside of class methods and non-arrow functions; `radix` fires on `parseInt('10')` missing the radix argument
   - **Depends on**: Build lintText() entry point, Vendor eslint-scope
