@@ -299,6 +299,7 @@ export default [
             'semi': [
                 'error',
                 'always',
+                { omitLastInOneLineBlock: true },
             ],
             'strict': [
                 'error',
