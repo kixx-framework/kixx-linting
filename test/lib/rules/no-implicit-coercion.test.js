@@ -79,7 +79,8 @@ const valid = [
     { text: "0 + foo" },
     { text: "~foo.bar()" },
     { text: "foo + 'bar'" },
-    // eslint-disable-next-line no-template-curly-in-string
+
+    // eslint-disable-next-line no-template-curly-in-string, comma-dangle
     { text: "foo + `${bar}`", /* languageOptions: { ecmaVersion: 6 } */ },
 
     { text: "!!foo", options: [{ boolean: false }] },
@@ -105,6 +106,8 @@ const valid = [
         options: [{ boolean: true, string: true, allow: ["+"] }],
     },
 
+    /* eslint-disable comma-dangle */
+
     // https://github.com/eslint/eslint/issues/7057
     { text: "'' + 'foo'" },
     { text: "`` + 'foo'", /* languageOptions: { ecmaVersion: 6 } */ },
@@ -119,13 +122,15 @@ const valid = [
     { text: "foo += `${bar}`", /* languageOptions: { ecmaVersion: 6 } */ },
     // eslint-disable-next-line no-template-curly-in-string
     { text: "`${foo}`", /* languageOptions: { ecmaVersion: 6 } */ },
+
     {
         // eslint-disable-next-line no-template-curly-in-string
         text: "`${foo}`",
         options: [{}],
         /* languageOptions: { ecmaVersion: 6 }, */
     },
-    "+42",
+
+    { text: "+42" },
 
     // https://github.com/eslint/eslint/issues/14623
     { text: "'' + String(foo)" },
@@ -133,11 +138,14 @@ const valid = [
     { text: "`` + String(foo)", /* languageOptions: { ecmaVersion: 6 } */ },
     { text: "String(foo) + ``", /* languageOptions: { ecmaVersion: 6 } */ },
 
+    /* eslint-enable */
+
     // https://github.com/eslint/eslint/issues/16373
     { text: "console.log(Math.PI * 1/4)" },
     { text: "a * 1 / 2" },
     { text: "a * 1 / b" },
 ];
+
 const invalid = [
     {
         text: "!!foo",

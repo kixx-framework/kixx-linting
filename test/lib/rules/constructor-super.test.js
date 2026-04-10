@@ -267,7 +267,7 @@ describe('constructor-super', ({ describe }) => {
                 const [ message ] = res.messages;
 
                 assertEqual('constructor-super', message.ruleId, `message.ruleId:[${i}]:${text.slice(0, 52)} ...`);
-                assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`)
+                assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`);
             });
         });
     });

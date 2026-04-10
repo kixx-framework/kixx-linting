@@ -42,12 +42,12 @@ const valid = [
     { text: "top = 0;" },
     {
         text: "onload = 0;",
-        languageOptions: { globals: browserGlobals }
+        languageOptions: { globals: browserGlobals },
     },
     { text: "require = 0;" },
     {
         text: "a = 1",
-        languageOptions: { globals: { a: true } }
+        languageOptions: { globals: { a: true } },
     },
     { text: "/*global a:true*/ a = 1" },
 ];

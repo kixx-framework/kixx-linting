@@ -198,6 +198,7 @@ const invalid = [
         code: "x\n.y\nz\n`Invalid Test Case`",
         languageOptions: { ecmaVersion: 6 },
     },
+    /* eslint-disable no-unexpected-multiline */
     {
         code: `
                 foo
@@ -228,6 +229,7 @@ const invalid = [
                 /bar/s.test(baz)
             `,
     },
+    /* eslint-enable */
 
     // Class fields
     {

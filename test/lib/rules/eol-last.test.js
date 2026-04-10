@@ -160,7 +160,7 @@ describe('eol-last', ({ describe }) => {
                 const [ message ] = res.messages;
 
                 assertEqual('eol-last', message.ruleId, `message.ruleId:[${i}]:${text.slice(0, 52)} ...`);
-                assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`)
+                assertNonEmptyString(message.message, `message.message:[${i}]:${text.slice(0, 52)} ...`);
             });
         });
     });

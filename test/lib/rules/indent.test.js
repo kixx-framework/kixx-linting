@@ -34,8 +34,8 @@ function unIndent(strings, ...values) {
         .map((s, i) => (i === 0 ? s : values[i - 1] + s))
         .join("");
     const lines = text
-        .replace(/^\n/u, "")
-        .replace(/\n\s*$/u, "")
+        .replace(/^\n/u, "") // eslint-disable-line no-control-regex
+        .replace(/\n\s*$/u, "") // eslint-disable-line no-control-regex
         .split("\n");
     const lineIndents = lines
         .filter(line => line.trim())

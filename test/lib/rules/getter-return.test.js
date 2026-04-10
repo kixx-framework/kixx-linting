@@ -167,7 +167,7 @@ const invalid = [
     },
 
     // option: {allowImplicit: true}
-    { text: "class foo { get bar(){} }", options: [{ allowImplicit: true }],},
+    { text: "class foo { get bar(){} }", options: [{ allowImplicit: true }]},
     {
         text: "class foo { get bar(){if (baz) {return true;} } }",
         options: [{ allowImplicit: true }],
