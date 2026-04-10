@@ -33,6 +33,10 @@ function normalizeDirectiveIndex(directiveIndex) {
         ]);
 }
 
+function assertSuppressed(expected, disableDirectives, message) {
+    assertEqual(expected, disableDirectives.isSuppressed(message));
+}
+
 describe("disable directives", ({ it }) => {
     it("normalizes whitespace for line and block comments", () => {
         const sourceCode = createSourceCode(
@@ -120,5 +124,91 @@ describe("disable directives", ({ it }) => {
             ]),
             JSON.stringify(normalizeDirectiveIndex(directiveIndex)),
         );
+    });
+
+    it("recognizes bare block disable and enable directives as all-rule range state", () => {
+        const sourceCode = createSourceCode(
+            "/* eslint-disable */\n" +
+            "console.log(foo);\n" +
+            "debugger;\n" +
+            "/* eslint-enable */\n" +
+            "console.log(bar);\n",
+        );
+
+        const disableDirectives = collectDisableDirectives(sourceCode);
+
+        assertSuppressed(true, disableDirectives, { ruleId: "no-console", line: 2, column: 1 });
+        assertSuppressed(true, disableDirectives, { ruleId: "no-debugger", line: 3, column: 1 });
+        assertSuppressed(false, disableDirectives, { ruleId: "no-console", line: 5, column: 1 });
+    });
+
+    it("recognizes rule-specific block disable and enable directives", () => {
+        const sourceCode = createSourceCode(
+            "/* eslint-disable no-console */\n" +
+            "console.log(foo);\n" +
+            "debugger;\n" +
+            "/* eslint-enable no-console */\n" +
+            "console.log(bar);\n",
+        );
+
+        const disableDirectives = collectDisableDirectives(sourceCode);
+
+        assertSuppressed(true, disableDirectives, { ruleId: "no-console", line: 2, column: 1 });
+        assertSuppressed(false, disableDirectives, { ruleId: "no-debugger", line: 3, column: 1 });
+        assertSuppressed(false, disableDirectives, { ruleId: "no-console", line: 5, column: 1 });
+    });
+
+    it("normalizes multiline rule lists and duplicate rule ids for block ranges", () => {
+        const sourceCode = createSourceCode(
+            "/* eslint-disable no-console,\n" +
+            "   no-debugger,\n" +
+            "   no-console because fixture code is intentional */\n" +
+            "console.log(foo); debugger;\n",
+        );
+
+        const disableDirectives = collectDisableDirectives(sourceCode);
+
+        assertSuppressed(true, disableDirectives, { ruleId: "no-console", line: 4, column: 1 });
+        assertSuppressed(true, disableDirectives, { ruleId: "no-debugger", line: 4, column: 19 });
+        assertSuppressed(false, disableDirectives, { ruleId: "semi", line: 4, column: 28 });
+    });
+
+    it("applies ordered interleaved block directive transitions", () => {
+        const sourceCode = createSourceCode(
+            "/* eslint-disable no-console */\n" +
+            "console.log(foo);\n" +
+            "/* eslint-disable no-debugger */\n" +
+            "console.log(bar); debugger;\n" +
+            "/* eslint-enable no-console */\n" +
+            "console.log(baz); debugger;\n" +
+            "/* eslint-enable */\n" +
+            "debugger;\n",
+        );
+
+        const disableDirectives = collectDisableDirectives(sourceCode);
+
+        assertSuppressed(true, disableDirectives, { ruleId: "no-console", line: 2, column: 1 });
+        assertSuppressed(true, disableDirectives, { ruleId: "no-console", line: 4, column: 1 });
+        assertSuppressed(true, disableDirectives, { ruleId: "no-debugger", line: 4, column: 19 });
+        assertSuppressed(false, disableDirectives, { ruleId: "no-console", line: 6, column: 1 });
+        assertSuppressed(true, disableDirectives, { ruleId: "no-debugger", line: 6, column: 19 });
+        assertSuppressed(false, disableDirectives, { ruleId: "no-debugger", line: 8, column: 1 });
+    });
+
+    it("combines block ranges with existing line-scoped directives", () => {
+        const sourceCode = createSourceCode(
+            "/* eslint-disable no-console */\n" +
+            "console.log(foo); debugger; // eslint-disable-line no-debugger\n" +
+            "/* eslint-enable no-console */\n" +
+            "// eslint-disable-next-line no-console\n" +
+            "console.log(bar); debugger;\n",
+        );
+
+        const disableDirectives = collectDisableDirectives(sourceCode);
+
+        assertSuppressed(true, disableDirectives, { ruleId: "no-console", line: 2, column: 1 });
+        assertSuppressed(true, disableDirectives, { ruleId: "no-debugger", line: 2, column: 19 });
+        assertSuppressed(true, disableDirectives, { ruleId: "no-console", line: 5, column: 1 });
+        assertSuppressed(false, disableDirectives, { ruleId: "no-debugger", line: 5, column: 19 });
     });
 });

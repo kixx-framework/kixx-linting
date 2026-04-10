@@ -62,20 +62,34 @@ console.log(value); debugger;
 /* eslint-disable-next-line no-console,
    no-debugger */
 console.log(value); debugger;
+
+/* eslint-disable */
+console.log(value);
+debugger;
+/* eslint-enable */
+
+/* eslint-disable no-console, no-debugger */
+console.log(value);
+debugger;
+/* eslint-enable no-console, no-debugger */
+
+/* eslint-disable no-console */
+console.log(value);
 ```
 
 Behavior:
 - `eslint-disable-line` applies to the line containing the directive comment.
 - `eslint-disable-next-line` applies only to the immediately following line.
-- Only explicitly named rules are suppressed.
+- `eslint-disable` applies after the block comment until a later `eslint-enable` block comment or the end of the file.
+- A top-of-file `eslint-disable` comment with no later `eslint-enable` disables matching rule diagnostics for the rest of the file.
+- Bare `eslint-disable` and `eslint-enable` comments affect all rule diagnostics.
+- Rule-specific `eslint-disable` and `eslint-enable` comments affect only the listed rules.
 - Multiple rules may be listed as comma-separated rule IDs.
-- Line comments and block comments are both supported.
+- Line-scoped directives may use line comments or block comments.
+- Range-scoped `eslint-disable` and `eslint-enable` directives use block comments.
+- Parse errors are not suppressed by disable comments.
 
 Not supported in this feature:
-- File-wide `eslint-disable`
-- `eslint-enable`
-- Bare directives with no rule list
-- Range-based or block-scoped suppression
 - Other ESLint inline configuration features
 
 Copyright and License

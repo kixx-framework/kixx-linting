@@ -91,6 +91,60 @@ describe("linter disable directives", ({ it }) => {
         });
     });
 
+    it("suppresses all diagnostics inside a bare block disabled range", () => {
+        const result = lintWithDisableDirectiveCoverage(
+            "/* eslint-disable */\n" +
+            "console.log(foo)\n" +
+            "debugger;\n" +
+            "/* eslint-enable */\n" +
+            "console.log(bar);",
+        );
+
+        assertEqual(1, result.errorCount);
+        assertEqual(0, result.warningCount);
+        assertRuleSummaries(["no-console@5"], result.messages);
+    });
+
+    it("suppresses only listed rules inside a rule-specific block disabled range", () => {
+        const result = lintWithDisableDirectiveCoverage(
+            "/* eslint-disable no-console */\n" +
+            "console.log(foo)\n" +
+            "debugger;\n" +
+            "/* eslint-enable no-console */\n" +
+            "console.log(bar);",
+        );
+
+        assertEqual(3, result.errorCount);
+        assertEqual(0, result.warningCount);
+        assertRuleSummaries(["semi@2", "no-debugger@3", "no-console@5"], result.messages);
+    });
+
+    it("suppresses multiple listed rules inside a block disabled range", () => {
+        const result = lintWithDisableDirectiveCoverage(
+            "/* eslint-disable no-console, no-debugger, no-console */\n" +
+            "console.log(foo); debugger;\n" +
+            "/* eslint-enable no-console, no-debugger */\n" +
+            "debugger;",
+        );
+
+        assertEqual(1, result.errorCount);
+        assertEqual(0, result.warningCount);
+        assertRuleSummaries(["no-debugger@4"], result.messages);
+    });
+
+    it("treats a top-of-file block disable without enable as file-wide suppression", () => {
+        const result = lintWithDisableDirectiveCoverage(
+            "/* eslint-disable no-console */\n" +
+            "console.log(foo);\n" +
+            "debugger;\n" +
+            "console.log(bar);",
+        );
+
+        assertEqual(1, result.errorCount);
+        assertEqual(0, result.warningCount);
+        assertRuleSummaries(["no-debugger@3"], result.messages);
+    });
+
     it("does not suppress malformed directive text", () => {
         const result = lintWithDisableDirectiveCoverage("console.log(foo); // eslint-disable-lin no-console");
 
