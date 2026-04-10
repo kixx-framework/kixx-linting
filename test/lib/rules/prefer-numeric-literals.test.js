@@ -297,6 +297,7 @@ describe("prefer-numeric-literals", ({ describe }) => {
                 const res = lintText(file, rules, languageOptions);
 
                 if (res.errorCount > 0 || res.warningCount > 0) {
+                    // eslint-disable-next-line no-console
                     console.error(res);
                 }
 

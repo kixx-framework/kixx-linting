@@ -127,6 +127,7 @@ describe("no-control-regex", ({ describe }) => {
                 const res = lintText(file, rules);
 
                 if (res.errorCount > 0 || res.warningCount > 0) {
+                    // eslint-disable-next-line no-console
                     console.error(res);
                 }
 

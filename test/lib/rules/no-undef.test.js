@@ -374,6 +374,7 @@ describe("no-undef", ({ describe }) => {
                 const res = lintText(file, rules, effectiveLanguageOptions);
 
                 if (res.errorCount > 0 || res.warningCount > 0) {
+                    // eslint-disable-next-line no-console
                     console.error(res);
                 }
 
