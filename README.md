@@ -5,6 +5,27 @@ A narrowly scoped JavaScript linter written in JavaScript. Derived from [ESLint]
 
 The primary objective of Kixx Linting is to provide a tool to agentic software engineering systems which will cheaply inform them of bugs and code smells. Kixx Linting intends to be cheap to run, and to provide straightforward and targeted feedback which large language models can understand.
 
+Lint CLI
+--------
+
+Run linting with:
+
+```bash
+node lint.js <pathname>
+```
+
+The `<pathname>` argument is optional. If omitted, the CLI uses the current working directory.
+
+`lint.js` always loads `eslint.config.js` from the current working directory. The config must default-export an array of config objects.
+
+When the target is a directory, linting walks it recursively and only lints `.js` files. Other file extensions are ignored during directory traversal.
+
+`files` and `ignores` matching is literal path-segment matching (no glob support). Diagnostic output is written to `stderr`, grouped by file.
+
+Exit behavior:
+- Exits `1` when any lint error is present (or when CLI/config loading fails).
+- Exits `0` when results are warnings-only or fully clean.
+
 Testing
 -------
 

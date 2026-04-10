@@ -3,7 +3,7 @@ export default [
         ignores: [
             '.claude/',
             'plans/',
-            'prompt-templates/'
+            'prompt-templates/',
             'prompts/',
             'skills/',
             'tmp/',

@@ -1,0 +1,1 @@
+console.log("this is not a JavaScript file and should not be linted in directory mode");
