@@ -117,6 +117,8 @@ const valid = [
     { text: `export default class foo {};
         console.log(foo);
         foo = 'unused like but exported';` },
+    { text: `const foo = {};
+        export default foo;` },
     { text: `let foo = 'used';
         export { foo };
         console.log(foo);
