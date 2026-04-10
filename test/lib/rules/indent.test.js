@@ -137,6 +137,7 @@ const valid = [
         options: ["tab"],
     },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "const value = `line one\n    ${expr}\n      line three`;\nif (a) {\n  b();\n}",
         options: [2],
     },

@@ -79,6 +79,7 @@ const valid = [
     { text: "0 + foo" },
     { text: "~foo.bar()" },
     { text: "foo + 'bar'" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "foo + `${bar}`", /* languageOptions: { ecmaVersion: 6 } */ },
 
     { text: "!!foo", options: [{ boolean: false }] },
@@ -107,14 +108,19 @@ const valid = [
     // https://github.com/eslint/eslint/issues/7057
     { text: "'' + 'foo'" },
     { text: "`` + 'foo'", /* languageOptions: { ecmaVersion: 6 } */ },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "'' + `${foo}`", /* languageOptions: { ecmaVersion: 6 } */ },
     { text: "'foo' + ''" },
     { text: "'foo' + ``", /* languageOptions: { ecmaVersion: 6 } */ },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "`${foo}` + ''", /* languageOptions: { ecmaVersion: 6 } */ },
     { text: "foo += 'bar'" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "foo += `${bar}`", /* languageOptions: { ecmaVersion: 6 } */ },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "`${foo}`", /* languageOptions: { ecmaVersion: 6 } */ },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "`${foo}`",
         options: [{}],
         /* languageOptions: { ecmaVersion: 6 }, */

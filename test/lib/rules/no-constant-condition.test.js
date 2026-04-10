@@ -79,12 +79,18 @@ const valid = [
     { text: "if(a &&= b ||= true);" },
     { text: "if(1, a);" },
     { text: "if ('every' in []);" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "if (`\\\n${a}`) {}" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "if (`${a}`);" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "if (`${foo()}`);" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "if (`${a === 'b' && b==='a'}`);" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "if (`foo${a}` === 'fooa');" },
     { text: "if (tag`a`);" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "if (tag`${a}`);" },
     { text: "if (+(a || true));" },
     { text: "if (-(a || true));" },
@@ -92,27 +98,36 @@ const valid = [
     { text: "if (+(a && 0) === +(b && 0));" },
     { text: "while(~!a);" },
     { text: "while(a = b);" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "while(`${a}`);" },
     { text: "for(;x < 10;);" },
     { text: "for(;;);" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "for(;`${a}`;);" },
     { text: "do{ }while(x)" },
     { text: "q > 0 ? 1 : 2;" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "`${a}` === a ? 1 : 2" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "`foo${a}` === a ? 1 : 2" },
     { text: "tag`a` === a ? 1 : 2" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "tag`${a}` === a ? 1 : 2" },
     { text: "while(x += 3) {}" },
     { text: "while(tag`a`) {}" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "while(tag`${a}`) {}" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "while(`\\\n${a}`) {}" },
 
     // #5228, typeof conditions
     { text: "if(typeof x === 'undefined'){}" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "if(`${typeof x}` === 'undefined'){}" },
     { text: "if(a === 'str' && typeof b){}" },
     { text: "typeof a == typeof b" },
     { text: "typeof 'a' === 'string'|| typeof b === 'string'" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "`${typeof 'a'}` === 'string'|| `${typeof b}` === 'string'" },
 
     // #5726, void conditions
@@ -207,7 +222,9 @@ const valid = [
     { text: "if([a]==[b]) {}" },
     { text: "if (+[...a]) {}" },
     { text: "if (+[...[...a]]) {}" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "if (`${[...a]}`) {}" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "if (`${[a]}`) {}" },
     { text: "if (+[a]) {}" },
     { text: "if (0 - [a]) {}" },
@@ -226,6 +243,7 @@ const invalid = [
     { text: "for(;true;);" },
     { text: "for(;``;);" },
     { text: "for(;`foo`;);" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "for(;`foo${bar}`;);" },
     { text: "do{}while(true)" },
     { text: "do{}while('1')" },
@@ -233,6 +251,7 @@ const invalid = [
     { text: "do{}while(t = -2)" },
     { text: "do{}while(``)" },
     { text: "do{}while(`foo`)" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "do{}while(`foo${bar}`)" },
     { text: "true ? 1 : 2;" },
     { text: "1 ? 1 : 2;" },
@@ -240,6 +259,7 @@ const invalid = [
     { text: "(q = 0) ? 1 : 2;" },
     { text: "`` ? 1 : 2;" },
     { text: "`foo` ? 1 : 2;" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "`foo${bar}` ? 1 : 2;" },
     { text: "if(-2);" },
     { text: "if(true);" },
@@ -251,11 +271,17 @@ const invalid = [
     { text: "if(`foo`);" },
     { text: "if(``);" },
     { text: "if(`\\\n`);" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "if(`${'bar'}`);" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "if(`${'bar' + `foo`}`);" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "if(`foo${false || true}`);" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "if(`foo${0 || 1}`);" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "if(`foo${bar}`);" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "if(`${bar}foo`);" },
     { text: "if(!(true || a));" },
     { text: "if(!(a && void b && c));" },
@@ -301,7 +327,9 @@ const invalid = [
     { text: "while(() => {});" },
     { text: "while(`foo`);" },
     { text: "while(``);" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "while(`${'foo'}`);" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "while(`${'foo' + 'bar'}`);" },
     { text: "if(typeof x){}" },
     { text: "if(typeof 'abc' === 'string'){}" },
@@ -368,6 +396,7 @@ const invalid = [
     { text: "if(new Boolean(foo)) {}" },
     { text: "if(new String(foo)) {}" },
     { text: "if(new Number(foo)) {}" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "if(`${[...['a']]}`) {}" },
     { text: "if (undefined) {}" },
     { text: "if (Boolean(1)) {}" },

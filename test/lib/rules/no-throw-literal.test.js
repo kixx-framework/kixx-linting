@@ -57,6 +57,7 @@ const valid = [
     { text: "throw new Error() || 'literal';" }, // LogicalExpression (left)
     { text: "throw foo ? new Error() : 'literal';" }, // ConditionalExpression (consequent)
     { text: "throw foo ? 'literal' : new Error();" }, // ConditionalExpression (alternate)
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "throw tag `${foo}`;", languageOptions: { ecmaVersion: 6 } }, // TaggedTemplateExpression
     {
         text: "function* foo() { var index = 0; throw yield index++; }",
@@ -132,6 +133,7 @@ const invalid = [
 
     // TemplateLiteral
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "throw `${err}`;",
         languageOptions: { ecmaVersion: 6 },
     },

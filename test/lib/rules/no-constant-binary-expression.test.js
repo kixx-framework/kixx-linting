@@ -37,16 +37,22 @@ const valid = [
     { text: "arbitraryFunction(n) ?? foo" },
     { text: "foo.Boolean(n) ?? foo" },
     { text: "(x += 1) && foo" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "`${bar}` && foo" },
     { text: "bar && foo" },
     { text: "delete bar.baz && foo" },
     { text: "true ? foo : bar" },
     { text: "new Foo() == true" },
     { text: "foo == true" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "`${foo}` == true" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "`${foo}${bar}` == true" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "`0${foo}` == true" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "`00000000${foo}` == true" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "`0${foo}.000` == true" },
     { text: "[n] == true" },
 
@@ -197,6 +203,7 @@ const invalid = [
         text: "(bar[0] = false) && foo",
     },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "`hello ${hello}` && foo",
     },
     {
@@ -239,6 +246,7 @@ const invalid = [
         text: "/[a-z]/ ?? foo",
     },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "`${''}` ?? foo",
     },
     {

@@ -56,6 +56,7 @@ const valid = [
 
     // not assumed to be statically-known values
     { text: "class A { ['foo' + '']() {} ['foo']() {} }" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "class A { [`foo${''}`]() {} [`foo`]() {} }" },
     { text: "class A { [-1]() {} ['-1']() {} }" },
 

@@ -47,6 +47,7 @@ const valid = [
     { text: "parseInt('11', '2');" },
     { text: "Number.parseInt('11', '8');" },
     { text: "parseInt(/foo/, 2);" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "parseInt(`11${foo}`, 2);" },
     {
         text: "parseInt('11', 2n);",

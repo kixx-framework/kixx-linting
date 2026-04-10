@@ -49,6 +49,7 @@ const valid = [
         languageOptions: { ecmaVersion: 6 },
     },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         code: "String.raw `Hi\n${2+3}!`;",
         languageOptions: { ecmaVersion: 6 },
     },

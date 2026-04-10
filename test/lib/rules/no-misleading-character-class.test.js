@@ -86,9 +86,11 @@ const valid = [
     },
 
     // don't report on templates with expressions
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "var r = RegExp(`${x}[👍]`)" },
 
     // don't report on unknown flags
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "var r = new RegExp('[🇯🇵]', `${foo}`)" },
     { text: String.raw`var r = new RegExp("[👍]", flags)` },
 
@@ -510,6 +512,7 @@ const invalid = [
 
     // no granular reports on templates with expressions
     {
+        // eslint-disable-next-line no-template-curly-in-string
         code: 'new RegExp(`${"[👍🇯🇵]"}[😊]`);',
     },
 

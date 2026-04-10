@@ -29,14 +29,20 @@ import {
 import { lintText } from "../../../mod.js";
 
 const valid = [
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "`Hello, ${name}`;" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "templateFunction`Hello, ${name}`;" },
     { text: "`Hello, name`;" },
     { text: "'Hello, name';" },
     { text: "'Hello, ' + name;" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: "`Hello, ${index + 1}`" },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: '`Hello, ${name + " foo"}`' },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: '`Hello, ${name || "foo"}`' },
+    // eslint-disable-next-line no-template-curly-in-string
     { text: '`Hello, ${{foo: "bar"}.foo}`' },
     { text: "'$2'" },
     { text: "'${'" },
@@ -48,24 +54,31 @@ const valid = [
 
 const invalid = [
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "'Hello, ${name}'",
     },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: '"Hello, ${name}"',
     },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "'${greeting}, ${name}'",
     },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "'Hello, ${index + 1}'",
     },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "'Hello, ${name + \" foo\"}'",
     },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "'Hello, ${name || \"foo\"}'",
     },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "'Hello, ${{foo: \"bar\"}.foo}'",
     },
 ];

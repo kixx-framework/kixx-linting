@@ -82,6 +82,7 @@ const valid = [
         languageOptions: { ecmaVersion: 6 },
     },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "typeof foo === `str${somethingElse}`",
         languageOptions: { ecmaVersion: 6 },
     },
@@ -181,6 +182,7 @@ const invalid = [
         text: "if (typeof bar == 'umdefined') {}",
     },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "if (typeof bar === `umdefined`) {}",
         languageOptions: { ecmaVersion: 6 },
     },
@@ -208,11 +210,13 @@ const invalid = [
         options: [{ requireStringLiterals: true }],
     },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "typeof foo === `undefined${foo}`",
         options: [{ requireStringLiterals: true }],
         languageOptions: { ecmaVersion: 6 },
     },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "typeof foo === `${string}`",
         options: [{ requireStringLiterals: true }],
         languageOptions: { ecmaVersion: 6 },

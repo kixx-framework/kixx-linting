@@ -67,6 +67,7 @@ const valid = [
     // out of scope for this rule
     { text: "foo['hasOwn' + 'Property']('bar')" },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "foo[`hasOwnProperty${''}`]('bar')",
         languageOptions: { ecmaVersion: 2015 },
     },
