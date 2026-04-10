@@ -13,7 +13,10 @@ export default [
         languageOptions: {
             ecmaVersion: 2025,
             sourceType: 'module',
-            globals: {},
+            globals: {
+                console: 'readonly',
+                structuredClone: 'readonly',
+            },
         },
         rules: {
             'comma-dangle': [

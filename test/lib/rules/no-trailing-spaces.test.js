@@ -136,14 +136,17 @@ const invalid = [
         options: [{}],
     },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "let str = `${a}\n  \n${b}`;  \n",
         languageOptions: { ecmaVersion: 6 },
     },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "let str = `\n${a}\n  \n${b}`;  \n\t",
         languageOptions: { ecmaVersion: 6 },
     },
     {
+        // eslint-disable-next-line no-template-curly-in-string
         text: "let str = `  \n  ${a}\n  \n${b}`;  \n",
         languageOptions: { ecmaVersion: 6 },
     },
@@ -186,6 +189,7 @@ describe("no-trailing-spaces", ({ describe }) => {
                 const res = lintText(file, rules, languageOptions);
 
                 if (res.errorCount > 0 || res.warningCount > 0) {
+                    // eslint-disable-next-line no-console
                     console.error(res);
                 }
 
