@@ -1,8 +1,19 @@
 export default [
     {
+        ignores: [
+            '.claude/',
+            'plans/',
+            'prompt-templates/'
+            'prompts/',
+            'skills/',
+            'tmp/',
+            'vendor/',
+            'lib/vendor/',
+        ],
         languageOptions: {
             ecmaVersion: 2025,
             sourceType: 'module',
+            globals: {},
         },
         rules: {
             'comma-dangle': [
