@@ -26,21 +26,6 @@ Exit behavior:
 - Exits `1` when any lint error is present (or when CLI/config loading fails).
 - Exits `0` when results are warnings-only or fully clean.
 
-Testing
--------
-
-Run all the tests with:
-
-```bash
-node run-tests.js
-```
-
-Or, to target a specific test suite by directory or file name, pass in the pathname:
-
-```bash
-node run-tests.js <pathname>
-```
-
 Disabling Rules Inline
 ----------------------
 
@@ -89,8 +74,20 @@ Behavior:
 - Range-scoped `eslint-disable` and `eslint-enable` directives use block comments.
 - Parse errors are not suppressed by disable comments.
 
-Not supported in this feature:
-- Other ESLint inline configuration features
+Testing
+-------
+
+Run all the tests with:
+
+```bash
+node run-tests.js
+```
+
+Or, to target a specific test suite by directory or file name, pass in the pathname:
+
+```bash
+node run-tests.js <pathname>
+```
 
 Copyright and License
 ---------------------
