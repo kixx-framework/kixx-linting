@@ -41,6 +41,42 @@ Or, to target a specific test suite by directory or file name, pass in the pathn
 node run-tests.js <pathname>
 ```
 
+Disabling Rules Inline
+----------------------
+
+Kixx Linting supports a small subset of ESLint-style inline disabling comments.
+The `eslint-` prefix is required.
+
+Supported forms:
+
+```js
+console.log(value); // eslint-disable-line no-console
+console.log(value); /* eslint-disable-line no-console */
+
+// eslint-disable-next-line no-console
+console.log(value);
+
+/* eslint-disable-next-line no-console, no-debugger */
+console.log(value); debugger;
+
+/* eslint-disable-next-line no-console,
+   no-debugger */
+console.log(value); debugger;
+```
+
+Behavior:
+- `eslint-disable-line` applies to the line containing the directive comment.
+- `eslint-disable-next-line` applies only to the immediately following line.
+- Only explicitly named rules are suppressed.
+- Multiple rules may be listed as comma-separated rule IDs.
+- Line comments and block comments are both supported.
+
+Not supported in this feature:
+- File-wide `eslint-disable`
+- `eslint-enable`
+- Bare directives with no rule list
+- Range-based or block-scoped suppression
+- Other ESLint inline configuration features
 
 Copyright and License
 ---------------------
