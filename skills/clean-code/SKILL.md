@@ -37,7 +37,7 @@ One way to separate specialized code is to push it downwards. An example of this
 
 Another way to separate specialized code is to pull it upwards. The top-level classes of an application, which provide specific features, will necessarily be specialized for those features. That specialization should be contained in those classes. You can usually find these kinds of specific features by thinking of the user stories. If the code seems to be directly associated to a specific thing the user would want to do, like sending an invoice, then it can probably be pulled upward into a separate class or routine.
 
-**Smaller modules, classes, and methods are NOT always better**
+**Smaller modules, classes, and methods are NOT always better.**
 
 Creating small classes and small methods is NOT your goal when writing or refactoring code; making the code simpler is your goal. There are times when you should bring code together instead of decomposing it.
 
@@ -47,3 +47,17 @@ Bringing pieces of code together when they are closely related:
 - They are used together: anyone using one of the pieces of code is likely to use the other as well.
 - They overlap conceptually, in that there is a simple higher-level category that includes both of the pieces of code.
 - It is hard to understand one of the pieces of code without looking at the other.
+
+**Separate your code under certain circumstances:**
+
+- Separate your code when information is not shared.
+- Separate your code when it does not address the same concern.
+- Separate your code so that specialized code is separate from general purpose code.
+
+**How to create good methods and functions.**
+
+The methods and functions you write should do one thing and only that thing. A good method or function should do something or answer something, but not both. A method should change the state of an object, or it should return some information about that object.
+
+In order to make sure our functions are doing one thing, you need to make sure that the statements within your method are all at the same level of abstraction. You want every method to be followed by those at the next level of abstraction so that we can read the program, descending one level of abstraction at a time as we read down the list of methods.
+
+The ideal number of arguments for a method is zero (niladic). Next comes one (monadic), followed closely by two (dyadic). Three arguments (triadic) should be avoided where possible. More than three (polyadic) shouldn’t be used. When a method seems to need more than two or three arguments, it is likely that some of those arguments ought to be wrapped into a class or object of their own.
