@@ -2,18 +2,22 @@ export default [
     {
         ignores: [
             '.claude/',
+            'lib/vendor/',
             'plans/',
             'prompt-templates/',
             'prompts/',
             'skills/',
+            'test/fixtures/',
             'tmp/',
+            'todos/',
             'vendor/',
-            'lib/vendor/',
         ],
         languageOptions: {
             ecmaVersion: 2025,
             sourceType: 'module',
             globals: {
+                Date: 'readonly',
+                setTimeout: 'readonly',
                 console: 'readonly',
                 structuredClone: 'readonly',
             },
