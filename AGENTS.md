@@ -69,3 +69,11 @@ const isConst = variable.defs.some((def) => {
         def.parent.kind === "const";
 });
 ```
+
+**Do not use the `process` global in Node.js**
+
+Instead of using the `process` global in Node.js, import it like this:
+
+```javascript
+import process from 'node:process';
+```
