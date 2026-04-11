@@ -54,10 +54,12 @@ Bringing pieces of code together when they are closely related:
 - Separate your code when it does not address the same concern.
 - Separate your code so that specialized code is separate from general purpose code.
 
-**How to create good methods and functions.**
+**Methods and functions should do one thing.**
 
 The methods and functions you write should do one thing and only that thing. A good method or function should do something or answer something, but not both. A method should change the state of an object, or it should return some information about that object.
 
 In order to make sure our functions are doing one thing, you need to make sure that the statements within your method are all at the same level of abstraction. You want every method to be followed by those at the next level of abstraction so that we can read the program, descending one level of abstraction at a time as we read down the list of methods.
 
-The ideal number of arguments for a method is zero (niladic). Next comes one (monadic), followed closely by two (dyadic). Three arguments (triadic) should be avoided where possible. More than three (polyadic) shouldn’t be used. When a method seems to need more than two or three arguments, it is likely that some of those arguments ought to be wrapped into a class or object of their own.
+**Minimize the number of arguments for methods and functions.**
+
+The ideal number of arguments for a method is zero. Next comes one, followed closely by two. Three arguments should be avoided where possible. More than three arguments should not be used. When a method seems to need more than two or three arguments, it is likely that some of those arguments ought to be wrapped into a class or object of their own.

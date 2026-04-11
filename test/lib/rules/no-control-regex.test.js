@@ -45,6 +45,8 @@ const valid = [
     { text: String.raw`new RegExp("\\u{1F}", flags)` }, // when flags are unknown, this rule assumes there's no `u` flag
     { text: String.raw`new RegExp("[\\q{\\u{20}}]", "v")` },
     { text: String.raw`/[\u{20}--B]/v` }, // languageOptions: { ecmaVersion: 2024 }
+    { text: String.raw`/\r\n|[\r\n\u2028\u2029]/u` },
+    { text: String.raw`/\t\n\r\v\f/` },
 ];
 const invalid = [
     {
