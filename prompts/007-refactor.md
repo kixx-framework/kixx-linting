@@ -10,21 +10,19 @@ Your first objective when writing code and making changes to this codebase is re
 
 **Lean into Object Oriented Programming (OOP).**
 
-Design the system and write your code as a collection of interacting objects rather than a mere list of instructions or functions. When coding, shift your focus from how a task is done to what entity is responsible for doing it.
+Design the system collection of interacting objects and clear responsibilities rather than a mere list of instructions or functions. When coding, shift your focus from how a task is done to what entity is responsible for doing it.
 
-You can think of an object in the code as a machine capable of performing specific tasks. You assign tasks for the object to perform, it is responsible for those tasks, and has access to all the knowledge and resources required to perform those tasks.
+In JavaScript, a responsibility can live in a class, a module, a plain object, or a small function. Do not introduce classes or new files just to make code look object oriented. Use the shape that gives the responsibility the simplest interface and keeps related knowledge together.
 
-**Think of everything as an object.**
+**Think in terms of owners of responsibility.**
 
-Start by assuming that every aspect of the problem domain can be modeled as an object.
+Start by asking which part of the system should own each piece of knowledge or behavior.
 
-- Think of data as objects. Whatever manipulations and transformations are required of an object, are realized by that object itself instead of some other kind of thing acting upon that object.
+- A class is useful when there is durable state, a lifecycle, caching, or an API that benefits from grouping related operations.
+- A module is enough when the responsibility needs private helpers but no per-instance state.
+- A plain helper function is enough when the behavior is stateless, has no hidden invariants, and can be named precisely.
+- Data that carries important invariants should usually be manipulated through the module or object that owns those invariants.
 - Think of relationships between data and concepts as objects with their own responsibilities and capabilities.
-- Think of procedures as objects. Procedures are the vital force which compose other objects together and allows them to interact.
-- An object can be a component made up of several JavaScript modules.
-- An object can be a single JavaScript module.
-- An object can be a class, or instances of a class.
-- An object can even be a method on a class, or a conditional logic within that method.
 
 **Use information hiding (encapsulation).**
 
@@ -37,7 +35,7 @@ Encapsulate your code in two ways:
 1. Your interfaces - classes, method signatures, function signatures - should reflect a simpler, more abstract view of the object's functionality and hide the details.
 2. There are no dependencies on that internal information from outside the object.
 
-Your objects should hide their data and information behind abstractions and expose simple method signatures which operate on that data.
+Your objects and modules should hide their data and information behind abstractions and expose simple method signatures which operate on that data.
 
 **Separate specialized code from general purpose code.**
 
@@ -100,6 +98,8 @@ There are times when you need to clean existing code and may not have the contex
 - Open source files and read them end to end.
 - Find specific lines or sections of code which have code smells.
 
+Do not use guesses as facts. If an assumption you are making depends on an audit, think about the exact pattern to check and find it.
+
 **Refactor for future agents.**
 
 Coding agents which work on this codebase in the future will have no background or context other than that which they get from reading the code. So, there is no need worry about breaking developers' working memory of this codebase.
@@ -133,7 +133,7 @@ Before adding structure, look for code that shouldn't exist:
 
 Rearranging code you should have deleted is wasted motion — and worse, it entrenches the dead code by making it part of the new structure. A refactor plan that doesn't start with a deletion pass is usually incomplete.
 
-**Avoid thin wrappers over exiting objects, methods, or functions.**
+**Avoid thin wrappers over existing objects, methods, or functions.**
 
 A wrapper over code you control means you now have two things where there was one, and future agents have to learn both.
 
@@ -157,6 +157,17 @@ Premature abstraction locks in a shape before you know what variations actually 
 
 Don't assume you need to build an abstraction for two or three callers, especially if they are all in the same file. The rule of three ("wait until you have three copies") is a floor, not a ceiling.
 
+**Classify duplication before extracting it.**
+Not all duplication calls for the same refactor.
+
+- Exact duplicate code with the same reason to change is a strong extraction candidate.
+- Similar code with different domain reasons may be better left separate, renamed, or clarified with comments.
+- Repeated parsing or repeated computation of the same file-level fact usually belongs near the file-level owner, not in every caller.
+- Repeated defensive checks may be dead code if an upstream contract already guarantees the condition.
+- Repeated use of a public API may be normal usage, not a smell.
+
+When recommending an extraction, name the shared concept and the owner that should provide it. If you cannot name both clearly, the extraction is probably premature.
+
 **Large files, classes, methods, and functions are not always a code smell.**
 
 A 500-line rule module or a 400-line facade is not automatically bad. Instead look for code smells:
@@ -179,8 +190,37 @@ Success criteria should be observable:
 - A specific change that was previously hard is now easy, and you can name the change.
 - A specific bug class is now impossible to reintroduce.
 
+**Use evidence-backed refactoring recommendations.**
+
+A refactoring recommendation should let another agent decide whether to act without redoing all of your investigation.
+
+Each recommendation should include:
+
+- The concrete smell, with file paths and line numbers.
+- The current contract or invariant that makes the change safe.
+- The proposed owner of the cleaned-up behavior.
+- The smallest shippable change.
+- The expected payoff, such as lines deleted, duplicated logic removed, or coupling removed.
+- The risk level and what tests or greps should verify it.
+
+Do not present guesses as facts. If a claim depends on an audit, say so and include the audit command or the exact pattern to check.
+
+**Order recommendations by confidence and reversibility.**
+
+A good refactoring plan starts with changes that are easy to verify and easy to revert:
+
+1. Delete dead code and impossible branches.
+2. Collapse exact duplication where the replacement is obvious.
+3. Move repeated file-level facts to the existing owner.
+4. Fix leaked internals by adding the narrowest public method needed by the caller.
+5. Extract larger shared engines only after the behavior is well covered by tests.
+
 </guidelines>
 
 Keep the scope of your refactoring confined to the lib/ directory.
 
-Do not starting writing code yet, but think hard about the changes we need to make. Write a detailed document describing each of your recommendations and put them in the todos/ directory.
+Think hard about the changes we need to make.
+
+Do not starting writing code yet.
+
+Write a detailed document describing each of your recommendations and put them in the todos/ directory.
