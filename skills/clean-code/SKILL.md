@@ -63,3 +63,10 @@ In order to make sure our functions are doing one thing, you need to make sure t
 **Minimize the number of arguments for methods and functions.**
 
 The ideal number of arguments for a method is zero. Next comes one, followed closely by two. Three arguments should be avoided where possible. More than three arguments should not be used. When a method seems to need more than two or three arguments, it is likely that some of those arguments ought to be wrapped into a class or object of their own.
+
+**Choose good names.**
+
+Names for constants, classes, methods, and variables are important to reducing accidental complexity. A good name conveys a lot of information about what the underlying entity is, and, just as important, what it is not. When considering a particular name, ask yourself: "When I see this name in the future, how closely will I be able to guess what the name refers to and what it does?".
+
+Name your constants, classes, methods, and variables so that when you read them in the future, there should be no surprises in what they are and what they do. A good name should be a dead giveaway.
+

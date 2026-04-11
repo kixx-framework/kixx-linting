@@ -77,7 +77,25 @@ Behavior:
 Testing
 -------
 
-Run all the tests with:
+Run the linter and the tests with:
+
+```bash
+npm test
+```
+
+Run just the linter with:
+
+```bash
+node lint.js
+```
+
+Or, to lint a specific file, pass in the pathname:
+
+```bash
+node lint.js <pathname>
+```
+
+Run just the tests with:
 
 ```bash
 node run-tests.js

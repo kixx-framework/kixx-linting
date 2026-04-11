@@ -4,6 +4,9 @@
     "description": "A lightweight JavaScript linter for Kixx modules, components, plugins, and frontend stuff.",
     "type": "module",
     "main": "mod.js",
+    "scripts": {
+        "test": "node lint.js && node run-tests.js"
+    },
     "author": "Kris Walker (www.kriswalker.me)",
     "license": "MIT"
 }
