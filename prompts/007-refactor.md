@@ -1,10 +1,14 @@
-We need to refactor this codebase to make it cleaner and easier to maintain.
+We have made a lot of changes and fixed a lot of bugs in this code base. Now it is time to review the code and clean it up and so that it is less complex and easier to modify in the future.
 
-Here are some guidelines for refactoring into clean code:
+Here are some guidelines for refactoring existing code into clean code:
 
 <guidelines>
 
-## Use Object Oriented Programming (OOP)
+# Writing and Maintaining Clean Code
+
+Your first objective when writing code and making changes to this codebase is removing complexity so it is easier to modify the codebase in the future. You always want to leave code cleaner than you found it after making changes.
+
+**Lean into Object Oriented Programming (OOP).**
 
 Design the system and write your code as a collection of interacting objects rather than a mere list of instructions or functions. When coding, shift your focus from how a task is done to what entity is responsible for doing it.
 
@@ -73,6 +77,107 @@ The ideal number of arguments for a method is zero. Next comes one, followed clo
 Names for constants, classes, methods, and variables are important to reducing accidental complexity. A good name conveys a lot of information about what the underlying entity is, and, just as important, what it is not. When considering a particular name, ask yourself: "When I see this name in the future, how closely will I be able to guess what the name refers to and what it does?".
 
 Name your constants, classes, methods, and variables so that when you read them in the future, there should be no surprises in what they are and what they do. A good name should be a dead giveaway.
+
+## Refactoring
+Guidelines for refactoring existing code. These are specifically about changing code which already works and has regression tests.
+
+**Refactor in the direction of the next real change.**
+
+The best refactors are the ones that make the change you are *about* to make easier. If you know the next feature, shape the refactor around it — you'll get immediate validation that the new structure is useful.
+
+There are times when you need to clean existing code and may not have the context to know about the next change, and that's ok too.
+
+**Look for code smells to signal refactoring opportunities.**
+
+- Leaked module, class, method, or function internals where another object depends on internal private state.
+- Code that is likely going to change when adding new features; ensure that it can be extended.
+- Code which is complex and hard to understand.
+- Duplicated logic.
+- Misleading names.
+
+**Read the code before planning or coding.**
+
+- Open source files and read them end to end.
+- Find specific lines or sections of code which have code smells.
+
+**Refactor for future agents.**
+
+Coding agents which work on this codebase in the future will have no background or context other than that which they get from reading the code. So, there is no need worry about breaking developers' working memory of this codebase.
+
+**Do not overengineer abstractions or generality.**
+
+A system with twelve well-named objects is not automatically clearer than a system with four — the reader still has to learn the names, remember which object owns which responsibility, and trace indirections to find concrete behavior.
+
+The question is "does the benefit exceed the cost of the extra name, the extra file, and the extra indirection?"
+
+Don't design for:
+
+- Future features that aren't on the roadmap.
+- Hypothetical parser/database/transport swaps.
+- "Easier to add X later" where X is not actually being added.
+- "Testability" when the current code is already testable.
+- Plugin points with no plugins.
+
+Speculative generality adds indirection now for a payoff that may never come, and when the real future requirement arrives it rarely matches the shape you guessed. If the future case is real and imminent, refactor when it arrives — you'll have better information then. If it isn't, don't pay for it now.
+
+**Delete before you extract.**
+
+Before adding structure, look for code that shouldn't exist:
+
+- Dead helpers with no callers.
+- Duplicated logic that can be collapsed into one copy without introducing an abstraction.
+- Speculative hooks ("in case we need X later") that were never wired up.
+- Comments describing code that has since moved or changed.
+- Backwards-compatibility shims for callers that no longer exist.
+- Config options no one sets.
+
+Rearranging code you should have deleted is wasted motion — and worse, it entrenches the dead code by making it part of the new structure. A refactor plan that doesn't start with a deletion pass is usually incomplete.
+
+**Avoid thin wrappers over exiting objects, methods, or functions.**
+
+A wrapper over code you control means you now have two things where there was one, and future agents have to learn both.
+
+- If the new wrapper interface is better, migrate the callers. You control them.
+- If it isn't better, don't add it.
+- Wrappers are only right at real public/stable boundaries where you cannot migrate callers (published APIs, cross-repo contracts, plugin interfaces).
+
+**Name-then-extract.**
+
+Many urges to "extract a class" are actually urges to "give this thing a name."
+
+Before extracting, try:
+
+1. Renaming the variable or function so its purpose is obvious.
+2. Extracting a single small helper function next to the current code.
+3. Adding a one-line comment explaining the non-obvious *why* (not the what).
+
+**Lazily build new abstractions.**
+
+Premature abstraction locks in a shape before you know what variations actually matter.
+
+Don't assume you need to build an abstraction for two or three callers, especially if they are all in the same file. The rule of three ("wait until you have three copies") is a floor, not a ceiling.
+
+**Large files, classes, methods, and functions are not always a code smell.**
+
+A 500-line rule module or a 400-line facade is not automatically bad. Instead look for code smells:
+
+- Does the code address too many concerns?
+- Does changing one concern force a change in another concern in the same file?
+- Is specialized logic mixed with general logic?
+- Are related pieces of logic separated by unrelated pieces?
+- Would a reader have to scroll between distant sections to understand one behavior?
+
+Conversely: a 50-line module can be a mess if it hides a state machine inside a cleverly named function. Read the code before judging it by its line count.
+
+**Measure a refactor by behavior, not shape.**
+
+Success criteria should be observable:
+
+- A specific coupling is removed (e.g., "An object no longer reads the private field of another").
+- A specific duplication is eliminated.
+- A specific file got shorter *and* easier to follow (not just shorter).
+- A specific change that was previously hard is now easy, and you can name the change.
+- A specific bug class is now impossible to reintroduce.
 
 </guidelines>
 
