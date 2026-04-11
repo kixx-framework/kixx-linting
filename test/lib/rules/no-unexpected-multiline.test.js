@@ -127,6 +127,9 @@ const valid = [
             / 5)
         `,
     },
+    {
+        code: "const SINGLE_CHILD_ALLOWED =\n    /^(?:(?:DoWhile|For|ForIn|ForOf|If|Labeled|While)Statement|Export(?:Default|Named)Declaration)$/u;",
+    },
 
     // Optional chaining
     {
