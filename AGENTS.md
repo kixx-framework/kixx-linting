@@ -49,3 +49,23 @@ console.log(value);
 ```
 
 When you are asked to fix lint problems, keep in mind that it is sometimes better to disable a rule with a comment than to overengineer a workaround.
+
+## Code Style
+
+**Arrow functions style:**
+
+When an arrow function body is small and a single statement, prefer to write it on a single line:
+
+```javascript
+[1,2,3].map(n => n * 10);
+```
+
+When the function body becomes large or contains more than one statement, then use a multiline arrow function body in a block:
+
+```javascript
+const isConst = variable.defs.some((def) => {
+    return def.type === "Variable" &&
+        def.parent &&
+        def.parent.kind === "const";
+});
+```
