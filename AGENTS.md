@@ -54,7 +54,7 @@ When you are asked to fix lint problems, keep in mind that it is sometimes bette
 
 **Arrow functions style:**
 
-When an arrow function body is small and a single statement, prefer to write it on a single line:
+When an arrow function body is small and a single statement, you should prefer to write it on a single line:
 
 ```javascript
 [1,2,3].map(n => n * 10);
@@ -68,6 +68,33 @@ const isConst = variable.defs.some((def) => {
         def.parent &&
         def.parent.kind === "const";
 });
+```
+
+**Function argument objects**
+When using objects as arguments to functions, you should prefer to destructure the objects after the function defintion:
+
+```javascript
+function runSubProcess(args) {
+    const {
+        argv = [],
+        cwd = process.cwd(),
+        stderr = process.stderr,
+    } = args ?? {};
+
+    // ... Function body ...
+}
+```
+
+Here is an example of incorrect code for argument objects:
+
+```javascript
+function runSubProcess({
+    argv = [],
+    cwd = process.cwd(),
+    stderr = process.stderr,
+} = {}) {
+    // ... Function body ...
+}
 ```
 
 **Do not use the `process` global in Node.js**
