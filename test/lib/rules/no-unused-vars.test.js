@@ -28,6 +28,7 @@ import {
 
 import { lintText } from "../../../mod.js";
 
+/* eslint-disable no-template-curly-in-string */
 
 const valid = [
     "var foo = 5;\n\nlabel: while (true) {\n  console.log(foo);\n  break label;\n}",
@@ -1420,6 +1421,8 @@ const invalid = [
         },
     },
 ];
+
+/* eslint-enable */
 
 describe('no-unused-vars', ({ describe }) => {
 
