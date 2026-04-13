@@ -218,7 +218,7 @@ const valid = [
         text: "var _a;",
     },
     {
-        text: "var a; function foo() { var _b; } foo();",
+        text: "function foo() { var _b; } foo();",
     },
     {
         text: "function foo(_a) { } foo();",
@@ -354,6 +354,10 @@ const valid = [
     {
         text: "try{}catch(err){console.error(err);}",
     },
+    // catch variables with _ prefix are still reported (no caughtErrorsIgnorePattern)
+    {
+        text: "try{}catch(_err){console.error(_err);}",
+    },
 
     // https://github.com/eslint/eslint/issues/6348
     "var a = 0, b; b = a = a + 1; foo(b);",
@@ -487,7 +491,7 @@ const invalid = [
         text: "/*global a */",
     },
     {
-        text: "function foo(first, second) {\ndoStuff(function() {\nconsole.log(second);});}",
+        text: "function foo(first, second) {\ndoStuff(function() {\nconsole.log(second);}); }; foo();",
     },
     {
         text: "var a=10;",
@@ -505,7 +509,7 @@ const invalid = [
         text: "var a=10, b=0, c=null; setTimeout(function() { var b=2; alert(a+b+c); }, 0);",
     },
     {
-        text: "var a=10, b=0, c=null; setTimeout(function() { var b=2; var c=2; alert(a+b+c); }, 0);",
+        text: "var a=10, b=0, c=null; alert(c); setTimeout(function() { var b=2; var c=2; alert(a+b+c); }, 0);",
     },
     {
         text: "function f(){var a=[];return a.map(function(){});}",
@@ -517,13 +521,13 @@ const invalid = [
         text: "function foo() {function foo(x) {\nreturn x; }; return function() {return foo; }; }",
     },
     {
-        text: "function f(){var x;function a(){x=42;}function b(){alert(x);}}",
+        text: "function f(){var x;function a(){x=42;}function b(){alert(x);} b(); } f();",
     },
     {
         text: "function f(a) {}; f();",
     },
     {
-        text: "function a(x, y, z){ return y; }; a();",
+        text: "function a(y, z){ return y; }; a();",
     },
     {
         text: "var min = Math.min",
@@ -541,16 +545,16 @@ const invalid = [
         text: "function gg(baz, bar) { return baz; }; gg();",
     },
     {
-        text: "(function(foo, baz, bar) { return baz; })();",
+        text: "(function(baz, bar) { return baz; })();",
     },
     {
-        text: "(function z(foo) { var bar = 33; })();",
+        text: "(function z() { var bar = 33; })();",
     },
     {
         text: "(function z(foo) { z(); })();",
     },
     {
-        text: "function f() { var a = 1; return function(){ f(a = 2); }; }",
+        text: "function f() { var a = 1; return function(){ f(a = 2); }; }; f();",
     },
     {
         text: 'import x from "y";',
@@ -579,7 +583,7 @@ const invalid = [
         text: "var _a; var b;",
     },
     {
-        text: "var a; function foo() { var _b; var c_; } foo();",
+        text: "function foo() { var _b; var c_; } foo();",
     },
     {
         text: "function foo(a, _b) { } foo();",
@@ -587,19 +591,19 @@ const invalid = [
 
     // https://github.com/eslint/eslint/issues/15611
     {
-        text: "const array = ['a', 'b', 'c']; const [a, _b, c] = array; const newArray = [a, c];",
+        text: "const array = ['a', 'b', 'c']; const [a, _b, c] = array; const newArray = [a]; console.log(newArray);",
         languageOptions: { ecmaVersion: 2020 },
     },
     {
-        text: "const array = ['a', 'b', 'c', 'd', 'e']; const [a, _b, c] = array;",
+        text: "const array = ['a', 'b', 'c', 'd', 'e']; const [a, _b] = array;",
         languageOptions: { ecmaVersion: 2020 },
     },
     {
-        text: "const array = [obj]; const [{_a, foo}] = array; console.log(foo);",
+        text: "const array = [obj]; const [{a, foo}] = array; console.log(foo);",
         languageOptions: { ecmaVersion: 2020 },
     },
     {
-        text: "function foo([{_a, bar}]) {bar;}foo();",
+        text: "function foo([{a, bar}]) {bar;}foo();",
         languageOptions: { ecmaVersion: 2020 },
     },
     {
@@ -650,10 +654,10 @@ const invalid = [
 
     // https://github.com/eslint/eslint/issues/3617
     {
-        text: "\n/* global foobar, foo, bar */\nfoobar;",
+        text: "\n/* global foobar, foo, bar */\nfoobar; foo;",
     },
     {
-        text: "\n/* global foobar,\n   foo,\n   bar\n */\nfoobar;",
+        text: "\n/* global foobar,\n   foo,\n   bar\n */\nfoobar; foo;",
     },
 
     // Rest property sibling without ignoreRestSiblings
@@ -742,6 +746,10 @@ const invalid = [
         text: "try{}catch(err){};",
         options: [{ caughtErrors: "all" }],
     },
+    // catch variables with _ prefix are still reported (no caughtErrorsIgnorePattern)
+    {
+        text: "try{}catch(_err){};",
+    },
 
     // caughtErrors with other configs
     {
@@ -803,7 +811,7 @@ const invalid = [
         languageOptions: { ecmaVersion: 2015 },
     },
     {
-        text: "(function ({ a }, { b, c } ) { return b; })();",
+        text: "(function ({ b, c } ) { return b; })();",
         languageOptions: { ecmaVersion: 2015 },
     },
 
@@ -891,7 +899,7 @@ const invalid = [
         languageOptions: { ecmaVersion: 2020 },
     },
     {
-        text: "(function ({ a, b }, { c } ) { return b; })();",
+        text: "(function ({ a, b } ) { return b; })();",
         languageOptions: { ecmaVersion: 2015 },
     },
     {
@@ -899,20 +907,20 @@ const invalid = [
         languageOptions: { ecmaVersion: 2015 },
     },
     {
-        text: "(function ([ a ], [ b, c ] ) { return b; })();",
+        text: "(function ([ a ], [ b ] ) { return b; })();",
         languageOptions: { ecmaVersion: 2015 },
     },
     {
-        text: "(function ([ a, b ], [ c ] ) { return b; })();",
+        text: "(function ([ b ], [ c ] ) { return b; })();",
         languageOptions: { ecmaVersion: 2015 },
     },
 
     // https://github.com/eslint/eslint/issues/9774
     {
-        text: "(function(_a) {})();",
+        text: "(function(a) {})();",
     },
     {
-        text: "(function(_a) {})();",
+        text: "(function(a) {})();",
     },
 
     // https://github.com/eslint/eslint/issues/10982
@@ -945,7 +953,7 @@ const invalid = [
         languageOptions: { ecmaVersion: 2015 },
     },
     {
-        text: "let a = 'a';\na = 10;\nfunction foo(){a = 11;a = () => {a = 13}}",
+        text: "let a = 'a';\na = 10;\nfunction foo(){a = 11;a = () => {a = 13}}; foo();",
         languageOptions: { ecmaVersion: 2020 },
     },
     {
@@ -979,7 +987,7 @@ const invalid = [
         languageOptions: { ecmaVersion: 6 },
     },
     {
-        text: "const [[a = aDefault], b]= foo;",
+        text: "const [[a = aDefault], b]= foo; console.log(b);",
         languageOptions: { ecmaVersion: 6 },
     },
     {
@@ -1143,11 +1151,11 @@ const invalid = [
         languageOptions: { ecmaVersion: 2023 },
     },
     {
-        text: "function foo([a, ...[[ b ]]]) {} foo();",
+        text: "function foo([_a, ...[[ b ]]]) {} foo();",
         languageOptions: { ecmaVersion: 2023 },
     },
     {
-        text: "function foo([a, ...[{ b }]]) {} foo();",
+        text: "function foo([_a, ...[{ b }]]) {} foo();",
         languageOptions: { ecmaVersion: 2023 },
     },
     {
@@ -1348,22 +1356,23 @@ const invalid = [
     },
     {
         text: "with (a) var foo;",
-        languageOptions: { ecmaVersion: 6 },
+        languageOptions: { ecmaVersion: 6, sourceType: "script" },
     },
     {
         text: "var a;'use strict';b(00);",
+        languageOptions: { sourceType: "script" },
     },
     {
         text: "var [a] = foo;'use strict';b(00);",
-        languageOptions: { ecmaVersion: 6 },
+        languageOptions: { ecmaVersion: 6, sourceType: "script" },
     },
     {
         text: "var [...a] = foo;'use strict';b(00);",
-        languageOptions: { ecmaVersion: 6 },
+        languageOptions: { ecmaVersion: 6, sourceType: "script" },
     },
     {
         text: "var {a} = foo;'use strict';b(00);",
-        languageOptions: { ecmaVersion: 6 },
+        languageOptions: { ecmaVersion: 6, sourceType: "script" },
     },
     {
         text: "console.log('foo')\nvar a\n+b > 0 ? bar() : baz()",
@@ -1393,7 +1402,7 @@ const invalid = [
         languageOptions: { ecmaVersion: 6 },
     },
     {
-        text: "function foo(a = 1, b) {a = 2;} foo();",
+        text: "function foo(a = 1, _b) {a = 2;} foo();",
         languageOptions: { ecmaVersion: 6 },
     },
     {
@@ -1421,13 +1430,16 @@ describe('no-unused-vars', ({ describe }) => {
             valid.forEach((item, i) => {
                 let text;
                 let options;
+                let languageOptions;
 
                 if (typeof item === 'string') {
                     text = item;
                     options = {};
+                    languageOptions = {};
                 } else {
                     text = item.text;
                     options = item.options;
+                    languageOptions = item.languageOptions || {};
                 }
 
                 const file = { text };
@@ -1438,7 +1450,7 @@ describe('no-unused-vars', ({ describe }) => {
                     rules['no-unused-vars'] = rules['no-unused-vars'].concat(options);
                 }
 
-                const res = lintText(file, rules);
+                const res = lintText(file, rules, languageOptions);
 
                 if (res.errorCount > 0 || res.warningCount > 0) {
                     // eslint-disable-next-line no-console
@@ -1456,13 +1468,16 @@ describe('no-unused-vars', ({ describe }) => {
             invalid.forEach((item, i) => {
                 let text;
                 let options;
+                let languageOptions;
 
                 if (typeof item === 'string') {
                     text = item;
                     options = {};
+                    languageOptions = {};
                 } else {
                     text = item.text;
                     options = item.options;
+                    languageOptions = item.languageOptions || {};
                 }
 
                 const file = { text };
@@ -1473,7 +1488,7 @@ describe('no-unused-vars', ({ describe }) => {
                     rules['no-unused-vars'] = rules['no-unused-vars'].concat(options);
                 }
 
-                const res = lintText(file, rules);
+                const res = lintText(file, rules, languageOptions);
 
                 assertEqual(1, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
                 assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
