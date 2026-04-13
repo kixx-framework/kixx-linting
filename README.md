@@ -107,6 +107,17 @@ Or, to target a specific test suite by directory or file name, pass in the pathn
 node run-tests.js <pathname>
 ```
 
+Publishing
+----------
+
+1. Run linting and tests with `npm test`.
+2. Run the deno check with `deno lint`. We expect this to fail with a "slow types" warning, since this is not a TypeScript project.
+3. Ensure the version number in package.json and deno.json is correct. Double check the other metadata while you're at it.
+4. Make sure all changes are committed to the main branch and push to the remote origin.
+5. Run `npm publish`.
+6. Tag the release with `git -a <tag> -m <message>` and push the tag to the remote origin.
+
+
 Copyright and License
 ---------------------
 Copyright by Kris Walker (www.kriswalker.me).
