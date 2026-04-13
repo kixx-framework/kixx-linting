@@ -270,7 +270,7 @@ export default [
                     varsIgnorePattern: '^_',
                     argsIgnorePattern: '^_',
                     destructuredArrayIgnorePattern: '^_',
-                }
+                },
             ],
             'no-use-before-define': [
                 'error',
