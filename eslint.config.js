@@ -261,6 +261,17 @@ export default [
             'no-unused-private-class-members': [
                 'error',
             ],
+            'no-unused-vars': [
+                'error',
+                {
+                    vars: 'all',
+                    args: 'all',
+                    caughtErrors: 'all',
+                    varsIgnorePattern: '^_',
+                    argsIgnorePattern: '^_',
+                    destructuredArrayIgnorePattern: '^_',
+                }
+            ],
             'no-use-before-define': [
                 'error',
                 { functions: false, classes: false },
