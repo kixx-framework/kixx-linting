@@ -15,6 +15,12 @@
             "tmp/",
             "todos/",
             "vendor/"
-        ]
+        ],
+        "rules": {
+            "exclude": [
+                "no-slow-types",
+                "no-this-alias"
+            ]
+        }
     }
 }
