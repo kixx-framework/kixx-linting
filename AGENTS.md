@@ -1,6 +1,8 @@
 This project is a lightweight JavaScript linter implemented in JavaScript.
 
-See @README.md for project overview and command line development commands for this project.
+See @README.md for the project overview.
+
+DO NOT attempt to publish this project. The publishing function is a manual process performed only by humans.
 
 ## Linting
 
@@ -48,7 +50,45 @@ debugger;
 console.log(value);
 ```
 
-When you are asked to fix lint problems, keep in mind that it is sometimes better to disable a rule with a comment than to overengineer a workaround.
+When you need to fix lint problems, keep in mind that it is sometimes better to disable a rule with a comment rather than overengineering a workaround.
+
+## Testing
+
+Run the linter and the tests with:
+
+```bash
+npm test
+```
+
+Run just the linter with:
+
+```bash
+node lint.js
+```
+
+Or, to lint a specific file, pass in the pathname:
+
+```bash
+node lint.js <pathname>
+```
+
+Run the Deno linter:
+
+```bash
+deno lint
+```
+
+Run just the tests with:
+
+```bash
+node run-tests.js
+```
+
+Or, to target a specific test suite by directory or file name, pass in the pathname:
+
+```bash
+node run-tests.js <pathname>
+```
 
 ## Code Style
 
@@ -153,3 +193,4 @@ class ClassWithPrivate {
     }
 }
 ````
+
