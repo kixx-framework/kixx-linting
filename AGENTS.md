@@ -104,3 +104,45 @@ Instead of using the `process` global in Node.js, import it like this:
 ```javascript
 import process from 'node:process';
 ```
+
+**Use ES6 private elements instead of underscores "_" to denote a private member.**
+
+Example of correct code:
+
+```javascript
+class ClassWithPrivate {
+    #privateField;
+    #privateFieldWithInitializer = 42;
+
+    #privateMethod() {
+        // …
+    }
+
+    static #privateStaticField;
+    static #privateStaticFieldWithInitializer = 42;
+
+    static #privateStaticMethod() {
+        // …
+    }
+}
+```
+
+Example of incorrect code:
+
+```javascript
+class ClassWithPrivate {
+    _privateField;
+    __privateFieldWithInitializer = 42;
+
+    _privateMethod() {
+        // …
+    }
+
+    static __privateStaticField;
+    static _privateStaticFieldWithInitializer = 42;
+
+    static __privateStaticMethod() {
+        // …
+    }
+}
+````
