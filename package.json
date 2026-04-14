@@ -16,7 +16,7 @@
     "homepage": "https://www.kixx.dev/",
     "repository": {
         "type": "git",
-        "url": "https://github.com/kixx-framework/kixx-linting.git"
+        "url": "git+https://github.com/kixx-framework/kixx-linting.git"
     },
     "bugs": {
         "url": "https://github.com/kixx-framework/kixx-linting/issues"
