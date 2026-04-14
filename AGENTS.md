@@ -97,6 +97,13 @@ function runSubProcess({
 }
 ```
 
+**When importing built-in Node.js modules use the "node:" prefix.**
+
+```javascript
+import path from 'node:path';
+import fsp from 'node:fs/promises';
+```
+
 **Do not use the `process` global in Node.js**
 
 Instead of using the `process` global in Node.js, import it like this:

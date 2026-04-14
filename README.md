@@ -95,6 +95,12 @@ Or, to lint a specific file, pass in the pathname:
 node lint.js <pathname>
 ```
 
+Run the Deno linter:
+
+```bash
+deno lint
+```
+
 Run just the tests with:
 
 ```bash
