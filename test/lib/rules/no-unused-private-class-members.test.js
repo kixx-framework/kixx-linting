@@ -29,6 +29,23 @@ import {
 import { lintText } from "../../../mod.js";
 
 const valid = [
+    {
+        text: `
+            class Foo {
+                async computeHashes() {
+                    const h = this.#syncHash();
+                    const h2 = await this.#asyncHash();
+                    return h + h2;
+                }
+                #syncHash() {
+                    return 'foo';
+                }
+                async #asyncHash() {
+                    return 'bar';
+                }
+            }
+            `,
+    },
     { text: "class Foo {}" },
     { text: `class Foo {
     publicMember = 42;

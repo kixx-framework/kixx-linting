@@ -1,8 +1,17 @@
 {
     "name": "@kixx/linting",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "license": "MIT",
     "exports": "./mod.js",
+    "publish": {
+        "include": [
+            "lib/",
+            "LICENSE",
+            "lint.js",
+            "mod.js",
+            "README.md"
+        ]
+    }
     "lint": {
         "exclude": [
             ".claude/",
