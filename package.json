@@ -32,5 +32,8 @@
         "kixx",
         "javascript",
         "linting"
-    ]
+    ],
+    "dependencies": {
+        "kixx-test": "^3.0.0"
+    }
 }

@@ -90,6 +90,12 @@ Or, to target a specific test suite by directory or file name, pass in the pathn
 node run-tests.js <pathname>
 ```
 
+And, to run the tests with Deno:
+
+```bash
+deno run --allow-read --allow-write --allow-env --allow-run run-tests.js
+```
+
 ## Code Style
 
 **Arrow functions style:**
