@@ -1,5 +1,9 @@
 import { DEFAULT_TIMEOUT } from './constants.js';
 
+/**
+ * Executable unit for test hooks and test cases.
+ * Supports promise-returning functions and callback-style functions.
+ */
 export default class RunnableBlock {
 
     type = null;
@@ -10,15 +14,14 @@ export default class RunnableBlock {
     setTimeout = null;
 
     /**
-     * Creates a new RunnableBlock instance
-     * @param {Object} spec - The specification object
-     * @param {string} spec.type - The type of the block. "test", "before", or "after"
-     * @param {string[]} spec.namePath - Ancestor block names (strings), including name of this block
-     * @param {Function} spec.fn - The function to run
-     * @param {boolean} [spec.disabled] - Whether the block is disabled
-     * @param {number} [spec.timeout] - Timeout in milliseconds
-     * @param {Function} [spec.setTimeout=setTimeout] - The function to use for setting a timeout (used for testing)
-     * @param {Function} [spec.clearTimeout=clearTimeout] - The function to use for clearing a timeout (used for testing)
+     * @param {Object} spec
+     * @param {string} spec.type - Block type (`test`, `before`, or `after`).
+     * @param {string[]} spec.namePath - Hierarchical block path including this block's name.
+     * @param {Function|null} [spec.fn] - Function to execute for this block.
+     * @param {boolean} [spec.disabled=false] - Whether execution should be skipped.
+     * @param {number} [spec.timeout] - Execution timeout in milliseconds.
+     * @param {Function} [spec.setTimeout=setTimeout] - Timeout scheduler (primarily for tests).
+     * @param {Function} [spec.clearTimeout=clearTimeout] - Timeout canceller (primarily for tests).
      */
     constructor(spec) {
         this.type = spec.type;
@@ -38,10 +41,22 @@ export default class RunnableBlock {
         this.clearTimeout = spec.clearTimeout || clearTimeout;
     }
 
+    /**
+     * Returns the block name path joined with the provided delimiter.
+     * @param {string} [delimiter=':']
+     * @returns {string}
+     */
     concatName(delimiter = ':') {
         return this.namePath.join(delimiter);
     }
 
+    /**
+     * Runs this block with timeout handling and multiple resolve/reject detection.
+     * @param {import('./event-emitter.js').default} emitter - Event emitter used for runtime diagnostics.
+     * @param {Object} [options]
+     * @param {number} [options.timeout] - Overrides the block timeout for this execution.
+     * @returns {Promise<null>}
+     */
     run(emitter, options = {}) {
         if (this.disabled) {
             return Promise.resolve(null);
@@ -49,13 +64,15 @@ export default class RunnableBlock {
 
         const block = this;
         const timeout = Number.isInteger(options.timeout) ? options.timeout : this.timeout;
+        const setBlockTimeout = this.setTimeout;
+        const clearBlockTimeout = this.clearTimeout;
 
         return new Promise((resolvePromise, rejectPromise) => {
             let resolved = false;
 
             const resolve = () => {
                 // eslint-disable-next-line no-use-before-define
-                this.clearTimeout(timeoutHandle);
+                clearBlockTimeout(timeoutHandle);
                 if (resolved) {
                     const error = new Error('RunnableBlock resolved multiple times');
                     emitter.emit('multipleResolves', { block, error });
@@ -67,7 +84,7 @@ export default class RunnableBlock {
 
             const reject = (error) => {
                 // eslint-disable-next-line no-use-before-define
-                this.clearTimeout(timeoutHandle);
+                clearBlockTimeout(timeoutHandle);
                 if (resolved) {
                     emitter.emit('multipleRejections', { block, error });
                 } else {
@@ -76,7 +93,7 @@ export default class RunnableBlock {
                 }
             };
 
-            const timeoutHandle = this.setTimeout(() => {
+            const timeoutHandle = setBlockTimeout(() => {
                 reject(new Error(`timed out in ${ timeout }ms`));
             }, timeout);
 

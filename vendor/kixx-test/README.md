@@ -1,12 +1,6 @@
 Kixx Test
 =========
-A small framework for writing tests in JavaScript environments.
-
-Created by [Kris Walker](https://www.kriswalker.me) 2017 - 2025.
-
-For usage examples and guidelines, see `examples/README.md`.
-
-There is a reference script for setting up and running a folder of tests in `/test/run-tests.js`.
+A lightweight framework for writing automated tests in JavaScript environments.
 
 ## Environment Support
 
@@ -16,16 +10,117 @@ There is a reference script for setting up and running a folder of tests in `/te
 | Node.js | >= 16.13.2 |
 | Deno    | >= 1.0.0   |
 
-This library is designed for use in an ES6 module environment requiring __Node.js >= 16.13.2__ or __Deno >= 1.0.0__. You could use it in a browser, but there are no plans to offer CommonJS or AMD modules. It targets at least [ES2022](https://node.green/#ES2022) and uses the optional chaining operator `?.`.
+## Getting Started
 
-If you're curious: Node.js >= 16.13.2 is required for [ES6 module stabilization](https://nodejs.org/dist/latest-v18.x/docs/api/esm.html#modules-ecmascript-modules) and [ES2022 support](https://node.green/#ES2020).
+### 1. Write a test file
 
-Please don't bother running benchmarks on this library. Correctness and readability are design objectives. Conserving CPU cycles is not. It is very unlikely any utilities in this library would have a measureable performance impact on your application, and if they did you should probably be implementing something more optimized to your specific use case.
+Use `describe()` to define a suite and `it()` to define tests.
 
-__Note:__ There is no TypeScript here. It would be waste of time for a library as small as this.
+```javascript
+import { describe } from 'kixx-test';
+import { assertEqual } from 'kixx-assert';
+
+describe('Math', ({ it }) => {
+    it('adds numbers', () => {
+        assertEqual(7, 3 + 4);
+    });
+});
+```
+
+### 2. Use async tests when needed
+
+Test functions can return promises (for `async`/`await`) or use a callback.
+
+```javascript
+import { describe } from 'kixx-test';
+import { assertEqual } from 'kixx-assert';
+
+describe('Async Example', ({ it }) => {
+    it('supports promises', async () => {
+        const result = await Promise.resolve('ok');
+        assertEqual('ok', result);
+    });
+
+    it('supports callback-style async tests', (done) => {
+        setTimeout(() => {
+            assertEqual(2, 1 + 1);
+            done();
+        }, 10);
+    }, { timeout: 100 });
+});
+```
+
+### 3. Organize with nested suites and hooks
+
+Inside a `describe()` callback, you can use:
+
+- `before(fn, opts?)`
+- `after(fn, opts?)`
+- `it(name, fn, opts?)`
+- `describe(name, fn, opts?)`
+- `xit(name, fn?)` to skip a test
+- `xdescribe(name, fn, opts?)` to skip a suite
+
+```javascript
+import { describe } from 'kixx-test';
+import { assertEqual } from 'kixx-assert';
+
+describe('Counter', ({ before, it, describe, xit }) => {
+    let value;
+
+    before(() => {
+        value = 0;
+    });
+
+    describe('increment', ({ it }) => {
+        it('increments by 1', () => {
+            value += 1;
+            assertEqual(1, value);
+        });
+    });
+
+    xit('this test is skipped', () => {
+        assertEqual(true, false);
+    });
+});
+```
+
+### 4. Run your tests
+
+This package provides `runTests()` which returns an event emitter.
+The script in `test/run-tests.js` is a full reference implementation.
+
+```javascript
+import { runTests } from 'kixx-test';
+
+const emitter = runTests();
+
+emitter.on('blockComplete', ({ block, error }) => {
+    if (error) {
+        console.error(`Failed: ${ block.concatName(' - ') }`);
+        console.error(error);
+    }
+});
+
+emitter.on('complete', () => {
+    console.log('Done');
+});
+```
+
+## Examples
+
+See the runnable examples in [`examples/`](./examples):
+
+- `examples/basic-test.js`
+- `examples/async-tests.js`
+- `examples/nested-tests.js`
+- `examples/disabled-tests.js`
+- `examples/mock-tracker.js`
+
+There is also a full runner example in [`test/run-tests.js`](./test/run-tests.js).
 
 Copyright and License
 ---------------------
-Copyright: (c) 2017 - 2025 by Kris Walker (www.kriswalker.me)
+Copyright: (c) 2017 - 2026 by Kris Walker (www.kriswalker.me)
 
 Unless otherwise indicated, all source code is licensed under the MIT license. See LICENSE for details.
