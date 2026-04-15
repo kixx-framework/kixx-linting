@@ -46,6 +46,22 @@ function unIndent(strings, ...values) {
 }
 
 const valid = [
+    // Address https://github.com/kixx-framework/kixx-linting/issues/3
+    {
+        text: unIndent`
+            function test_something() {
+                {
+                    const err = new Error();
+                    if (!(err instanceof Error)) {
+                        throw new Error('bark');
+                    }
+                }
+            }
+
+            test_something();
+        `,
+        options: [4],
+    },
     {
         text: unIndent`
             function test() {
