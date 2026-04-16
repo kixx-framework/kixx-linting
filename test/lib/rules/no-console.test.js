@@ -28,6 +28,8 @@ import {
 
 import { lintText } from "../../../mod.js";
 
+/* eslint-disable no-template-curly-in-string */
+
 const valid = [
     { text: "Console.info(foo)" },
 
@@ -45,9 +47,6 @@ const valid = [
         text: "console.log(foo)",
         options: [{ allow: ["info", "log", "warn"] }],
     },
-
-    // https://github.com/eslint/eslint/issues/7010
-    { text: "var console = require('myconsole'); console.log(foo)" },
 ];
 
 const invalid = [
@@ -182,6 +181,12 @@ const invalid = [
 
 describe("no-console", ({ describe }) => {
 
+    const languageOptions = {
+        globals: {
+            console: 'readonly',
+        },
+    };
+
     const globalRules = { "no-console": ["error"] };
 
     describe("valid code", ({ it }) => {
@@ -195,7 +200,7 @@ describe("no-console", ({ describe }) => {
                     rules["no-console"] = rules["no-console"].concat(options);
                 }
 
-                const res = lintText(file, rules);
+                const res = lintText(file, rules, languageOptions);
 
                 if (res.errorCount > 0 || res.warningCount > 0) {
                     // eslint-disable-next-line no-console
@@ -219,7 +224,7 @@ describe("no-console", ({ describe }) => {
                     rules["no-console"] = rules["no-console"].concat(options);
                 }
 
-                const res = lintText(file, rules);
+                const res = lintText(file, rules, languageOptions);
 
                 assertEqual(1, res.errorCount, `errorCount:[${i}]:${text.slice(0, 52)} ...`);
                 assertEqual(0, res.warningCount, `warningCount:[${i}]:${text.slice(0, 52)} ...`);
