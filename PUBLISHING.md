@@ -4,7 +4,7 @@ Publishing Checklist
 --------------------
 
 1. Run linting and tests with `npm test`.
-2. Run the deno check with `deno lint`.
+2. Run the deno check with `deno lint` and `deno run --allow-read --allow-write --allow-env --allow-run run-tests.js`.
 3. Check the documentation with `deno doc lib/lint-cli.js` and `deno doc lib/linter.js`.
 4. Ensure the version number in package.json and deno.json is correct. Double check the other metadata while you're at it.
 5. Make sure all changes are committed to the main branch and push to the remote origin.
