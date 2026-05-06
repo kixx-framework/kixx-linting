@@ -11,14 +11,14 @@ Lint CLI
 Run linting with:
 
 ```bash
-node lint.js <pathname>
+node lint.js [pathname ...]
 ```
 
-The `<pathname>` argument is optional. If omitted, the CLI uses the current working directory.
+Pathname arguments are optional. If omitted, the CLI uses the current working directory.
 
 `lint.js` always loads `eslint.config.js` from the current working directory. The config must default-export an array of config objects.
 
-When the target is a directory, linting walks it recursively and only lints `.js` files. Other file extensions are ignored during directory traversal.
+When a target is a directory, linting walks it recursively and only lints `.js` files. Other file extensions are ignored during directory traversal. Multiple targets are linted in argument order, and files selected through overlapping targets are linted only once.
 
 `files` and `ignores` matching is literal path-segment matching (no glob support). Diagnostic output is written to `stderr`, grouped by file.
 
@@ -72,13 +72,13 @@ Each `LintMessage` has: `ruleId` (`string|null`), `severity` (`1|2`), `message` 
 
 ### `runLintCli(args)` — `lib/lint-cli.js`
 
-Runs the config-driven lint CLI programmatically and returns a process-style exit code. Loads `eslint.config.js` from `cwd`, recursively discovers `.js` files when the target is a directory, applies literal `files` and `ignores` matching, writes diagnostics to `stderr`, and returns `1` when any lint error or CLI setup error occurs.
+Runs the config-driven lint CLI programmatically and returns a process-style exit code. Loads `eslint.config.js` from `cwd`, recursively discovers `.js` files when a target is a directory, applies literal `files` and `ignores` matching, writes diagnostics to `stderr`, and returns `1` when any lint error or CLI setup error occurs.
 
 ```js
 import { runLintCli } from "./lib/lint-cli.js";
 
 const exitCode = await runLintCli({
-    argv: ["src/"],
+    argv: ["src/", "test/example.js"],
     cwd: process.cwd(),
     stderr: process.stderr,
 });
@@ -89,7 +89,7 @@ process.exit(exitCode);
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `args.argv` | `string[]` | `[]` | Positional CLI arguments after the executable and script name. |
+| `args.argv` | `string[]` | `[]` | Positional path arguments after the executable and script name. Defaults to the current working directory when empty. |
 | `args.cwd` | `string` | `process.cwd()` | Working directory used to resolve the target and load `eslint.config.js`. |
 | `args.stderr` | `Writable` | `process.stderr` | Writable stream for diagnostics and operational errors. |
 

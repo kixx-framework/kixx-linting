@@ -30,19 +30,6 @@ function assertNotContains(text, value, messagePrefix) {
 
 describe("lint CLI contract", ({ describe }) => {
     describe("argument and config errors", ({ it }) => {
-        it("fails when too many positional arguments are provided", async () => {
-            await withFixtureWorkspace("mixed-workspace", async (workspacePath) => {
-                const result = await runLintJsCli({
-                    cwd: workspacePath,
-                    args: ["src/error.js", "src/merged.js"],
-                });
-
-                assertEqual(1, result.exitCode, "exitCode");
-                assertNonEmptyString(result.stderr, "stderr");
-                assertEqual("", result.stdout, "stdout");
-            });
-        });
-
         it("fails when eslint.config.js does not exist", async () => {
             await withFixtureWorkspace("missing-config-workspace", async (workspacePath) => {
                 const result = await runLintJsCli({ cwd: workspacePath, args: ["."] });
@@ -111,6 +98,33 @@ describe("lint CLI contract", ({ describe }) => {
                 assertEqual(1, result.exitCode, "exitCode");
                 assertContains(result.stderr, "src/error.js", "stderr includes direct child file");
                 assertContains(result.stderr, "src/nested/child.js", "stderr includes nested file");
+            });
+        });
+
+        it("supports multiple file and directory targets", async () => {
+            await withFixtureWorkspace("mixed-workspace", async (workspacePath) => {
+                const result = await runLintJsCli({
+                    cwd: workspacePath,
+                    args: ["single-file-target.js", "src/error.js", "src/merged.js"],
+                });
+
+                assertEqual(1, result.exitCode, "exitCode");
+                assertContains(result.stderr, "single-file-target.js", "stderr includes first file target");
+                assertContains(result.stderr, "src/error.js", "stderr includes second file target");
+                assertContains(result.stderr, "src/merged.js", "stderr includes third file target");
+                assertNotContains(result.stderr, "src/nested/child.js", "stderr omits unrelated files");
+            });
+        });
+
+        it("deduplicates files selected through overlapping targets", async () => {
+            await withFixtureWorkspace("mixed-workspace", async (workspacePath) => {
+                const result = await runLintJsCli({
+                    cwd: workspacePath,
+                    args: ["src", "src/error.js"],
+                });
+
+                assertEqual(1, result.exitCode, "exitCode");
+                assertEqual(result.stderr.indexOf("src/error.js"), result.stderr.lastIndexOf("src/error.js"), "stderr includes duplicate target once");
             });
         });
 
