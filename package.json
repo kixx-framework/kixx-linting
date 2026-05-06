@@ -1,6 +1,6 @@
 {
     "name": "kixx-linting",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "description": "A lightweight JavaScript linter for Kixx modules, components, plugins, and frontend stuff.",
     "type": "module",
     "main": "./mod.js",
