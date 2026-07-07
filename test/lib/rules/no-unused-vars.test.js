@@ -359,6 +359,10 @@ const valid = [
     {
         text: "try{}catch(_err){console.error(_err);}",
     },
+    {
+        text: "try{}catch(_err){}",
+        options: { caughtErrorsIgnorePattern: '^_' },
+    },
 
     // https://github.com/eslint/eslint/issues/6348
     "var a = 0, b; b = a = a + 1; foo(b);",
@@ -750,6 +754,10 @@ const invalid = [
     // catch variables with _ prefix are still reported (no caughtErrorsIgnorePattern)
     {
         text: "try{}catch(_err){};",
+    },
+    {
+        text: "try{}catch(_err){}",
+        options: { varsIgnorePattern: '^_' },
     },
 
     // caughtErrors with other configs
