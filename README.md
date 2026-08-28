@@ -53,6 +53,7 @@ const result = lintText(
 | `languageOptions.ecmaVersion` | `string\|number` | ECMAScript version passed to the parser. Defaults to `"2024"`. |
 | `languageOptions.sourceType` | `string` | Source type passed to the parser. Defaults to `"module"`. |
 | `languageOptions.globals` | `Object<string, string\|boolean>` | Global variables available to scope-aware rules. Set a name to `"off"` to disable it. |
+| `languageOptions.parserOptions.allowHashBang` | `boolean` | Allow a hashbang at the beginning of the file. Defaults to `true`. |
 | `languageOptions.parserOptions.ecmaFeatures.globalReturn` | `boolean` | Allow `return` statements outside functions. Defaults to `false`. |
 
 **Returns** `LintResult`
