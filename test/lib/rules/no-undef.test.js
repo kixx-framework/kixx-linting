@@ -358,6 +358,38 @@ describe("no-undef", ({ describe }) => {
 
     const globalRules = { "no-undef": ["error"] };
 
+    describe("repeated unresolved references", ({ it }) => {
+        it("reports every reference with the same name", () => {
+            const result = lintText(
+                { text: "        client = 1;\n        client += 1;" },
+                globalRules,
+                { ecmaVersion: 2024, sourceType: "script" },
+            );
+
+            assertEqual(2, result.errorCount);
+            assertEqual(1, result.messages[0].line);
+            assertEqual(8, result.messages[0].column);
+            assertEqual(2, result.messages[1].line);
+            assertEqual(8, result.messages[1].column);
+        });
+
+        it("reports a later reference when the first reference is disabled", () => {
+            const result = lintText(
+                {
+                    text: "// eslint-disable-next-line no-undef\n" +
+                        "client = 1;\n" +
+                        "client += 1;",
+                },
+                globalRules,
+                { ecmaVersion: 2024, sourceType: "script" },
+            );
+
+            assertEqual(1, result.errorCount);
+            assertEqual(3, result.messages[0].line);
+            assertEqual(0, result.messages[0].column);
+        });
+    });
+
     describe("valid code", ({ it }) => {
         it("has expected outcomes", () => {
             valid.forEach(({ text, code, options, languageOptions }, i) => {
